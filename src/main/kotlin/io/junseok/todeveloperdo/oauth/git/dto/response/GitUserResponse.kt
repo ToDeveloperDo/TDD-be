@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.dto.response
+package io.junseok.todeveloperdo.oauth.git.dto.response
 
 data class GitUserResponse(
     val username: String,

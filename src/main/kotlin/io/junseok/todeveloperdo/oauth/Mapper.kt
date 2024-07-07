@@ -1,6 +1,6 @@
 package io.junseok.todeveloperdo.oauth
 
-import io.junseok.todeveloperdo.oauth.dto.response.GitUserResponse
+import io.junseok.todeveloperdo.oauth.git.dto.response.GitUserResponse
 
 
 fun Map<String, Any>.toGitUserResponse() = GitUserResponse(
