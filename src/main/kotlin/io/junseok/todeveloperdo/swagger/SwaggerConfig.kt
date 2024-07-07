@@ -1,6 +1,8 @@
 package io.junseok.todeveloperdo.swagger
 
-import org.springdoc.core.GroupedOpenApi
+import io.swagger.v3.oas.models.OpenAPI
+import io.swagger.v3.oas.models.info.Info
+import io.swagger.v3.oas.models.servers.Server
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -8,10 +10,18 @@ import org.springframework.context.annotation.Configuration
 class SwaggerConfig {
 
     @Bean
-    fun publicApi(): GroupedOpenApi {
-        return GroupedOpenApi.builder()
-            .group("public")
-            .pathsToMatch("/**")
-            .build()
+    fun customOpenAPI(): OpenAPI {
+        return OpenAPI()
+            .info(
+                Info()
+                    .title("TDD-API")
+                    .version("1.0.0")
+                    .description("개발자를 위한 ToDoList")
+            )
+            .servers(
+                listOf(
+                    Server().url("https://api.todeveloperdo.shop")
+                )
+            )
     }
 }
