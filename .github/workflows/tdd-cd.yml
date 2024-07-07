@@ -69,9 +69,9 @@ jobs:
           docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
           echo "git will pull origin : [${{ needs.env.outputs.branch }}]"
           echo "git checkout finish"
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/mealmate-0.0.1-snapshot .
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/tdd-0.0.1-snapshot .
           echo "docker build finish"        
-          docker push ${{ secrets.DOCKER_USERNAME }}/mealmate-0.0.1-snapshot
+          docker push ${{ secrets.DOCKER_USERNAME }}/tdd-0.0.1-snapshot
 
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.8
@@ -84,8 +84,8 @@ jobs:
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
             sudo docker stop ${{ secrets.DOCKER_APP_CONTAINER }}
             sudo docker rm ${{ secrets.DOCKER_APP_CONTAINER }}
-            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/mealmate-0.0.1-snapshot
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/mealmate-0.0.1-snapshot
-            cd dont_eat_alone_be
+            sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/tdd-0.0.1-snapshot
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/tdd-0.0.1-snapshot
+            cd Tdd-be
             git pull origin ${{ needs.env.outputs.branch }}
             sudo docker-compose up -d
