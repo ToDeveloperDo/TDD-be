@@ -8,7 +8,7 @@ enum class ErrorCode(
     EXIST_WISHLIST(HttpStatusCode.CONFLICT.status, "이미 찜 하였습니다!"),
 
     NOT_EXIST_MEMBER(HttpStatusCode.BAD_REQUEST.status, "존재하지 않는 사용자입니다!"),
-    NOT_EXIST_BOARD(HttpStatusCode.BAD_REQUEST.status, "존재하지 않는 게시판입니다!"),
+    NOT_EXIST_TODOLIST(HttpStatusCode.BAD_REQUEST.status, "존재하지 않는 할 일입니다!"),
     NOT_EXIST_WISHLIST(HttpStatusCode.BAD_REQUEST.status, "존재하지 않는 찜한 게시판입니다!"),
     NOT_EXIST_COMMENT(HttpStatusCode.BAD_REQUEST.status, "존재하지 않는 댓글입니다!"),
     NOT_WRITE_MEMBER(HttpStatusCode.BAD_REQUEST.status, "댓글을 작성한 사용자가 아닙니다!"),
