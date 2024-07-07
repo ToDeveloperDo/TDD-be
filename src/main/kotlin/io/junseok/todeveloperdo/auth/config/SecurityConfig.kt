@@ -55,7 +55,7 @@ class SecurityConfig(
             .antMatchers("/favicon.ico").permitAll()
             .antMatchers("/git/login").permitAll()
             .antMatchers("/login/oauth2/code/github").permitAll()
-            .anyRequest().authenticated() // 그 외 인증 없이 접근O
+            .anyRequest().permitAll() // 그 외 인증 없이 접근O
 
             .and()
             .apply(JwtSecurityConfig(tokenProvider)); // Jwt
