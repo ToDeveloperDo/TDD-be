@@ -35,38 +35,39 @@ dependencies {
     kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
 
     //jpa
-    implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 
     //security
-    implementation ("org.springframework.boot:spring-boot-starter-oauth2-client")
-    implementation ("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
     //test
-    testImplementation ("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
     //testImplementation ("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
     //etc
-    implementation ("org.springframework.boot:spring-boot-starter-web")
-    compileOnly ("org.projectlombok:lombok")
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    compileOnly("org.projectlombok:lombok")
     kapt("org.projectlombok:lombok")
-    implementation ("org.springframework.boot:spring-boot-starter-validation")
-    implementation ("io.github.microutils:kotlin-logging:3.0.5")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("io.github.microutils:kotlin-logging:3.0.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
 
     implementation("org.jetbrains.kotlin:kotlin-reflect") // blog
 
     //mysql
-    runtimeOnly ("com.mysql:mysql-connector-j")
+    runtimeOnly("com.mysql:mysql-connector-j")
 
     //swagger
-    implementation("io.springfox:springfox-swagger-ui:2.9.2")
-    implementation("io.springfox:springfox-swagger2:2.9.2")
+    implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
+    implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
+
 
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8")
     implementation("io.github.openfeign:feign-jackson:12.1")
