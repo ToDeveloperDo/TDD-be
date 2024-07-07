@@ -24,10 +24,17 @@ class MemberTodoList(
     @Column(name = "deadline")
     var deadline: LocalDateTime,
 
+    @Column(name = "is_share")
+    var isShare:Boolean,
+
     @Enumerated(EnumType.STRING)
     var todoStatus: TodoStatus,
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     var member: Member
-)
+){
+    fun updateTodoStatus(){
+        this.todoStatus = TodoStatus.DONE
+    }
+}

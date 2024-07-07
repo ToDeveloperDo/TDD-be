@@ -7,6 +7,10 @@ import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepo
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCreateRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.toTodoResponse
+import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -30,10 +34,22 @@ class MemberTodoService(
             tag = todoCreateRequest.tag,
             deadline = todoCreateRequest.deadline,
             todoStatus = TodoStatus.PROCEED,
+            isShare = todoCreateRequest.isShare,
             member = member
         )
         return todoListRepository.save(memberTodoList).todoListId
     }
 
+    @Transactional(readOnly = true)
+    fun findTodoList(todoSearchRequest: TodoSearchRequest, username: String) =
+        todoListRepository.findAllByDeadline(todoSearchRequest.deadline)
+            .map { it.toTodoResponse() }
+
+    @Transactional
+    fun finishTodoList(todoListId: Long) {
+        val memberTodoList = (todoListRepository.findByIdOrNull(todoListId)
+            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_TODOLIST })
+        memberTodoList.updateTodoStatus()
+    }
 
 }
