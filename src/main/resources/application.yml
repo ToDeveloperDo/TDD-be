@@ -32,3 +32,9 @@ feign:
       url: https://github.com
     user-profile:
       url: https://api.github.com
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        host: api.todeveloperdo.shop

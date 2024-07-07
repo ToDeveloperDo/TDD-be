@@ -18,7 +18,8 @@ class CorsConfig {
         config.addAllowedMethod("*") //모든 post,get,put,delete,patch의 응답 허용
         config.addAllowedOrigin("http://localhost:3000")
         config.addAllowedOrigin("http://localhost:8080")
-
+        source.registerCorsConfiguration("/git/login/**", config)
+        source.registerCorsConfiguration("/login/oauth2/code/github/**", config)
         source.registerCorsConfiguration("/api/**", config)
         return CorsFilter(source)
     }
