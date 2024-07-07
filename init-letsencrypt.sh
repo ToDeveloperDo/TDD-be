@@ -5,7 +5,7 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-domains=(api.init-letsencrypt.sh.shop)
+domains=(api.todeveloperdo.shop)
 rsa_key_size=4096
 data_path="./nginx/certbot"
 email="junseok1204@gmail.com"
