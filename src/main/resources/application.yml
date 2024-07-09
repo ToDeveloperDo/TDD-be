@@ -1,0 +1,57 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_ID}
+            client-secret: ${GITHUB_SECRET_KEY}
+            scope: repo, user
+            redirect-uri: http://localhost:8080/login/oauth2/code/github
+            client-name: ${GITHUB_CLIENT_NAME}
+        provider:
+          github:
+            authorization-uri: ${GITHUB_AUTHORIZATION_URL}
+            token-uri: ${GITHUB_TOKEN_URL}
+            user-info-uri: ${GITHUB_INFO_URL}
+            user-name-attribute: ${GITHUB_USER_NAME_ATTRIBUTE}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+jwt:
+  header: ${JWT_HEADER}
+  secret: ${JWT_SECRET_KEY}
+  token-validity-in-seconds: ${JWT_EXPIRATION}
+
+feign:
+  client:
+    access-token:
+      url: ${FEIGN_ACCESS_TOKEN_URL}
+    user-profile:
+      url: ${FEIGN_USER_PROFILE_URL}
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: info
+  org.springframework.security: DEBUG
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        host: ${SPRING_SWAGGER_HOST}
