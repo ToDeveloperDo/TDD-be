@@ -5,6 +5,10 @@ data class GitUserResponse(
     val nickname: String,
     val avatarUrl: String,
     val gitUrl: String
-){
-
-}
+)
+fun Map<String, Any>.toGitUserResponse() = GitUserResponse(
+    username = this["login"].toString(),
+    nickname = this["name"].toString(),
+    avatarUrl = this["avatar_url"].toString(),
+    gitUrl = this["html_url"].toString()
+)

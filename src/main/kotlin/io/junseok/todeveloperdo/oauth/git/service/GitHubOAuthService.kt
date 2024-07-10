@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.git
+package io.junseok.todeveloperdo.oauth.git.service
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -6,7 +6,7 @@ import io.junseok.todeveloperdo.auth.jwt.TokenProvider
 import io.junseok.todeveloperdo.domains.member.service.MemberService
 import io.junseok.todeveloperdo.oauth.git.client.GitHubAccessTokenClient
 import io.junseok.todeveloperdo.oauth.git.client.GitHubApiClient
-import io.junseok.todeveloperdo.oauth.toGitUserResponse
+import io.junseok.todeveloperdo.oauth.git.dto.response.toGitUserResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
@@ -36,7 +36,6 @@ class GitHubOAuthService(
 
         val accessToken = extractAccessToken(accessTokenResponse)
         val bearerToken = "Bearer $accessToken"
-        println("bearerToken = ${bearerToken}")
 
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
@@ -48,7 +47,6 @@ class GitHubOAuthService(
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         // JWT 발급
         val jwtToken = tokenProvider.createToken(authentication)
-        println("User Info Response: $userInfoResponse")
         return jwtToken
     }
 

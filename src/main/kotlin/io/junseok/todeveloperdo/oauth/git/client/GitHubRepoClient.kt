@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestHeader
     url = "https://api.github.com",
     configuration = [GitHubRepoConfig::class]
 )
-interface GitHubUserClient {
+interface GitHubRepoClient {
     @PostMapping(value = ["/user/repos"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRepository(
         @RequestHeader("Authorization") token: String,
