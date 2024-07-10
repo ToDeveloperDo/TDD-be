@@ -9,7 +9,7 @@ spring:
             client-id: ${GITHUB_ID}
             client-secret: ${GITHUB_SECRET_KEY}
             scope: repo, user
-            redirect-uri: http://localhost:8080/login/oauth2/code/github
+            redirect-uri: http://api.todeveloperdo.shop/login/oauth2/code/github
             client-name: ${GITHUB_CLIENT_NAME}
         provider:
           github:
