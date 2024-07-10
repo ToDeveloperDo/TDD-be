@@ -1,36 +1,34 @@
 package io.junseok.todeveloperdo.domains.todo.service
 
-import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
-import io.junseok.todeveloperdo.domains.member.service.MemberService
-import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
-import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
-import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
-import io.junseok.todeveloperdo.exception.ErrorCode
-import io.junseok.todeveloperdo.exception.ToDeveloperDoException
-import io.junseok.todeveloperdo.oauth.git.GitHubService
+import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoCreator
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoSaver
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.doneTodoList
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
+import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueProcessor
+import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor
+import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCreateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
-import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.toTodoResponse
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MemberTodoService(
-    private val memberRepository: MemberRepository,
-    private val todoListRepository: TodoListRepository,
-    private val gitHubService: GitHubService,
-    private val memberService: MemberService
+    private val readMeProcessor: ReadMeProcessor,
+    private val todoReader: TodoReader,
+    private val memberReader: MemberReader,
+    private val todoSaver: TodoSaver,
+    private val todoCreator: TodoCreator,
+    private val gitHubIssueProcessor: GitHubIssueProcessor
 ) {
     @Transactional
     fun createTodoList(
         todoCreateRequest: TodoCreateRequest,
         username: String
     ): Long? {
-        val member = (memberRepository.findByUsername(username)
-            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER })
-
+        val member = memberReader.getMember(username)
 
         val gitHubIssuesRequest = GitHubIssuesRequest(
             title = "${todoCreateRequest.deadline} / ${todoCreateRequest.content}",
@@ -42,41 +40,42 @@ class MemberTodoService(
                 """.trimIndent(),
             assignees = listOf(member.username)
         )
-        val createIssue = gitHubService.createIssue(
+
+        val createIssue = gitHubIssueProcessor.createIssue(
             member.gitHubToken,
             member.username,
             member.gitHubRepo!!,
             gitHubIssuesRequest
         )
-        val memberTodoList = MemberTodoList(
-            content = todoCreateRequest.content,
-            memo = todoCreateRequest.memo,
-            tag = todoCreateRequest.tag,
-            deadline = todoCreateRequest.deadline,
-            todoStatus = TodoStatus.PROCEED,
-            isShare = todoCreateRequest.isShare,
-            issueNumber = createIssue.number,
-            member = member
-        )
-        return todoListRepository.save(memberTodoList).todoListId
-    }
 
-    @Transactional(readOnly = true)
-    fun findTodoList(todoSearchRequest: TodoSearchRequest, username: String) =
-        todoListRepository.findAllByDeadline(todoSearchRequest.deadline)
-            .map { it.toTodoResponse() }
+        val memberTodoList = todoCreator.generatorTodo(todoCreateRequest,createIssue.number,member)
+        val todoListId = todoSaver.saveTodoList(memberTodoList)
+
+        readMeProcessor.generatorReadMe(
+            member.gitHubToken.toGeneratorBearerToken(),
+            member,
+            member.gitHubRepo!!
+        )
+        return todoListId
+    }
+    fun findTodoLists(todoSearchRequest: TodoSearchRequest, username: String) =
+        todoReader.bringTodoLists(todoSearchRequest.deadline)
 
     @Transactional
     fun finishTodoList(todoListId: Long, username: String) {
-        val memberTodoList = (todoListRepository.findByIdOrNull(todoListId)
-            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_TODOLIST })
-        val member = memberService.getMember(username)
-        memberTodoList.updateTodoStatus()
-        gitHubService.closeIssue(
+        val memberTodoList = todoReader.findTodoList(todoListId)
+        val member = memberReader.getMember(username)
+        memberTodoList.doneTodoList()
+        gitHubIssueProcessor.closeIssue(
             member.gitHubToken,
             username,
             member.gitHubRepo!!,
             memberTodoList.issueNumber!!
+        )
+        readMeProcessor.generatorReadMe(
+            member.gitHubToken.toGeneratorBearerToken(),
+            member,
+            member.gitHubRepo!!
         )
     }
 

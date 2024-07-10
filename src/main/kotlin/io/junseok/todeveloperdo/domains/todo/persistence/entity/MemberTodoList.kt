@@ -1,7 +1,8 @@
 package io.junseok.todeveloperdo.domains.todo.persistence.entity
 
+import com.fasterxml.jackson.annotation.JsonFormat
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
-import java.time.LocalDateTime
+import java.time.LocalDate
 import javax.persistence.*
 
 @Entity
@@ -22,7 +23,8 @@ class MemberTodoList(
     var tag: String,
 
     @Column(name = "deadline")
-    var deadline: LocalDateTime,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    var deadline: LocalDate,
 
     @Column(name = "is_share")
     var isShare:Boolean,
@@ -39,9 +41,5 @@ class MemberTodoList(
 ){
     fun updateTodoStatus(){
         this.todoStatus = TodoStatus.DONE
-    }
-
-    fun updateIssueNumber(issueNumber: Int){
-        this.issueNumber= issueNumber
     }
 }

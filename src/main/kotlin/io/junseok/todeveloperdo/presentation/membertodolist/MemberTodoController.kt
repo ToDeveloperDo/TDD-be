@@ -35,7 +35,7 @@ class MemberTodoController(
         @RequestBody todoSearchRequest: TodoSearchRequest,
         principal: Principal
     ): ResponseEntity<List<TodoResponse>> =
-        ResponseEntity.ok(memberTodoService.findTodoList(todoSearchRequest, principal.name))
+        ResponseEntity.ok(memberTodoService.findTodoLists(todoSearchRequest, principal.name))
 
     /**
      * NOTE
