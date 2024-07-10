@@ -10,9 +10,5 @@ enum class HttpStatusCode(val status:Int) {
     OK(200),
     CONFLICT(409),
     BAD_REQUEST(400),
-    UNAUTHORIZED(401),
-    CONTAIN_BADWORD(451),
-    NOT_FOUND_MESSAGE(406);
-
-
+    UNAUTHORIZED(401)
 }

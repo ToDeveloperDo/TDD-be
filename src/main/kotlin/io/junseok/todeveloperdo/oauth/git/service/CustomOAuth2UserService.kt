@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.git
+package io.junseok.todeveloperdo.oauth.git.service
 
 import org.slf4j.LoggerFactory
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService

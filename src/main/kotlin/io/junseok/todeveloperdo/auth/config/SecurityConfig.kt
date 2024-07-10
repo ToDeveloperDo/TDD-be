@@ -3,7 +3,6 @@ package io.junseok.todeveloperdo.auth.config
 import io.junseok.todeveloperdo.auth.jwt.JwtAccessDeniedHandler
 import io.junseok.todeveloperdo.auth.jwt.JwtAuthenticationEntryPoint
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
-import io.junseok.todeveloperdo.oauth.git.CustomOAuth2UserService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
