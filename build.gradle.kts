@@ -46,7 +46,7 @@ dependencies {
 
     //test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    //testImplementation ("org.springframework.security:spring-security-test")
+    testImplementation ("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
 
