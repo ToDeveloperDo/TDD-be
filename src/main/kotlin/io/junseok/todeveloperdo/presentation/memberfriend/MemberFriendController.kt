@@ -15,7 +15,7 @@ class MemberFriendController(
     private val memberFriendService: MemberFriendService
 ) {
 
-    /**
+    /**단일
      * NOTE
      * 친구 목록 조회
      */
