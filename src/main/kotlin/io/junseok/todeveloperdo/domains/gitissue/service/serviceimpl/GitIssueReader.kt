@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class GitIssueReader(private val gitIssueRepository: GitIssueRepository) {
     @Transactional(readOnly = true)
-    fun findGitIssueList() = gitIssueRepository.findAllUnSendIssue()
+    fun findGitIssueList() = gitIssueRepository.findAll()
         .map { it.toTodoCreate() }
-
 }
