@@ -12,4 +12,7 @@ class MemberReader(private val memberRepository: MemberRepository ) {
     @Transactional(readOnly = true)
     fun getMember(username: String): Member = memberRepository.findByUsername(username)
         ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
+
+    @Transactional(readOnly = true)
+    fun getAllMember(): List<Member>? =  memberRepository.findAll()
 }
