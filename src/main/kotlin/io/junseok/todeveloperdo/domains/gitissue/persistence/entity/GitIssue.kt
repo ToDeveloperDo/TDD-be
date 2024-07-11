@@ -22,9 +22,6 @@ class GitIssue(
     @Column(name = "tag")
     val tag: String,
 
-    @Column(name = "is_create")
-    var isCreate: Boolean,
-
     @Column(name = "deadline")
     @JsonFormat(pattern = "yyyy-MM-dd")
     var deadline: LocalDate,
@@ -32,8 +29,4 @@ class GitIssue(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     val member: Member
-){
-    fun updateCreateStatus(){
-        this.isCreate = true
-    }
-}
+)

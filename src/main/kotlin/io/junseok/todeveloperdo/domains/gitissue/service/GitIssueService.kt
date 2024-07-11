@@ -16,12 +16,9 @@ class GitIssueService(private val gitIssueRepository: GitIssueRepository) {
             content = todoCreateRequest.content,
             memo = todoCreateRequest.memo!!,
             tag = todoCreateRequest.tag,
-            isCreate = false,
             deadline = todoCreateRequest.deadline,
             member = member
         )
         gitIssueRepository.save(gitIssue)
     }
-
-
 }
