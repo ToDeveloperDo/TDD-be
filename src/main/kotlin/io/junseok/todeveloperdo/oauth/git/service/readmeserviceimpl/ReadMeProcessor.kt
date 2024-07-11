@@ -20,7 +20,7 @@ class ReadMeProcessor(
         member: Member,
         repo: String
     ) {
-        val findTodoList = todoReader.bringTodoLists(LocalDateTime.now().toStringDateTime())
+        val findTodoList = todoReader.bringTodoLists(LocalDateTime.now().toStringDateTime(),member)
         val todoListContent = readMeBuilder.buildTodoListString(findTodoList)
         val readmeContent = readMeCreator.readMeContentCreate(todoListContent)
         readMeCreator.createReadMe(bearerToken, member.username, repo, readmeContent)
