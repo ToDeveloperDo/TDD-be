@@ -44,6 +44,7 @@ class LoginController(
 
         // JWT 토큰을 포함한 리디렉션 URL 생성
         val redirectUrl = "myapp://callback?token=${tokenResponse.token}"
+        logger.info(redirectUrl)
         httpServletResponse.sendRedirect(redirectUrl)
     }
 }
