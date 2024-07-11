@@ -37,10 +37,13 @@ class LoginController(
     }
 
     @GetMapping("/login/oauth2/code/github")
-    fun githubCallback(@RequestParam("code") code: String): String {
+    fun githubCallback(@RequestParam("code") code: String, httpServletResponse: HttpServletResponse) {
         logger.info("Received GitHub code: $code")
-        val userInfo = gitHubOAuthService.processGitHubOAuth(code)
-        logger.info("GitHub User Info: $userInfo")
-        return userInfo
+        val tokenResponse = gitHubOAuthService.processGitHubOAuth(code)
+        logger.info("GitHub User Info: $tokenResponse")
+
+        // JWT 토큰을 포함한 리디렉션 URL 생성
+        val redirectUrl = "myapp://callback?token=${tokenResponse.token}"
+        httpServletResponse.sendRedirect(redirectUrl)
     }
 }

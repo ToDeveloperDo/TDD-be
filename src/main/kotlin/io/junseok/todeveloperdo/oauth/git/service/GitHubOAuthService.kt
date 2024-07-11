@@ -6,6 +6,7 @@ import io.junseok.todeveloperdo.auth.jwt.TokenProvider
 import io.junseok.todeveloperdo.domains.member.service.MemberService
 import io.junseok.todeveloperdo.oauth.git.client.GitHubAccessTokenClient
 import io.junseok.todeveloperdo.oauth.git.client.GitHubApiClient
+import io.junseok.todeveloperdo.oauth.git.dto.response.TokenResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.toGitUserResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -27,7 +28,7 @@ class GitHubOAuthService(
     @Value("\${spring.security.oauth2.client.registration.github.client-secret}")
     private lateinit var clientSecret: String
 
-    fun processGitHubOAuth(code: String): String {
+    fun processGitHubOAuth(code: String): TokenResponse {
         val accessTokenResponse = accessTokenClient.getAccessToken(clientId, clientSecret, code)
 
         if (accessTokenResponse.contains("error")) {
@@ -47,7 +48,7 @@ class GitHubOAuthService(
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         // JWT 발급
         val jwtToken = tokenProvider.createToken(authentication)
-        return jwtToken
+        return TokenResponse(jwtToken)
     }
 
     private fun extractAccessToken(response: String): String {
