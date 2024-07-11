@@ -14,6 +14,7 @@ import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCreateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.toTodoCreate
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -68,8 +69,10 @@ class MemberTodoService(
         return todoListId
     }
 
-    fun findTodoLists(todoSearchRequest: TodoSearchRequest, username: String) =
-        todoReader.bringTodoLists(todoSearchRequest.deadline)
+    fun findTodoLists(todoSearchRequest: TodoSearchRequest, username: String):List<TodoResponse>{
+        val member = memberReader.getMember(username)
+        return todoReader.bringTodoLists(todoSearchRequest.deadline,member)
+    }
 
     @Transactional
     fun finishTodoList(todoListId: Long, username: String) {
