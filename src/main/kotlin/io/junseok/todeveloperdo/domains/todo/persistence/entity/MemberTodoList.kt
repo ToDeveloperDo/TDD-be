@@ -26,9 +26,6 @@ class MemberTodoList(
     @JsonFormat(pattern = "yyyy-MM-dd")
     var deadline: LocalDate,
 
-    @Column(name = "is_share")
-    var isShare:Boolean,
-
     @Column(name = "issue_number")
     var issueNumber: Int?= null,
 

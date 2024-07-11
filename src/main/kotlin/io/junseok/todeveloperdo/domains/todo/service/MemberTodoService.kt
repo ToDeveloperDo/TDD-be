@@ -1,18 +1,22 @@
 package io.junseok.todeveloperdo.domains.todo.service
 
+import io.junseok.todeveloperdo.domains.gitissue.service.GitIssueService
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoCreator
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoSaver
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.doneTodoList
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
+import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueCreator
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueProcessor
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCreateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.toTodoCreate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class MemberTodoService(
@@ -21,7 +25,9 @@ class MemberTodoService(
     private val memberReader: MemberReader,
     private val todoSaver: TodoSaver,
     private val todoCreator: TodoCreator,
-    private val gitHubIssueProcessor: GitHubIssueProcessor
+    private val gitHubIssueProcessor: GitHubIssueProcessor,
+    private val gitIssueService: GitIssueService,
+    private val gitHubIssueCreator: GitHubIssueCreator
 ) {
     @Transactional
     fun createTodoList(
@@ -30,17 +36,18 @@ class MemberTodoService(
     ): Long? {
         val member = memberReader.getMember(username)
 
-        val gitHubIssuesRequest = GitHubIssuesRequest(
-            title = "${todoCreateRequest.deadline} / ${todoCreateRequest.content}",
-            body = """
-                   TODO : ${todoCreateRequest.content}
-                   MEMO : ${todoCreateRequest.memo}
-                   TAG : ${todoCreateRequest.tag}
-                   SHARE : ${todoCreateRequest.isShare}
-                """.trimIndent(),
-            assignees = listOf(member.username)
-        )
+        //오늘 할 일이 아닌 경우
+        if (LocalDate.now() != todoCreateRequest.deadline) {
+            gitIssueService.saveGitIssue(todoCreateRequest, member)
+            val memberTodoList = todoCreator.generatorTodo(todoCreateRequest, member)
+            return todoSaver.saveTodoList(memberTodoList)
+        }
 
+        //이슈 템플릿 작성
+        val gitHubIssuesRequest =
+            gitHubIssueCreator.createIssueTemplate(todoCreateRequest.toTodoCreate(member))
+
+        // 이슈 생성
         val createIssue = gitHubIssueProcessor.createIssue(
             member.gitHubToken,
             member.username,
@@ -48,9 +55,11 @@ class MemberTodoService(
             gitHubIssuesRequest
         )
 
-        val memberTodoList = todoCreator.generatorTodo(todoCreateRequest,createIssue.number,member)
+        val memberTodoList =
+            todoCreator.generatorTodo(todoCreateRequest, member, createIssue.number)
         val todoListId = todoSaver.saveTodoList(memberTodoList)
 
+        //리드미 파일 작성
         readMeProcessor.generatorReadMe(
             member.gitHubToken.toGeneratorBearerToken(),
             member,
@@ -58,6 +67,7 @@ class MemberTodoService(
         )
         return todoListId
     }
+
     fun findTodoLists(todoSearchRequest: TodoSearchRequest, username: String) =
         todoReader.bringTodoLists(todoSearchRequest.deadline)
 
@@ -78,5 +88,4 @@ class MemberTodoService(
             member.gitHubRepo!!
         )
     }
-
 }

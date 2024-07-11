@@ -1,13 +1,21 @@
 package io.junseok.todeveloperdo.presentation.membertodolist.dto.request
 
 import com.fasterxml.jackson.annotation.JsonFormat
+import io.junseok.todeveloperdo.domains.gitissue.TodoCreate
+import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import java.time.LocalDate
 
 data class TodoCreateRequest(
     val content:String,
-    val memo:String?,
+    val memo:String?="",
     val tag: String,
-    var isShare: Boolean,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val deadline: LocalDate
+)
+fun TodoCreateRequest.toTodoCreate(member: Member) = TodoCreate(
+    content = this.content,
+    memo = this.memo,
+    tag = this.tag,
+    deadline = this.deadline,
+    member = member
 )

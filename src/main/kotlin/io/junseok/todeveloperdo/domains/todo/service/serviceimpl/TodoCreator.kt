@@ -8,15 +8,17 @@ import org.springframework.stereotype.Component
 
 @Component
 class TodoCreator {
-    fun generatorTodo(todoCreateRequest: TodoCreateRequest, issueNumber: Int, member: Member) =
-        MemberTodoList(
-            content = todoCreateRequest.content,
-            memo = todoCreateRequest.memo,
-            tag = todoCreateRequest.tag,
-            deadline = todoCreateRequest.deadline,
-            todoStatus = TodoStatus.PROCEED,
-            isShare = todoCreateRequest.isShare,
-            issueNumber = issueNumber,
-            member = member
-        )
+    fun generatorTodo(
+        todoCreateRequest: TodoCreateRequest,
+        member: Member,
+        issueNumber: Int? = null
+    ) = MemberTodoList(
+        content = todoCreateRequest.content,
+        memo = todoCreateRequest.memo,
+        tag = todoCreateRequest.tag,
+        deadline = todoCreateRequest.deadline,
+        todoStatus = TodoStatus.PROCEED,
+        issueNumber = issueNumber,
+        member = member
+    )
 }

@@ -9,6 +9,7 @@ import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProces
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.RepoValidator
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import org.springframework.stereotype.Service
+import java.security.Principal
 
 @Service
 class GitHubService(
@@ -22,9 +23,9 @@ class GitHubService(
     /**
      * 레포 생성 및 README 생성
      */
-    fun createRepository(gitHubRequest: GitHubRequest): Map<String, Any> {
+    fun createRepository(gitHubRequest: GitHubRequest,username:String): Map<String, Any> {
         repoValidator.isValid(gitHubRequest.repoName)
-        val member = memberReader.getMember(gitHubRequest.username)
+        val member = memberReader.getMember(username)
         memberUpdater.updateMemberRepo(gitHubRequest.repoName, member)
         val bearerToken = member.gitHubToken.trim().toGeneratorBearerToken()
         val body = gitHubRepoGenerator.generatorRepo(gitHubRequest)
