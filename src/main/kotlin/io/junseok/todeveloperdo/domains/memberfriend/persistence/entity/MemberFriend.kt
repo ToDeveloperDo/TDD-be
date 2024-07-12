@@ -6,19 +6,22 @@ import javax.persistence.*
 @Entity
 @Table(name = "member_friend")
 class MemberFriend(
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_friend_id")
-    var memberFriendId: Long? = null,
+    @EmbeddedId
+    val memberFriendId: MemberFriendId,
 
-    @Column(name = "friend_username")
-    val friendUsername: String,
-
-    @Column(name = "friend_git_url")
-    val friendGitUrl: String,
+    @Enumerated(EnumType.STRING)
+    var friendStatus: FriendStatus,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    var member: Member
+    @JoinColumn(name = "sender_member_id", insertable = false, updatable = false)
+    var senderMember: Member, //요청을 보내는사람(송신자)
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "receiver_member_id", insertable = false, updatable = false)
+    var receiverMember: Member // 요청을 받은 사람(수신자)
 ) {
+    fun updateFriendStatus() {
+        this.friendStatus = FriendStatus.FOLLOW
+    }
+
 }
