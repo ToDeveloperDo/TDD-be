@@ -14,6 +14,7 @@ class MemberService(
     private val memberCreator: MemberCreator,
     private val memberUpdater: MemberUpdater,
     private val memberValidator: MemberValidator,
+    private val memberDeleter: MemberDeleter
 ) {
     fun createMember(gitUserResponse: GitUserResponse, accessToken: String) {
         if (!memberValidator.isExistMember(gitUserResponse.username)) {
@@ -25,9 +26,12 @@ class MemberService(
         }
     }
 
-    @Transactional(readOnly = true)
     fun findMember(username: String): MemberInfoResponse {
         val member = memberReader.getMember(username)
         return member.toMemberInfoResponse()
+    }
+
+    fun deleteMember(username: String) {
+        memberDeleter.removeMember(username)
     }
 }
