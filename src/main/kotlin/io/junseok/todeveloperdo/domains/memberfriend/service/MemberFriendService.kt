@@ -90,7 +90,7 @@ class MemberFriendService(
             member,
             FriendStatus.UNFOLLOW
         )
-            .map { it.toMemberFriendResponse(it.senderMember.memberId!!) }
+            .map {toMemberFriendResponse(it.senderMember) }
     }
 
     @Transactional
@@ -110,6 +110,6 @@ class MemberFriendService(
             member,
             FriendStatus.UNFOLLOW
         )
-            .map { it.toMemberFriendResponse(it.receiverMember.memberId!!) }
+            .map { toMemberFriendResponse(it.receiverMember) }
     }
 }

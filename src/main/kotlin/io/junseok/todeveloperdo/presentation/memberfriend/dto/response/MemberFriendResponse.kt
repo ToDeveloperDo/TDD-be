@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.presentation.memberfriend.dto.response
 
+import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriend
 
 data class MemberFriendResponse(
@@ -8,10 +9,8 @@ data class MemberFriendResponse(
     val friendGitUrl: String
 )
 
-fun MemberFriend.toMemberFriendResponse(memberId: Long) = MemberFriendResponse(
-    memberId = memberId,
-    friendUsername = this.receiverMember.username,
-    friendGitUrl = this.receiverMember.gitUrl
+fun toMemberFriendResponse(member: Member) = MemberFriendResponse(
+    memberId = member.memberId!!,
+    friendUsername = member.username,
+    friendGitUrl = member.gitUrl
 )
-
-
