@@ -34,4 +34,7 @@ class MemberService(
     fun deleteMember(username: String) {
         memberDeleter.removeMember(username)
     }
+
+    fun findAllMember(): List<MemberInfoResponse> =
+        memberReader.getAllMember()!!.map { it.toMemberInfoResponse() }
 }

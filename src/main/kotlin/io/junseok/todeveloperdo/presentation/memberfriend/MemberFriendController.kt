@@ -39,10 +39,6 @@ class MemberFriendController(
      * 친구 추가
      */
 
-    /**
-     * NOTE
-     * 서비스에 등록된 멤버 전부 조회
-     */
 
     /**
      * NOTE

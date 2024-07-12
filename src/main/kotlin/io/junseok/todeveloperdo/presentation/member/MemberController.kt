@@ -30,4 +30,12 @@ class MemberController(
     @DeleteMapping
     fun withdrawMember(principal: Principal): ResponseEntity<Unit> =
         ResponseEntity.ok(memberService.deleteMember(principal.name))
+
+    /**
+     * NOTE
+     * 서비스에 등록된 멤버 전부 조회
+     */
+    @GetMapping("/all")
+    fun showAllMember(): ResponseEntity<List<MemberInfoResponse>> =
+        ResponseEntity.ok(memberService.findAllMember())
 }
