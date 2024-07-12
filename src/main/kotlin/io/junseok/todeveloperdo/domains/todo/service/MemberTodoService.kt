@@ -6,7 +6,6 @@ import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoCreator
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoSaver
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.doneTodoList
-import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueCreator
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueProcessor
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor

@@ -22,8 +22,7 @@ class TodoReader(
             deadline,
             TodoStatus.PROCEED,
             member
-        )
-            .map { it.toTodoResponse() }
+        ).map { it.toTodoResponse() }
     }
 
     @Transactional(readOnly = true)
