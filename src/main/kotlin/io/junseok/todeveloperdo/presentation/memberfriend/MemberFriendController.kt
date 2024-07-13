@@ -2,6 +2,7 @@ package io.junseok.todeveloperdo.presentation.memberfriend
 
 import io.junseok.todeveloperdo.domains.memberfriend.service.MemberFriendService
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -77,4 +78,15 @@ class MemberFriendController(
     @GetMapping("/send-list")
     fun showSendFriends(principal: Principal): ResponseEntity<List<MemberFriendResponse>> =
         ResponseEntity.ok(memberFriendService.findSendRequestList(principal.name))
+
+    /**
+     * NOTE
+     * 친구인 다른 사람 할 일 목록 보기
+     */
+    @GetMapping("/lookup/todolist/{friendId}")
+    fun lookUpFriendTodo(
+        @PathVariable friendId: Long,
+        principal: Principal
+    ): ResponseEntity<List<TodoResponse>> =
+        ResponseEntity.ok(memberFriendService.searchFriendTodo(friendId,principal.name))
 }

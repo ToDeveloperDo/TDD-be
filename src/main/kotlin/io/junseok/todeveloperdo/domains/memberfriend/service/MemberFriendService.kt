@@ -6,18 +6,22 @@ import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFr
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriendId
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.repository.MemberFriendRepository
 import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.MemberFriendValidator
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Service
 class MemberFriendService(
     private val memberFriendRepository: MemberFriendRepository,
     private val memberReader: MemberReader,
-    private val memberFriendValidator: MemberFriendValidator
+    private val memberFriendValidator: MemberFriendValidator,
+    private val todoReader: TodoReader
 ) {
     fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
         val member = memberReader.getMember(username)
@@ -90,7 +94,7 @@ class MemberFriendService(
             member,
             FriendStatus.UNFOLLOW
         )
-            .map {toMemberFriendResponse(it.senderMember) }
+            .map { toMemberFriendResponse(it.senderMember) }
     }
 
     @Transactional
@@ -111,5 +115,15 @@ class MemberFriendService(
             FriendStatus.UNFOLLOW
         )
             .map { toMemberFriendResponse(it.receiverMember) }
+    }
+
+    @Transactional(readOnly = true)
+    fun searchFriendTodo(friendId: Long, username: String): List<TodoResponse> {
+        val member = memberReader.getMember(username)
+        val friendMember = memberReader.getFriendMember(friendId)
+        if (!memberFriendRepository.isFriendShip(member, friendMember, FriendStatus.FOLLOW)) {
+            throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
+        }
+        return todoReader.bringTodoLists(LocalDate.now(), friendMember)
     }
 }

@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.oauth.git.dto.request
 
+import java.time.LocalDate
 import java.util.*
 
 data class FileCommitRequest(
@@ -15,7 +16,7 @@ fun fileCommitRequestInit(
     branch: String,
     sha: String?
 ) = FileCommitRequest(
-    message = "feat : ${owner}'s TodoList😀",
+    message = "feat : ${owner}'s ${LocalDate.now()} TodoList😀",
     content = Base64.getEncoder().encodeToString(content.toByteArray()),
     branch = branch,
     sha = sha

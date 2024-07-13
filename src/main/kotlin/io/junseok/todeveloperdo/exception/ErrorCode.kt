@@ -9,5 +9,6 @@ enum class ErrorCode(
     NOT_EXIST_ISSUE(HttpStatusCode.BAD_REQUEST.status, "존재하지 않는 이슈입니다!"),
     INVALID_REPO_NAME_GAP(HttpStatusCode.BAD_REQUEST.status,"공백이 존재할 수 없습니다!"),
     INVALID_REPO_NAME_KOREAN(HttpStatusCode.BAD_REQUEST.status,"영어로만 입력해주세요!"),
-    NOT_REQUEST_FRIEND(HttpStatusCode.BAD_REQUEST.status,"요청 기록이 없습니다!")
+    NOT_REQUEST_FRIEND(HttpStatusCode.BAD_REQUEST.status,"요청 기록이 없습니다!"),
+    NOT_FRIENDSHIP(HttpStatusCode.BAD_REQUEST.status,"친구 관계가 아닙니다!")
 }
