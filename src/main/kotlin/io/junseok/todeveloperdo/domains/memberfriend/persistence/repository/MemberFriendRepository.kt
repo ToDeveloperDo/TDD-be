@@ -27,13 +27,23 @@ interface MemberFriendRepository : JpaRepository<MemberFriend, MemberFriendId> {
                 "from MemberFriend mf " +
                 "where (mf.senderMember = :senderMember and " +
                 "mf.receiverMember = :receiverMember and " +
-                "mf.friendStatus = :friendStatus)" +
-                " or " +
-                "(mf.senderMember = :receiverMember and " +
+                "mf.friendStatus = :friendStatus)"
+    )
+    fun isSendFriend(
+        @Param(value = "senderMember") senderMember: Member,
+        @Param(value = "receiverMember") receiverMember: Member,
+        @Param(value = "friendStatus") friendStatus: FriendStatus
+    ): Boolean
+
+    @Query(
+        "select case " +
+                "when count(mf)>0 then true else false end " +
+                "from MemberFriend mf " +
+                "where (mf.senderMember = :receiverMember and " +
                 "mf.receiverMember = :senderMember and " +
                 "mf.friendStatus = :friendStatus)"
     )
-    fun isFriendShip(
+    fun isRequestFriend(
         @Param(value = "senderMember") senderMember: Member,
         @Param(value = "receiverMember") receiverMember: Member,
         @Param(value = "friendStatus") friendStatus: FriendStatus

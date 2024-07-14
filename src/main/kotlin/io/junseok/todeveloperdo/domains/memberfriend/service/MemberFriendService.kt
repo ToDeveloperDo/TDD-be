@@ -66,6 +66,7 @@ class MemberFriendService(
     fun registerFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
+        memberFriendValidator.isFriend(member, friendMember)
         val memberFriendId = MemberFriendId(member.memberId!!, friendId)
 
         val memberFriend = MemberFriend(
@@ -121,7 +122,7 @@ class MemberFriendService(
     fun searchFriendTodo(friendId: Long, username: String): List<TodoResponse> {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        if (!memberFriendRepository.isFriendShip(member, friendMember, FriendStatus.FOLLOW)) {
+        if (!memberFriendValidator.isAlreadyFriend(member, friendMember, FriendStatus.FOLLOW)) {
             throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
         }
         return todoReader.bringTodoLists(LocalDate.now(), friendMember)

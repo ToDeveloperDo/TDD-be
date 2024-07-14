@@ -44,4 +44,9 @@ class MemberTodoController(
     @PatchMapping("/{todoListId}")
     fun checkTodoList(@PathVariable todoListId: Long, principal: Principal): ResponseEntity<Unit> =
         ResponseEntity.ok(memberTodoService.finishTodoList(todoListId, principal.name))
+
+    /**
+     * NOTE
+     * TODOLIST 수정
+     */
 }
