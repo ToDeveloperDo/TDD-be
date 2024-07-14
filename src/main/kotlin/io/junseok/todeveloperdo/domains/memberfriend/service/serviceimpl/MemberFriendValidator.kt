@@ -27,10 +27,8 @@ class MemberFriendValidator(private val memberFriendRepository: MemberFriendRepo
 
     // 친구관계인지 확인
     fun isAlreadyFriend(member: Member, friend: Member, friendStatus: FriendStatus): Boolean {
-        if (memberFriendRepository.isSendFriend(member, friend, friendStatus)
-            || memberFriendRepository.isRequestFriend(member, friend, friendStatus)
-        ) return true
-        else return false
+        return (memberFriendRepository.isSendFriend(member, friend, friendStatus)
+                || memberFriendRepository.isRequestFriend(member, friend, friendStatus))
     }
 
     // 이미 친구 요청을 보낸 경우
