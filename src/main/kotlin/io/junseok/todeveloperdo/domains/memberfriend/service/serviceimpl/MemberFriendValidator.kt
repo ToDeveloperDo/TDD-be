@@ -18,7 +18,7 @@ class MemberFriendValidator(private val memberFriendRepository: MemberFriendRepo
     // 통합검사 (회원가입할 떄)
     fun isFriend(member: Member, friend: Member) {
         if(isAlreadyFriend(member, friend, FriendStatus.FOLLOW)){
-            throw ToDeveloperDoException{ErrorCode.NOT_REQUEST_FRIEND}
+            throw ToDeveloperDoException{ErrorCode.ALREADY_FRIENDSHIP}
         }
         isSendRequestFriend(member, friend, FriendStatus.UNFOLLOW)
         isRequestedFriend(member, friend, FriendStatus.UNFOLLOW)
