@@ -66,7 +66,7 @@ class MemberFriendService(
     fun registerFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        memberFriendValidator.isFriend(member, friendMember)
+        memberFriendValidator.isAlreadyFriend(member, friendMember,FriendStatus.FOLLOW)
         val memberFriendId = MemberFriendId(member.memberId!!, friendId)
 
         val memberFriend = MemberFriend(
