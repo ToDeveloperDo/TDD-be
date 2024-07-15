@@ -12,4 +12,7 @@ interface TodoListRepository : JpaRepository<MemberTodoList, Long> {
         todoStatus: TodoStatus,
         member: Member
     ): List<MemberTodoList>
+
+    fun existsByTodoListIdAndMember(todoListId: Long, member: Member): Boolean
+
 }

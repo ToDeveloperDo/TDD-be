@@ -13,5 +13,6 @@ enum class ErrorCode(
     NOT_FRIENDSHIP(HttpStatusCode.BAD_REQUEST.status,"친구 관계가 아닙니다!"),
     ALREADY_FRIENDSHIP(HttpStatusCode.BAD_REQUEST.status,"이미 친구입니다!"),
     ALREADY_SEND_FRIEND_REQUEST(HttpStatusCode.BAD_REQUEST.status,"이미 친구 요청을 상대방에게 보냈습니다!"),
-    ALREADY_REQUESTED_FRIEND(HttpStatusCode.BAD_REQUEST.status,"이미 친구 요청을 상대방에게 받았습니다!")
+    ALREADY_REQUESTED_FRIEND(HttpStatusCode.BAD_REQUEST.status,"이미 친구 요청을 상대방에게 받았습니다!"),
+    INVALID_TODOLIST(HttpStatusCode.BAD_REQUEST.status,"본인의 TODOLIST만 수정가능합니다!")
 }

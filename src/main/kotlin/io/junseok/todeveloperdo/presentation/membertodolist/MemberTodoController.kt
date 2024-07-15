@@ -1,7 +1,7 @@
 package io.junseok.todeveloperdo.presentation.membertodolist
 
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
-import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCreateRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.http.ResponseEntity
@@ -21,10 +21,10 @@ class MemberTodoController(
      */
     @PostMapping
     fun registerTodoList(
-        @RequestBody todoCreateRequest: TodoCreateRequest,
+        @RequestBody todoRequest: TodoRequest,
         principal: Principal
     ): ResponseEntity<Long> =
-        ResponseEntity.ok(memberTodoService.createTodoList(todoCreateRequest, principal.name))
+        ResponseEntity.ok(memberTodoService.createTodoList(todoRequest, principal.name))
 
     /**
      * NOTE
@@ -49,4 +49,15 @@ class MemberTodoController(
      * NOTE
      * TODOLIST 수정
      */
+    @PatchMapping("/change/{todoListId}")
+    fun updateTodoList(
+        @PathVariable todoListId: Long,
+        @RequestBody todoRequest: TodoRequest,
+        principal: Principal
+    ): ResponseEntity<Unit> =
+        ResponseEntity.ok(memberTodoService.modifyTodoList(todoListId, todoRequest, principal.name))
+
+    @DeleteMapping("/{todoListId}")
+    fun deleteTodoList(@PathVariable todoListId: Long, principal: Principal): ResponseEntity<Unit> =
+        ResponseEntity.ok(memberTodoService.removeTodoList(todoListId, principal.name))
 }

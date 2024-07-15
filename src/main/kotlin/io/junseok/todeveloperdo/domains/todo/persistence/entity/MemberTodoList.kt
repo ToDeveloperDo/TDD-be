@@ -39,4 +39,11 @@ class MemberTodoList(
     fun updateTodoStatus(){
         this.todoStatus = TodoStatus.DONE
     }
+
+    fun updateTodoList(content: String, memo: String, tag: String, deadline: LocalDate){
+        this.content=content
+        this.memo = memo
+        this.tag = tag
+        this.deadline=deadline
+    }
 }

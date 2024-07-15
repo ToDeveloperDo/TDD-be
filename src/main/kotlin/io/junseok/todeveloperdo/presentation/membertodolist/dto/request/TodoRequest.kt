@@ -5,14 +5,14 @@ import io.junseok.todeveloperdo.domains.gitissue.TodoCreate
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import java.time.LocalDate
 
-data class TodoCreateRequest(
+data class TodoRequest(
     val content:String,
     val memo:String?="",
     val tag: String,
     @JsonFormat(pattern = "yyyy-MM-dd")
     val deadline: LocalDate
 )
-fun TodoCreateRequest.toTodoCreate(member: Member) = TodoCreate(
+fun TodoRequest.toTodoCreate(member: Member) = TodoCreate(
     content = this.content,
     memo = this.memo,
     tag = this.tag,
