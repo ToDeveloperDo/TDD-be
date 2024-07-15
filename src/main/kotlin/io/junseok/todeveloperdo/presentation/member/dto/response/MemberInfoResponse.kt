@@ -11,7 +11,7 @@ data class MemberInfoResponse(
 
 fun Member.toMemberInfoResponse() = MemberInfoResponse(
     username = this.username,
-    nickname = this.nickname,
+    nickname = this.nickname!!,
     avatarUrl = this.avatarUrl,
     gitUrl = this.gitUrl
 )

@@ -15,7 +15,7 @@ class Member(
     var username: String,
 
     @Column(name = "nickname")
-    var nickname: String,
+    var nickname: String? ="",
 
     @Column(name = "avatar_url") //프로필 이미지 사진
     var avatarUrl: String,
