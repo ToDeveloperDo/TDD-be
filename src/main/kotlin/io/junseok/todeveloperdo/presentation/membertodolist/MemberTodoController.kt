@@ -1,8 +1,10 @@
 package io.junseok.todeveloperdo.presentation.membertodolist
 
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -60,4 +62,11 @@ class MemberTodoController(
     @DeleteMapping("/{todoListId}")
     fun deleteTodoList(@PathVariable todoListId: Long, principal: Principal): ResponseEntity<Unit> =
         ResponseEntity.ok(memberTodoService.removeTodoList(todoListId, principal.name))
+
+    @PostMapping("/count")
+    fun countTodoList(
+        @RequestBody todoCountRequest: TodoCountRequest,
+        principal: Principal
+    ): ResponseEntity<List<TodoCountResponse>> =
+        ResponseEntity.ok(memberTodoService.calculateTodoList(todoCountRequest,principal.name))
 }
