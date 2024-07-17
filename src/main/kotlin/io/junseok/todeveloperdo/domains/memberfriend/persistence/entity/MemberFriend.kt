@@ -23,5 +23,4 @@ class MemberFriend(
     fun updateFriendStatus() {
         this.friendStatus = FriendStatus.FOLLOW
     }
-
 }
