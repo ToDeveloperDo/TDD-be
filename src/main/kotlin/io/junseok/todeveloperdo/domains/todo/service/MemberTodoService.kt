@@ -2,10 +2,11 @@ package io.junseok.todeveloperdo.domains.todo.service
 
 import io.junseok.todeveloperdo.domains.gitissue.service.GitIssueService
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
-import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
+import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoQueryRepository
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.*
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueCreator
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueProcessor
+import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueValidator
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
@@ -31,7 +32,8 @@ class MemberTodoService(
     private val gitHubIssueCreator: GitHubIssueCreator,
     private val todoValidator: TodoValidator,
     private val todoDeleter: TodoDeleter,
-    private val memberTodoListRepository: TodoListRepository
+    private val issueValidator: GitHubIssueValidator,
+    private val todoQueryRepository: TodoQueryRepository
 ) {
     fun createTodoList(
         todoRequest: TodoRequest,
@@ -98,11 +100,40 @@ class MemberTodoService(
         val todoList = todoReader.findTodoList(todoListId)
         todoValidator.isWriter(todoListId, member)
         todoUpdater.update(todoList, todoRequest)
+        issueValidator.isExist(todoList)
+
+        val gitHubIssuesRequest =
+            gitHubIssueCreator.createIssueTemplate(todoRequest.toTodoCreate(member))
+
+        gitHubIssueProcessor.updateIssue(
+            member.gitHubToken.toGeneratorBearerToken(),
+            member.username,
+            member.gitHubRepo!!,
+            todoList.issueNumber!!,
+            gitHubIssuesRequest
+        )
+        readMeProcessor.generatorReadMe(
+            member.gitHubToken.toGeneratorBearerToken(),
+            member,
+            member.gitHubRepo!!
+        )
     }
 
     fun removeTodoList(todoListId: Long, username: String) {
+        val member = memberReader.getMember(username)
         val todoList = todoReader.findTodoList(todoListId)
         todoDeleter.delete(todoList)
+        gitHubIssueProcessor.closeIssue(
+            member.gitHubToken,
+            username,
+            member.gitHubRepo!!,
+            todoList.issueNumber!!
+        )
+        readMeProcessor.generatorReadMe(
+            member.gitHubToken.toGeneratorBearerToken(),
+            member,
+            member.gitHubRepo!!
+        )
     }
 
     @Transactional(readOnly = true)
@@ -111,10 +142,6 @@ class MemberTodoService(
         username: String
     ): List<TodoCountResponse> {
         val member = memberReader.getMember(username)
-        return memberTodoListRepository.findAllByTodoListMonthAndYear(
-            todoCountRequest.month,
-            todoCountRequest.year,
-            member
-        )
+        return todoReader.countByTodoList(todoCountRequest, member)
     }
 }

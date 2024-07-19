@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.domains.gitissue
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.junseok.todeveloperdo.domains.gitissue.persistence.entity.GitIssue
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import java.time.LocalDate
 
 data class TodoCreate(
