@@ -7,7 +7,7 @@ import javax.persistence.*
 
 @Entity
 @Table(name = "member_todo_list")
-class MemberTodoList(
+open class MemberTodoList(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todo_list_id")
