@@ -36,8 +36,12 @@ open class MemberTodoList(
     @JoinColumn(name = "member_id")
     var member: Member
 ){
-    fun updateTodoStatus(){
+    fun finishTodoList(){
         this.todoStatus = TodoStatus.DONE
+    }
+
+    fun unFinishTodoList(){
+        this.todoStatus = TodoStatus.PROCEED
     }
 
     fun updateTodoList(content: String, memo: String, tag: String, deadline: LocalDate){
