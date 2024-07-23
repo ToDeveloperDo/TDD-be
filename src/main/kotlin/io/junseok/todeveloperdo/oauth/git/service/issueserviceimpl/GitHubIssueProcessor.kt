@@ -1,12 +1,11 @@
 package io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl
 
 import io.junseok.todeveloperdo.oauth.git.client.GitHubIssuesClient
-import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssueCloseRequest
+import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssueStateRequest
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubIssueResponse
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
-import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import org.springframework.stereotype.Component
 import java.net.URLEncoder
 
@@ -33,16 +32,16 @@ class GitHubIssueProcessor(private val gitHubIssuesClient: GitHubIssuesClient) {
         token: String,
         owner: String,
         repo: String,
-        issueNumber: Int
+        issueNumber: Int,
+        gitHubIssueStateRequest: GitHubIssueStateRequest
     ): GitHubIssueResponse {
         val bearerToken = token.toGeneratorBearerToken()
-        val issueUpdateRequest = GitHubIssueCloseRequest(state = GitHubService.ISSUE_CLOSED)
-        return gitHubIssuesClient.closeIssue(
+        return gitHubIssuesClient.issueStateUpdate(
             bearerToken,
             owner,
             repo,
             issueNumber,
-            issueUpdateRequest
+            gitHubIssueStateRequest
         )
     }
 
@@ -55,5 +54,4 @@ class GitHubIssueProcessor(private val gitHubIssuesClient: GitHubIssuesClient) {
     ): GitHubIssueResponse {
         return gitHubIssuesClient.updateIssue(token, owner, repo, issueNumber, issueRequest)
     }
-
 }

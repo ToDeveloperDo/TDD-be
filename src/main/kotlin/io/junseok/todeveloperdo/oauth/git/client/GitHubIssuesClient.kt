@@ -1,7 +1,7 @@
 package io.junseok.todeveloperdo.oauth.git.client
 
 import io.junseok.todeveloperdo.oauth.git.config.FeignConfig
-import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssueCloseRequest
+import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssueStateRequest
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubIssueResponse
 import org.springframework.cloud.openfeign.FeignClient
@@ -22,12 +22,12 @@ interface GitHubIssuesClient {
     ): GitHubIssueResponse
 
     @PatchMapping("/repos/{owner}/{repo}/issues/{issue_number}")
-    fun closeIssue(
+    fun issueStateUpdate(
         @RequestHeader("Authorization") token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @PathVariable("issue_number") issueNumber: Int,
-        @RequestBody issueClose: GitHubIssueCloseRequest
+        @RequestBody issueClose: GitHubIssueStateRequest
     ): GitHubIssueResponse
 
     @PatchMapping("/repos/{owner}/{repo}/issues/{issue_number}")
