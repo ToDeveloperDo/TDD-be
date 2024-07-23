@@ -3,7 +3,7 @@ package io.junseok.todeveloperdo.presentation.membertodolist
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
-import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoSearchRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.http.ResponseEntity
@@ -34,16 +34,16 @@ class MemberTodoController(
      */
     @PostMapping("/list")
     fun showTodoList(
-        @RequestBody todoSearchRequest: TodoSearchRequest,
+        @RequestBody todoDateRequest: TodoDateRequest,
         principal: Principal
     ): ResponseEntity<List<TodoResponse>> =
-        ResponseEntity.ok(memberTodoService.findTodoLists(todoSearchRequest, principal.name))
+        ResponseEntity.ok(memberTodoService.findTodoLists(todoDateRequest, principal.name))
 
     /**
      * NOTE
      * 한 일 체크
      */
-    @PatchMapping("/{todoListId}")
+    @PatchMapping("/done/{todoListId}")
     fun checkTodoList(@PathVariable todoListId: Long, principal: Principal): ResponseEntity<Unit> =
         ResponseEntity.ok(memberTodoService.finishTodoList(todoListId, principal.name))
 
@@ -68,5 +68,12 @@ class MemberTodoController(
         @RequestBody todoCountRequest: TodoCountRequest,
         principal: Principal
     ): ResponseEntity<List<TodoCountResponse>> =
-        ResponseEntity.ok(memberTodoService.calculateTodoList(todoCountRequest,principal.name))
+        ResponseEntity.ok(memberTodoService.calculateTodoList(todoCountRequest, principal.name))
+
+    @PatchMapping("/proceed/{todoListId}")
+    fun proceedTodoList(
+        @PathVariable todoListId: Long,
+        principal: Principal
+    ): ResponseEntity<Unit> =
+        ResponseEntity.ok(memberTodoService.unFinishedTodoList(todoListId, principal.name))
 }
