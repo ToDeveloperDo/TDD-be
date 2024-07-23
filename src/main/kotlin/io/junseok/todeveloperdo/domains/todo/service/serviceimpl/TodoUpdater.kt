@@ -19,6 +19,11 @@ class TodoUpdater() {
 
     @Transactional
     fun doneTodoList(memberTodoList: MemberTodoList) {
-        memberTodoList.updateTodoStatus()
+        memberTodoList.finishTodoList()
+    }
+
+    @Transactional
+    fun proceedTodoList(memberTodoList: MemberTodoList) {
+        memberTodoList.unFinishTodoList()
     }
 }

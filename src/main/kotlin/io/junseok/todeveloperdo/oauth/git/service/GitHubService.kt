@@ -36,6 +36,7 @@ class GitHubService(
 
     companion object {
         const val ISSUE_CLOSED = "closed"
+        const val ISSUE_OPEN = "open"
         const val PATH = "README.md"
     }
 }
