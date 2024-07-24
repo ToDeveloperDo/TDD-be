@@ -4,7 +4,6 @@ import io.junseok.todeveloperdo.oauth.git.client.GitHubIssuesClient
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssueStateRequest
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubIssueResponse
-import io.junseok.todeveloperdo.oauth.git.service.GitHubService
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import org.springframework.stereotype.Component
 import java.net.URLEncoder
