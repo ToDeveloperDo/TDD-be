@@ -7,9 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository
 import java.time.LocalDate
 
 interface TodoListRepository : JpaRepository<MemberTodoList, Long> {
-    fun findByDeadlineAndTodoStatusAndMember(
+    fun findByDeadlineAndMember(
         date: LocalDate,
-        todoStatus: TodoStatus,
         member: Member
     ): List<MemberTodoList>
 

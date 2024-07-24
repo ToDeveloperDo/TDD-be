@@ -22,9 +22,8 @@ class TodoReader(
 ) {
     @Transactional(readOnly = true)
     fun bringTodoLists(deadline: LocalDate, member: Member): List<TodoResponse> {
-        return todoListRepository.findByDeadlineAndTodoStatusAndMember(
+        return todoListRepository.findByDeadlineAndMember(
             deadline,
-            TodoStatus.PROCEED,
             member
         ).map { it.toTodoResponse() }
     }

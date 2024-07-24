@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.presentation.membertodolist.dto.response
 
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
+import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import java.time.LocalDate
 
 data class TodoResponse(
@@ -8,7 +9,8 @@ data class TodoResponse(
     val content:String,
     val memo:String?,
     val tag: String,
-    val deadline: LocalDate
+    val deadline: LocalDate,
+    val todoStatus: TodoStatus
 )
 
 fun MemberTodoList.toTodoResponse() = TodoResponse(
@@ -16,5 +18,6 @@ fun MemberTodoList.toTodoResponse() = TodoResponse(
     content = this.content,
     memo = this.memo,
     tag = this.tag,
-    deadline = this.deadline
+    deadline = this.deadline,
+    todoStatus = this.todoStatus
 )
