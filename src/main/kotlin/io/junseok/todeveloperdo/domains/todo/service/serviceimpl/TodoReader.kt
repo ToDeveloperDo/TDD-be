@@ -29,6 +29,15 @@ class TodoReader(
     }
 
     @Transactional(readOnly = true)
+    fun bringProceedTodoLists(deadline: LocalDate, member: Member): List<TodoResponse> {
+        return todoListRepository.findByDeadlineAndTodoStatusAndMember(
+            deadline,
+            TodoStatus.PROCEED,
+            member
+        ).map { it.toTodoResponse() }
+    }
+
+    @Transactional(readOnly = true)
     fun findTodoList(todoListId: Long) = todoListRepository.findByIdOrNull(todoListId)
         ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_TODOLIST }
 
