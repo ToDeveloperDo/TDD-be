@@ -6,7 +6,6 @@ import io.junseok.todeveloperdo.event.issue.IssueEventProcessor
 import io.junseok.todeveloperdo.event.issue.dto.request.IssueEventRequest
 import io.junseok.todeveloperdo.event.readme.ReadMeEventProcessor
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
-import org.springframework.scheduling.annotation.Async
 import org.springframework.stereotype.Component
 
 @Component
@@ -16,10 +15,6 @@ class EventProcessor(
 ) {
     fun createIssue(member: Member, todoRequest: TodoRequest): IssueEventRequest {
         return issueEventProcessor.create(member, todoRequest)
-    }
-
-    fun createReadMe(member: Member) {
-        readMeEventProcessor.create(member)
     }
 
     fun closeIssueWithReadMe(member: Member, issueNumber: Int, state: String) {
