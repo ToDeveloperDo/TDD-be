@@ -1,6 +1,9 @@
 package io.junseok.todeveloperdo.presentation.membertodolist
 
+import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
+import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_CLOSED
+import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_OPEN
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDateRequest
@@ -45,7 +48,7 @@ class MemberTodoController(
      */
     @PatchMapping("/done/{todoListId}")
     fun checkTodoList(@PathVariable todoListId: Long, principal: Principal): ResponseEntity<Unit> =
-        ResponseEntity.ok(memberTodoService.finishTodoList(todoListId, principal.name))
+        ResponseEntity.ok(memberTodoService.finishTodoList(todoListId, principal.name, ISSUE_CLOSED))
 
     /**
      * NOTE
@@ -61,7 +64,7 @@ class MemberTodoController(
 
     @DeleteMapping("/{todoListId}")
     fun deleteTodoList(@PathVariable todoListId: Long, principal: Principal): ResponseEntity<Unit> =
-        ResponseEntity.ok(memberTodoService.removeTodoList(todoListId, principal.name))
+        ResponseEntity.ok(memberTodoService.removeTodoList(todoListId, principal.name, ISSUE_CLOSED))
 
     @PostMapping("/count")
     fun countTodoList(
@@ -75,5 +78,7 @@ class MemberTodoController(
         @PathVariable todoListId: Long,
         principal: Principal
     ): ResponseEntity<Unit> =
-        ResponseEntity.ok(memberTodoService.unFinishedTodoList(todoListId, principal.name))
+        ResponseEntity.ok(
+            memberTodoService.unFinishedTodoList(todoListId, principal.name, ISSUE_OPEN)
+        )
 }
