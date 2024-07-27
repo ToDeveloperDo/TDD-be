@@ -15,7 +15,7 @@
 
 ## 개발 환경
 - BACKEND : Spring Framework, Kotlin 1.9.24, Mysql, Spring Data Jpa, AWS ec2, Docker, Docker-compose, CI/CD, Nginx, FeignClient   <br>
-- APIs : GitHub API <br>
+- APIs : GitHub API, Apple API <br>
 - 버전 및 이슈관리 : Github, Github actions   <br>
 ---
 ## 주제
