@@ -11,12 +11,23 @@ spring:
             scope: repo, user
             redirect-uri: ${GITHUB_REDIRECT_URL}
             client-name: ${GITHUB_CLIENT_NAME}
+          apple:
+            client-id: ${APPLE_TEAM_ID}
+            redirect-uri: ${APPLE_REDIRECT_URL}
+            client-name: ${APPLE_CLIENT_NAME}
+            scope: openid, email, name
+            authorization-grant-type: ${APPLE_GRANT_TYPE}
         provider:
           github:
             authorization-uri: ${GITHUB_AUTHORIZATION_URL}
             token-uri: ${GITHUB_TOKEN_URL}
             user-info-uri: ${GITHUB_INFO_URL}
             user-name-attribute: ${GITHUB_USER_NAME_ATTRIBUTE}
+          apple:
+            authorization-uri: ${APPLE_AUTHORIZATION_URL}
+            token-uri: ${APPLE_TOKEN_URL}
+            user-info-uri: ${APPLE_USER_INFO_URL}
+            user-name-attribute: ${APPLE_USER_NAME_ATTRIBUTE}
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -46,6 +57,12 @@ feign:
       url: ${FEIGN_ACCESS_TOKEN_URL}
     user-profile:
       url: ${FEIGN_USER_PROFILE_URL}
+
+apple:
+  team-id: ${APPLE_TEAM_ID}
+  key-id: ${APPLE_KEY_ID}
+  private-key: ${APPLE_PRIVATE_KEY}
+
 logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: info
