@@ -59,19 +59,13 @@ class AppleLoginService(
         val now = System.currentTimeMillis()
         val expiration = Date(now + 3600000) // 1시간 동안 유효
 
+        val privateKey = System.getenv("APPLE_PRIVATE_KEY")
         val keyFactory = KeyFactory.getInstance("EC")
-        val privateKeyPem = """
-        -----BEGIN PRIVATE KEY-----
-        $privateKey
-        -----END PRIVATE KEY-----
-    """.trimIndent()
 
-        val privateKeyContent = privateKeyPem
-            .replace("-----BEGIN PRIVATE KEY-----", "")
-            .replace("-----END PRIVATE KEY-----", "")
-            .replace("\\s".toRegex(), "")
+        // Base64 디코딩
+        val keyBytes = Base64.getDecoder().decode(privateKey)
         val pkcs8EncodedKeySpec =
-            PKCS8EncodedKeySpec(DatatypeConverter.parseBase64Binary(privateKeyContent))
+            PKCS8EncodedKeySpec(keyBytes)
         val privateKeyObject = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
 
         return Jwts.builder()
