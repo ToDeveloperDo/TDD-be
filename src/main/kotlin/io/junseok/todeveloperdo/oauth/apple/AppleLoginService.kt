@@ -59,8 +59,10 @@ class AppleLoginService(
     private fun createClientSecret(): String {
         val now = System.currentTimeMillis()
         val expiration = Date(now + 3600000) // 1시간 동안 유효
-
+        println("decoder Error!!ㅁㅁㄴㅁㅇㄴㅇ")
         val privateKey = System.getenv("APPLE_PRIVATE_KEY")
+        println("rprivate Error!!ㅁㅁㄴㅁㅇㄴㅇ")
+
         val keyFactory = KeyFactory.getInstance("EC")
 
         // Base64 디코딩
