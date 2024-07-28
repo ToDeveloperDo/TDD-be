@@ -61,7 +61,13 @@ feign:
 apple:
   team-id: ${APPLE_TEAM_ID}
   key-id: ${APPLE_KEY_ID}
-  private-key: ${APPLE_PRIVATE_KEY}
+  private-key: |
+    -----BEGIN PRIVATE KEY-----
+    MIGTAgEAMBMGByqGSM49AgEGCCqGSM49AwEHBHkwdwIBAQQgqNjhr4tY7ER89/Ry
+    PFCLSKFNgH34cHqV38A72Bgkq8SgCgYIKoZIzj0DAQehRANCAASAxFVmBbltxGsL
+    8g49HFr9D9fnilV+RZXfwN5Nn3eOiucdg6Bkl55z5G2fx5CmwTZMQArWCjRBA1U8
+    DXF+Y/yA
+    -----END PRIVATE KEY-----
 
 logging.level:
   org.hibernate.SQL: debug
