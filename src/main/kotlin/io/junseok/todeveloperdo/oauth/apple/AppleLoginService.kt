@@ -65,8 +65,13 @@ class AppleLoginService(
         $privateKey
         -----END PRIVATE KEY-----
     """.trimIndent()
+
+        val privateKeyContent = privateKeyPem
+            .replace("-----BEGIN PRIVATE KEY-----", "")
+            .replace("-----END PRIVATE KEY-----", "")
+            .replace("\\s".toRegex(), "")
         val pkcs8EncodedKeySpec =
-            PKCS8EncodedKeySpec(DatatypeConverter.parseBase64Binary(privateKeyPem))
+            PKCS8EncodedKeySpec(DatatypeConverter.parseBase64Binary(privateKeyContent))
         val privateKeyObject = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
 
         return Jwts.builder()
