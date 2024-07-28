@@ -65,9 +65,13 @@ class AppleLoginService(
 
         // Base64 디코딩
         val keyBytes = Base64.getDecoder().decode(privateKey)
+        println("decoder Error!!")
         val pkcs8EncodedKeySpec =
             PKCS8EncodedKeySpec(keyBytes)
+        println("decoder Error!!1!!!!!")
+
         val privateKeyObject = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
+        println("decoder Error!!aaaaaaaaaaaa")
 
         return Jwts.builder()
             .setHeaderParam("kid", keyId)
