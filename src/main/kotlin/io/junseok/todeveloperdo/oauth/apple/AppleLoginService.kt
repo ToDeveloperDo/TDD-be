@@ -25,8 +25,8 @@ class AppleLoginService(
     @Value("\${apple.key-id}")
     private val keyId: String,
 
-    @Value("\${apple.private-key}")
-    private val privateKey: String
+    @Value("\${spring.security.oauth2.client.registration.apple.redirect-uri}")
+    private val redirectUrl: String
 ) {
 
 
@@ -51,6 +51,7 @@ class AppleLoginService(
         formData.add("client_secret", clientSecret)
         formData.add("grant_type", "authorization_code")
         formData.add("code", code)
+        formData.add("redirect_uri", redirectUrl) // Apple Developer Portal에 등록된 redirect URI
 
         return appleClient.getToken(formData)
     }
