@@ -12,7 +12,7 @@ spring:
             redirect-uri: ${GITHUB_REDIRECT_URL}
             client-name: ${GITHUB_CLIENT_NAME}
           apple:
-            client-id: ${APPLE_TEAM_ID}
+            client-id: ${APPLE_CLIENT_ID}
             redirect-uri: ${APPLE_REDIRECT_URL}
             client-name: ${APPLE_CLIENT_NAME}
             scope: openid, email, name
