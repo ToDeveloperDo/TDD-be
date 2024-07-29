@@ -11,7 +11,7 @@ class MemberValidator(
     private val memberReader: MemberReader
 ) {
     @Transactional(readOnly = true)
-    fun isExistMember(username: String) = memberRepository.existsByAppleId(username)
+    fun isExistGitMember(username: String) = memberRepository.existsByGitHubUsername(username)
 
     @Transactional(readOnly = true)
     fun isExistRepo(member: Member) = member.gitHubRepo!!.isNotBlank()

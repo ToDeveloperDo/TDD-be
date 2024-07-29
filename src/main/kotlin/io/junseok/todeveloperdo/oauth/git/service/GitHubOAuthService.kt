@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
+import javax.print.attribute.standard.JobOriginatingUserName
 
 @Service
 class GitHubOAuthService(
@@ -28,7 +29,7 @@ class GitHubOAuthService(
     @Value("\${spring.security.oauth2.client.registration.github.client-secret}")
     private lateinit var clientSecret: String
 
-    fun processGitHubOAuth(code: String): TokenResponse {
+    fun processGitHubOAuth(code: String,userName: String): TokenResponse {
         val accessTokenResponse = accessTokenClient.getAccessToken(clientId, clientSecret, code)
 
         if (accessTokenResponse.contains("error")) {
@@ -40,14 +41,14 @@ class GitHubOAuthService(
 
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
-        /*val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+        //val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
         val userInfo = parseUserInfo(userInfoResponse)
-        memberService.createMember(userInfo.toGitUserResponse(),accessToken)
-        val user = User(userInfo["login"].toString(), "", authorities)
+        memberService.createGitMember(userInfo.toGitUserResponse(),accessToken,userName)
+      //  val user = User(userInfo["login"].toString(), "", authorities)
 
-        val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
+        //val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         // JWT 발급
-        val jwtToken = tokenProvider.createToken(authentication)*/
+        //val jwtToken = tokenProvider.createToken(authentication)*/
         return TokenResponse(bearerToken)
     }
 
