@@ -40,15 +40,15 @@ class GitHubOAuthService(
 
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
-        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+        /*val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
         val userInfo = parseUserInfo(userInfoResponse)
         memberService.createMember(userInfo.toGitUserResponse(),accessToken)
         val user = User(userInfo["login"].toString(), "", authorities)
 
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         // JWT 발급
-        val jwtToken = tokenProvider.createToken(authentication)
-        return TokenResponse(jwtToken)
+        val jwtToken = tokenProvider.createToken(authentication)*/
+        return TokenResponse(bearerToken)
     }
 
     private fun extractAccessToken(response: String): String {
