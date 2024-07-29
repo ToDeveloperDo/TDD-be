@@ -72,10 +72,11 @@ class AppleLoginService(
         val now = System.currentTimeMillis()
         val expiration = Date(now + 3600000) // 1시간 동안 유효
         val sanitizedPrivateKey = privateKey
-            .replace("\\n", "\n") // 줄바꿈 문자가 제대로 처리되도록
             .replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
-            .replace("\\s".toRegex(), "") // 공백 제거
+            .replace("\\n", "")
+            .replace("\\r", "")
+            .trim()
         println("Sanitized private key: $sanitizedPrivateKey")
 
         val keyFactory = KeyFactory.getInstance("EC")
