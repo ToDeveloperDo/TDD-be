@@ -27,7 +27,7 @@ class GitHubService(
         repoValidator.isValid(gitHubRequest.repoName)
         val member = memberReader.getMember(username)
         memberUpdater.updateMemberRepo(gitHubRequest.repoName, member)
-        val bearerToken = member.gitHubToken.trim().toGeneratorBearerToken()
+        val bearerToken = member.gitHubToken!!.trim().toGeneratorBearerToken()
         val body = gitHubRepoGenerator.generatorRepo(gitHubRequest)
         val repository = gitHubRepoClient.createRepository(bearerToken, body)
         readMeProcessor.generatorReadMe(bearerToken, member, gitHubRequest.repoName)

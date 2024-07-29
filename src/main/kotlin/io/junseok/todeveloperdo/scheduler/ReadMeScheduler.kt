@@ -19,7 +19,7 @@ class ReadMeScheduler(
             ?.forEach { member ->
                 if(memberValidator.isExistRepo(member)) {
                     readMeProcessor.generatorReadMe(
-                        member.gitHubToken.toGeneratorBearerToken(),
+                        member.gitHubToken!!.toGeneratorBearerToken(),
                         member,
                         member.gitHubRepo!!
                     )

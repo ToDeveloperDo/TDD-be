@@ -14,7 +14,7 @@ class TodoReadMeCreateEventListener(
     fun create(readMeEventRequest: ReadMeEventRequest){
         // readMe 파일 작성
         readMeProcessor.generatorReadMe(
-            readMeEventRequest.member.gitHubToken.toGeneratorBearerToken(),
+            readMeEventRequest.member.gitHubToken!!.toGeneratorBearerToken(),
             readMeEventRequest.member,
             readMeEventRequest.member.gitHubRepo!!
         )

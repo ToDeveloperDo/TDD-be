@@ -7,5 +7,5 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class MemberDeleter(private val memberRepository: MemberRepository) {
     @Transactional
-    fun removeMember(username: String) = memberRepository.deleteByUsername(username)
+    fun removeMember(username: String) = memberRepository.deleteByAppleId(username)
 }

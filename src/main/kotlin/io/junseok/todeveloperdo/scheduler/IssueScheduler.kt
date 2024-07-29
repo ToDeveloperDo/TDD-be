@@ -18,8 +18,8 @@ class IssueScheduler(
             val createIssueTemplate =
                 gitHubIssueCreator.createIssueTemplate(todoCreate)
             gitHubIssueProcessor.createIssue(
-                todoCreate.member.gitHubToken,
-                todoCreate.member.username,
+                todoCreate.member.gitHubToken!!,
+                todoCreate.member.gitHubUsername!!,
                 todoCreate.member.gitHubRepo!!,
                 createIssueTemplate
             )

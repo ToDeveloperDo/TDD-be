@@ -14,6 +14,6 @@ class GitHubIssueCreator {
                    MEMO : ${todoCreate.memo}
                    TAG : ${todoCreate.tag}
                 """.trimIndent(),
-            assignees = listOf(todoCreate.member.username)
+            assignees = listOf(todoCreate.member.gitHubUsername!!)
         )
 }

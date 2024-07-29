@@ -1,3 +1,4 @@
+/*
 package io.junseok.todeveloperdo.oauth.apple
 
 import javax.persistence.*
@@ -26,5 +27,6 @@ class AppleMember(
     var email: String? = null,
 
     @Column(name = "name")
-    var name: String? = null
+    var username: String? = null
 )
+*/

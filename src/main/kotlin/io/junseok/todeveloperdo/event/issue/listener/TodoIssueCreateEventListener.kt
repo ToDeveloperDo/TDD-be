@@ -27,8 +27,8 @@ class TodoIssueCreateEventListener(
 
         // 이슈 생성
         val createIssue = gitHubIssueProcessor.createIssue(
-            issueEventRequest.member.gitHubToken,
-            issueEventRequest.member.username,
+            issueEventRequest.member.gitHubToken!!,
+            issueEventRequest.member.gitHubUsername!!,
             issueEventRequest.member.gitHubRepo!!,
             gitHubIssuesRequest
         )
@@ -40,8 +40,8 @@ class TodoIssueCreateEventListener(
     @EventListener
     fun close(issueCloseEventRequest: IssueCloseEventRequest) {
         gitHubIssueProcessor.closeIssue(
-            issueCloseEventRequest.member.gitHubToken,
-            issueCloseEventRequest.member.username,
+            issueCloseEventRequest.member.gitHubToken!!,
+            issueCloseEventRequest.member.gitHubUsername!!,
             issueCloseEventRequest.member.gitHubRepo!!,
             issueCloseEventRequest.issueNumber,
             issueCloseEventRequest.gitHubIssueStateRequest
@@ -51,8 +51,8 @@ class TodoIssueCreateEventListener(
     @EventListener
     fun update(issueUpdateEventRequest: IssueUpdateEventRequest) {
         gitHubIssueProcessor.updateIssue(
-            issueUpdateEventRequest.member.gitHubToken.toGeneratorBearerToken(),
-            issueUpdateEventRequest.member.username,
+            issueUpdateEventRequest.member.gitHubToken!!.toGeneratorBearerToken(),
+            issueUpdateEventRequest.member.gitHubUsername!!,
             issueUpdateEventRequest.member.gitHubRepo!!,
             issueUpdateEventRequest.issueNumber,
             issueUpdateEventRequest.todoCreate.toCreateIssueTemplate()

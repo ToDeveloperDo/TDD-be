@@ -53,18 +53,6 @@ class AppleLoginService(
     }
 
     private fun getAppleToken(code: String, clientSecret: String): AppleTokenResponse {
-        val formData = LinkedMultiValueMap<String, String>()
-        formData.add("client_id", clientId)
-        println("1111111")
-        formData.add("client_secret", clientSecret)
-        println("2222222")
-        formData.add("grant_type", "authorization_code")
-        println("33333333")
-        formData.add("code", code)
-        println("4444444")
-        formData.add("redirect_uri", redirectUrl) // Apple Developer Portal에 등록된 redirect URI
-        println("555555555555555%")
-        println("Sending Token Request: $formData") // 디버깅용 로그
         return appleClient.getToken(clientId,redirectUrl,grantType,code,clientSecret)
     }
 

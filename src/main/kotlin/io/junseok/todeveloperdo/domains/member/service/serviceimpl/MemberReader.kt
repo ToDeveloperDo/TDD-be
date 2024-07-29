@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class MemberReader(private val memberRepository: MemberRepository ) {
     @Transactional(readOnly = true)
-    fun getMember(username: String): Member = memberRepository.findByUsername(username)
+    fun getMember(username: String): Member = memberRepository.findByAppleId(username)
         ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
 
     @Transactional(readOnly = true)

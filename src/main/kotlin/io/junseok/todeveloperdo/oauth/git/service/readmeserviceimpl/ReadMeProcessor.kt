@@ -24,6 +24,6 @@ class ReadMeProcessor(
             todoReader.bringProceedTodoLists(LocalDateTime.now().toStringDateTime(), member)
         val todoListContent = readMeBuilder.buildTodoListString(findTodoList)
         val readmeContent = readMeCreator.readMeContentCreate(todoListContent)
-        readMeCreator.createReadMe(bearerToken, member.username, repo, readmeContent)
+        readMeCreator.createReadMe(bearerToken, member.gitHubUsername!!, repo, readmeContent)
     }
 }

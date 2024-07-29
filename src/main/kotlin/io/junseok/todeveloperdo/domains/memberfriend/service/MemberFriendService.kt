@@ -40,14 +40,14 @@ class MemberFriendService(
                     friend.senderMember.memberId!!
                 },
                 friendUsername = if (memberFriendValidator.checkMember(friend, member)) {
-                    friend.receiverMember.username
+                    friend.receiverMember.gitHubUsername!!
                 } else {
-                    friend.senderMember.username
+                    friend.senderMember.gitHubUsername!!
                 },
                 friendGitUrl = if (memberFriendValidator.checkMember(friend, member)) {
-                    friend.receiverMember.gitUrl
+                    friend.receiverMember.gitHubUrl!!
                 } else {
-                    friend.senderMember.gitUrl
+                    friend.senderMember.gitHubUrl!!
                 }
             )
         }
@@ -57,8 +57,8 @@ class MemberFriendService(
         val member = memberReader.getFriendMember(memberId)
         return MemberFriendResponse(
             memberId = memberId,
-            friendUsername = member.username,
-            friendGitUrl = member.gitUrl
+            friendUsername = member.gitHubUsername!!,
+            friendGitUrl = member.gitHubUrl!!
         )
     }
 

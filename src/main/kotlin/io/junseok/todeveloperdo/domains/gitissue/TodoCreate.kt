@@ -32,5 +32,5 @@ fun TodoCreate.toCreateIssueTemplate() = GitHubIssuesRequest(
                    MEMO : ${this.memo}
                    TAG : ${this.tag}
                 """.trimIndent(),
-        assignees = listOf(this.member.username)
+        assignees = listOf(this.member.gitHubUsername!!)
     )
