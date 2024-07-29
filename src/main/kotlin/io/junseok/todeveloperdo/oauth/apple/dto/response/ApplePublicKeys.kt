@@ -1,5 +1,8 @@
 package io.junseok.todeveloperdo.oauth.apple.dto.response
 
-data class ApplePublicKeys(
-    val keys: List<ApplePublicKey>
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class ApplePublicKeys @JsonCreator constructor(
+    @JsonProperty("keys") val keys: List<ApplePublicKey>
 )

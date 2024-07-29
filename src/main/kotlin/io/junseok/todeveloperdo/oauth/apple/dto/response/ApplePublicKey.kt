@@ -1,10 +1,13 @@
 package io.junseok.todeveloperdo.oauth.apple.dto.response
 
-data class ApplePublicKey(
-    val kty: String,
-    val kid: String,
-    val use: String,
-    val alg: String,
-    val n: String,
-    val e: String
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+data class ApplePublicKey @JsonCreator constructor(
+    @JsonProperty("kty") val kty: String,
+    @JsonProperty("kid") val kid: String,
+    @JsonProperty("use") val use: String,
+    @JsonProperty("alg") val alg: String,
+    @JsonProperty("n") val n: String,
+    @JsonProperty("e") val e: String
 )
