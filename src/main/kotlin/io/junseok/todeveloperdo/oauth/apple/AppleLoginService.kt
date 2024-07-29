@@ -68,18 +68,18 @@ class AppleLoginService(
     private fun createClientSecret(): String {
         val now = System.currentTimeMillis()
         val expiration = Date(now + 3600000) // 1시간 동안 유효
-        println("decoder Error!!ㅁㅁㄴㅁㅇㄴㅇ")
-        println("rprivate Error!!ㅁㅁㄴㅁㅇㄴㅇ")
+        val sanitizedPrivateKey = privateKey
+            .replace("\\n", "\n") // 줄바꿈 문자가 제대로 처리되도록
+            .replace("-----BEGIN PRIVATE KEY-----", "")
+            .replace("-----END PRIVATE KEY-----", "")
+            .replace("\\s".toRegex(), "") // 공백 제거
+        println("Sanitized private key: $sanitizedPrivateKey")
 
         val keyFactory = KeyFactory.getInstance("EC")
 
         // Base64 디코딩
-        val keyBytes = Base64.getDecoder().decode(privateKey)
-        println("decoder Error!!")
-        val pkcs8EncodedKeySpec =
-            PKCS8EncodedKeySpec(keyBytes)
-        println("decoder Error!!1!!!!!")
-
+        val keyBytes = Base64.getDecoder().decode(sanitizedPrivateKey)
+        val pkcs8EncodedKeySpec = PKCS8EncodedKeySpec(keyBytes)
         val privateKeyObject = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
         println("decoder Error!!aaaaaaaaaaaa")
 
