@@ -62,7 +62,7 @@ class AppleLoginService(
         formData.add("redirect_uri", redirectUrl) // Apple Developer Portal에 등록된 redirect URI
         println("555555555555555%")
         println("Sending Token Request: $formData") // 디버깅용 로그
-        return appleClient.getToken(formData)
+        return appleClient.getToken(clientId,redirectUrl,code,clientSecret)
     }
 
     private fun createClientSecret(): String {
