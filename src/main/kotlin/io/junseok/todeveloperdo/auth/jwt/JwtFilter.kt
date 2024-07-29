@@ -14,11 +14,12 @@ class JwtFilter(
     private val tokenProvider: TokenProvider
 ) : GenericFilterBean() {
     val log = KotlinLogging.logger {}
+
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val httpServletRequest = request as HttpServletRequest
         val jwt = resolveToken(httpServletRequest)
-        if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
-            val authentication = tokenProvider.getAuthentication(jwt)
+        if (StringUtils.hasText(jwt) && tokenProvider.validateAppleToken(jwt!!)) {
+            val authentication = tokenProvider.getAppleAuthentication(jwt)
             SecurityContextHolder.getContext().authentication = authentication
             log.info(SUCCESS_AUTHENTICATION)
         }
@@ -27,13 +28,13 @@ class JwtFilter(
 
     fun resolveToken(request: HttpServletRequest): String? {
         val bearerToken = request.getHeader(AUTHORIZATION_HEADER)
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7)
-        }
-        return null
+        return if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            bearerToken.substring(7)
+        } else null
     }
 
     companion object {
         const val AUTHORIZATION_HEADER = "Authorization"
+        const val SUCCESS_AUTHENTICATION = "Successfully authenticated with Apple JWT"
     }
 }

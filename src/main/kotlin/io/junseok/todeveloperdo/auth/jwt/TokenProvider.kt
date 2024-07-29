@@ -7,6 +7,8 @@ import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.EXPIRED_JWT
 import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.MALFORMED_JWT
 import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.UNSUPPORT_JWT
 import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.WRONG_JWT
+import io.junseok.todeveloperdo.oauth.apple.AppleJwtUtil
+import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import mu.KotlinLogging
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
@@ -22,83 +24,32 @@ import java.util.stream.Collectors
 
 @Component
 class TokenProvider(
-    @Value("\${jwt.secret}") private val secret: String,
-    @Value("\${jwt.token-validity-in-seconds}")private val tokenValidityInSeconds: Long
-) :
-    InitializingBean {
-    private val tokenValidityInMilliseconds = tokenValidityInSeconds * 1000
-    private var key: Key? = null
+    private val appleClient: AppleClient // AppleClient 주입
+) {
+
     val log = KotlinLogging.logger {}
-    @Throws(Exception::class)
-    override fun afterPropertiesSet() {
-        val keyBytes = Decoders.BASE64.decode(secret)
-        this.key = Keys.hmacShaKeyFor(keyBytes)
+
+    // 애플 JWT 토큰의 유효성 검증을 수행
+    fun validateAppleToken(token: String): Boolean {
+        return try {
+            val applePublicKeys = appleClient.getApplePublicKeys().keys
+            AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
+            true
+        } catch (e: Exception) {
+            log.error("Invalid Apple JWT token", e)
+            false
+        }
     }
 
-    fun createToken(authentication: Authentication): String {
-        val authorities = authentication.authorities.stream()
-            .map { obj: GrantedAuthority -> obj.authority }
-            .collect(Collectors.joining(","))
+    // 애플 JWT로부터 Authentication 객체를 생성
+    fun getAppleAuthentication(token: String): Authentication {
+        val applePublicKeys = appleClient.getApplePublicKeys().keys
+        val decodedJWT = AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
+        val payload = AppleJwtUtil.getPayload(token, applePublicKeys)
 
-        // 토큰의 expire 시간을 설정
-        val now = Date().time
-        val validity = Date(now + this.tokenValidityInMilliseconds)
-
-        return Jwts.builder()
-            .setSubject(authentication.name) //Payload에 유저 네임 저장
-            .setIssuer("MealMate") //토큰 발급자 iss 지정
-            .claim(AUTHORITIES_KEY, authorities) // 정보 저장
-            .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
-            .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
-            .compact()
-    }
-
-    // 토큰으로 클레임을 만들고 이를 이용해 유저 객체를 만들어서 최종적으로 authentication 객체를 리턴
-    fun getAuthentication(token: String?): Authentication {
-        val claims = Jwts
-            .parserBuilder()
-            .setSigningKey(key)
-            .build()
-            .parseClaimsJws(token)
-            .body
-
-        val authorities: Collection<GrantedAuthority> =
-            Arrays.stream(
-                claims[AUTHORITIES_KEY].toString().split(",".toRegex())
-                    .dropLastWhile { it.isEmpty() }
-                    .toTypedArray())
-                .map { role: String? ->
-                    SimpleGrantedAuthority(
-                        role
-                    )
-                }
-                .collect(Collectors.toList())
-
-        val principal = User(claims.subject, "", authorities)
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+        val principal = User(payload["sub"] as String, "", authorities)
 
         return UsernamePasswordAuthenticationToken(principal, token, authorities)
-    }
-
-     // 토큰의 유효성 검증을 수행
-    fun validateToken(token: String?): Boolean {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-            return true
-        } catch (e: SecurityException) {
-            log.error(MALFORMED_JWT)
-        } catch (e: MalformedJwtException) {
-            log.error(MALFORMED_JWT)
-        } catch (e: ExpiredJwtException) {
-            log.error(EXPIRED_JWT)
-        } catch (e: UnsupportedJwtException) {
-            log.error(UNSUPPORT_JWT)
-        } catch (e: IllegalArgumentException) {
-            log.error(WRONG_JWT)
-        }
-        return false
-    }
-
-    companion object {
-        private const val AUTHORITIES_KEY = "auth"
     }
 }
