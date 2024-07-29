@@ -48,7 +48,7 @@ class AppleLoginService(
         val email = payload["email"] as String
         val userIdentifier = payload["sub"] as String
 
-        appleMemberService.createOrUpdateMember(userIdentifier, email)
+        appleMemberService.createOrUpdateMember(userIdentifier, email,tokenResponse.refreshToken)
         return TokenResponse(idToken = idToken)
     }
 

@@ -7,7 +7,7 @@ class AppleMemberService(
     private val memberRepository: AppleMemberRepository
 ) {
 
-    fun createOrUpdateMember(appleId: String, email: String): AppleMember {
+    fun createOrUpdateMember(appleId: String, email: String, refreshToken: String): AppleMember {
         val existingMember = memberRepository.findByAppleId(appleId)
 
         return if (existingMember != null) {
@@ -16,7 +16,8 @@ class AppleMemberService(
         } else {
             val newMember = AppleMember(
                 appleId = appleId,
-                email = email
+                email = email,
+                appleRefreshToken = refreshToken
             )
             memberRepository.save(newMember)
         }
