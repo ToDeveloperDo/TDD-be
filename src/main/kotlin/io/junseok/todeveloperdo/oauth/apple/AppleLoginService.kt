@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
+import io.junseok.todeveloperdo.oauth.apple.dto.response.TokenResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.util.LinkedMultiValueMap
@@ -37,10 +38,10 @@ class AppleLoginService(
 ) {
 
 
-    fun processAppleOAuth(code: String): String {
+    fun processAppleOAuth(code: String): TokenResponse {
         val clientSecret = createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)
-        val idToken = tokenResponse.id_token
+        val idToken = tokenResponse.idToken
         val applePublicKeys = appleClient.getApplePublicKeys().keys
         val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
 
@@ -48,8 +49,7 @@ class AppleLoginService(
         val userIdentifier = payload["sub"] as String
 
         appleMemberService.createOrUpdateMember(userIdentifier, email)
-
-        return idToken
+        return TokenResponse(idToken = idToken)
     }
 
     private fun getAppleToken(code: String, clientSecret: String): AppleTokenResponse {
