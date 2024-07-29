@@ -10,7 +10,6 @@ import org.springframework.util.LinkedMultiValueMap
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
-import javax.xml.bind.DatatypeConverter
 
 @Service
 class AppleLoginService(
@@ -25,8 +24,13 @@ class AppleLoginService(
     @Value("\${apple.key-id}")
     private val keyId: String,
 
+    @Value("\${apple.private-key}")
+    private val privateKey: String,
+
     @Value("\${spring.security.oauth2.client.registration.apple.redirect-uri}")
     private val redirectUrl: String
+
+
 ) {
 
 
@@ -48,15 +52,15 @@ class AppleLoginService(
     private fun getAppleToken(code: String, clientSecret: String): AppleTokenResponse {
         val formData = LinkedMultiValueMap<String, String>()
         formData.add("client_id", clientId)
-        println(1)
+        println("1111111")
         formData.add("client_secret", clientSecret)
-        println(2)
+        println("2222222")
         formData.add("grant_type", "authorization_code")
-        println(3)
+        println("33333333")
         formData.add("code", code)
-        println(4)
+        println("4444444")
         formData.add("redirect_uri", redirectUrl) // Apple Developer Portal에 등록된 redirect URI
-        println(5)
+        println("555555555555555%")
         println("Sending Token Request: $formData") // 디버깅용 로그
         return appleClient.getToken(formData)
     }
@@ -65,7 +69,6 @@ class AppleLoginService(
         val now = System.currentTimeMillis()
         val expiration = Date(now + 3600000) // 1시간 동안 유효
         println("decoder Error!!ㅁㅁㄴㅁㅇㄴㅇ")
-        val privateKey = System.getenv("APPLE_PRIVATE_KEY")
         println("rprivate Error!!ㅁㅁㄴㅁㅇㄴㅇ")
 
         val keyFactory = KeyFactory.getInstance("EC")
