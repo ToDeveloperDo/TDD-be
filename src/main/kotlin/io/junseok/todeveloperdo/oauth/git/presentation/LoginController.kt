@@ -25,14 +25,17 @@ class LoginController(
     @GetMapping("/git/login")
     fun redirectToGithub(
         httpServletResponse: HttpServletResponse,
+        @RequestParam("appleId") appleId: String
         //httpServletRequest: HttpServletRequest,
         //principal: Principal
     ) {
         //httpServletRequest.session.setAttribute("principal",principal)
         // GitHub 인증 URL 구성
         val scope = URLEncoder.encode("repo user", "UTF-8")
+        val state = URLEncoder.encode(appleId, "UTF-8")  // appleId를 state로 사용
+
         val githubAuthUrl =
-            "https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&scope=$scope"
+            "https://github.com/login/oauth/authorize?client_id=$clientId&redirect_uri=$redirectUri&scope=$scope&state=$state"
         httpServletResponse.sendRedirect(githubAuthUrl)
     }
 
