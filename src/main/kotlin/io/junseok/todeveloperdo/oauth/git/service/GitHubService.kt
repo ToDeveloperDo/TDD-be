@@ -4,6 +4,7 @@ import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberUpdater
 import io.junseok.todeveloperdo.oauth.git.client.GitHubRepoClient
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubRequest
+import io.junseok.todeveloperdo.oauth.git.service.loginserviceimpl.GitLinkValidator
 import io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl.GitHubRepoGenerator
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.RepoValidator
@@ -18,7 +19,8 @@ class GitHubService(
     private val readMeProcessor: ReadMeProcessor,
     private val repoValidator: RepoValidator,
     private val memberReader: MemberReader,
-    private val memberUpdater: MemberUpdater
+    private val memberUpdater: MemberUpdater,
+    private val gitLinkValidator: GitLinkValidator
 ) {
     /**
      * 레포 생성 및 README 생성
@@ -33,6 +35,8 @@ class GitHubService(
         readMeProcessor.generatorReadMe(bearerToken, member, gitHubRequest.repoName)
         return repository
     }
+
+    fun checkGitLink(appleId: String) = gitLinkValidator.isGitLink(appleId)
 
     companion object {
         const val ISSUE_CLOSED = "closed"
