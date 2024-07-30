@@ -1,5 +1,6 @@
-package io.junseok.todeveloperdo.oauth.apple
+package io.junseok.todeveloperdo.oauth.apple.presentation
 
+import io.junseok.todeveloperdo.oauth.apple.service.AppleLoginService
 import io.junseok.todeveloperdo.oauth.apple.dto.response.TokenResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PostMapping
@@ -12,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController
 class AppleLoginController(
     private val appleLoginService: AppleLoginService
 ) {
-
     @PostMapping("/apple")
     fun appleLogin(@RequestParam code: String): ResponseEntity<TokenResponse> =
         ResponseEntity.ok(appleLoginService.processAppleOAuth(code))

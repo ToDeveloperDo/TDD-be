@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.apple
+package io.junseok.todeveloperdo.oauth.apple.service
 
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository

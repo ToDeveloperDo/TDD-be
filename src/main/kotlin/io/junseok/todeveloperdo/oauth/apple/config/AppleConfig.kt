@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.apple
+package io.junseok.todeveloperdo.oauth.apple.config
 
 import feign.codec.Decoder
 import feign.codec.Encoder

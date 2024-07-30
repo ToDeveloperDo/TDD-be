@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.apple
+package io.junseok.todeveloperdo.oauth.apple.util
 
 import com.auth0.jwt.JWT
 import com.auth0.jwt.exceptions.JWTVerificationException

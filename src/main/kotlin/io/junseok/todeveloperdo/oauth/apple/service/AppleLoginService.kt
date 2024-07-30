@@ -1,13 +1,13 @@
-package io.junseok.todeveloperdo.oauth.apple
+package io.junseok.todeveloperdo.oauth.apple.service
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
 import io.junseok.todeveloperdo.oauth.apple.dto.response.TokenResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import org.springframework.util.LinkedMultiValueMap
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
 import java.util.*
@@ -35,7 +35,7 @@ class AppleLoginService(
     private val grantType: String,
 
 
-) {
+    ) {
 
 
     fun processAppleOAuth(code: String): TokenResponse {
