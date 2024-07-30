@@ -6,6 +6,8 @@ import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
 import io.junseok.todeveloperdo.oauth.apple.dto.response.TokenResponse
+import io.junseok.todeveloperdo.oauth.git.service.CustomOAuth2UserService
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.security.KeyFactory
@@ -37,10 +39,11 @@ class AppleLoginService(
 
     ) {
 
-
+    private val logger = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
     fun processAppleOAuth(code: String): TokenResponse {
         val clientSecret = createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)
+        logger.info("토큰 만료시간: ${tokenResponse.expiresIn}")
         val idToken = tokenResponse.idToken
         val applePublicKeys = appleClient.getApplePublicKeys().keys
         val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
