@@ -14,5 +14,7 @@ enum class ErrorCode(
     ALREADY_FRIENDSHIP(HttpStatusCode.BAD_REQUEST.status,"이미 친구입니다!"),
     ALREADY_SEND_FRIEND_REQUEST(HttpStatusCode.BAD_REQUEST.status,"이미 친구 요청을 상대방에게 보냈습니다!"),
     ALREADY_REQUESTED_FRIEND(HttpStatusCode.BAD_REQUEST.status,"이미 친구 요청을 상대방에게 받았습니다!"),
-    INVALID_TODOLIST(HttpStatusCode.BAD_REQUEST.status,"본인의 TODOLIST만 수정가능합니다!")
+    INVALID_TODOLIST(HttpStatusCode.BAD_REQUEST.status,"본인의 TODOLIST만 수정가능합니다!"),
+    EXPIRED_JWT(HttpStatusCode.UNAUTHORIZED.status, "만료된 JWT 토큰입니다!"),
+    NOT_LINK_GITHUB(HttpStatusCode.BAD_REQUEST.status,"Github와 연동되지 않은 계정입니다!")
 }
