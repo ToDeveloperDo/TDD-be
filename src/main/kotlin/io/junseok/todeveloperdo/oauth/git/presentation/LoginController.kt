@@ -25,10 +25,10 @@ class LoginController(
     @GetMapping("/git/login")
     fun redirectToGithub(
         httpServletResponse: HttpServletResponse,
-        httpServletRequest: HttpServletRequest,
-        principal: Principal
+        //httpServletRequest: HttpServletRequest,
+        //principal: Principal
     ) {
-        httpServletRequest.session.setAttribute("principal",principal)
+        //httpServletRequest.session.setAttribute("principal",principal)
         // GitHub 인증 URL 구성
         val scope = URLEncoder.encode("repo user", "UTF-8")
         val githubAuthUrl =
@@ -39,13 +39,14 @@ class LoginController(
     @GetMapping("/login/oauth2/code/github")
     fun githubCallback(
         @RequestParam("code") code: String,
+        @RequestParam("appleId") appleId: String,
         httpServletResponse: HttpServletResponse,
-        httpServletRequest: HttpServletRequest,
+        //httpServletRequest: HttpServletRequest,
     ) {
-        val principal = httpServletRequest.session.getAttribute("principal") as? Principal
-            ?: throw IllegalStateException("No principal found in session")
+   /*     val principal = httpServletRequest.session.getAttribute("principal") as? Principal
+            ?: throw IllegalStateException("No principal found in session")*/
 
-        val tokenResponse = gitHubOAuthService.processGitHubOAuth(code, principal.name)
+        val tokenResponse = gitHubOAuthService.processGitHubOAuth(code, appleId)
         val redirectUrl = "myapp://callback?token=${tokenResponse.token}"
         httpServletResponse.sendRedirect(redirectUrl)
     }
