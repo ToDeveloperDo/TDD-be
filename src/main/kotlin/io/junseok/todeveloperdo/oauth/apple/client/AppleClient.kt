@@ -1,7 +1,7 @@
 package io.junseok.todeveloperdo.oauth.apple.client
 
 import feign.Headers
-import io.junseok.todeveloperdo.oauth.apple.AppleConfig
+import io.junseok.todeveloperdo.oauth.apple.config.AppleConfig
 import io.junseok.todeveloperdo.oauth.apple.dto.response.ApplePublicKeys
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
 import org.springframework.cloud.openfeign.FeignClient
