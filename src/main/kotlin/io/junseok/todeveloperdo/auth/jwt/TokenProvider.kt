@@ -1,26 +1,13 @@
 package io.junseok.todeveloperdo.auth.jwt
 
-import io.jsonwebtoken.*
-import io.jsonwebtoken.io.Decoders
-import io.jsonwebtoken.security.Keys
-import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.EXPIRED_JWT
-import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.MALFORMED_JWT
-import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.UNSUPPORT_JWT
-import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.WRONG_JWT
-import io.junseok.todeveloperdo.oauth.apple.AppleJwtUtil
+import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import mu.KotlinLogging
-import org.springframework.beans.factory.InitializingBean
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
-import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Component
-import java.security.Key
-import java.util.*
-import java.util.stream.Collectors
 
 @Component
 class TokenProvider(
