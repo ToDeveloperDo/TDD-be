@@ -16,4 +16,7 @@ class GitHubController(
         @RequestBody gitHubRequest: GitHubRequest,
         principal: Principal
     ):Map<String,Any> = gitHubService.createRepository(gitHubRequest,principal.name)
+
+    @GetMapping("/check")
+    fun isGitHubLink(principal: Principal) = gitHubService.checkGitLink(principal.name)
 }
