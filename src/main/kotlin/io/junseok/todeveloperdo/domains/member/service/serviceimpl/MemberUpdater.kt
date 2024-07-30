@@ -20,6 +20,6 @@ class MemberUpdater {
         accessToken: String,
         member: Member
     ) {
-
+        member.updateGitInfo(gitUserResponse,accessToken)
     }
 }

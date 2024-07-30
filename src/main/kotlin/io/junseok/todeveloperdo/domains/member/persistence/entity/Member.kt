@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.domains.member.persistence.entity;
 
 
+import io.junseok.todeveloperdo.oauth.git.dto.response.GitUserResponse
 import javax.persistence.*
 
 @Entity
@@ -41,5 +42,15 @@ class Member(
 
     fun updateGitHubToken(accessToken: String) {
         this.gitHubToken = accessToken
+    }
+
+    fun updateGitInfo(
+        gitUserResponse: GitUserResponse,
+        accessToken: String
+    ){
+        this.gitHubUsername = gitUserResponse.username
+        this.gitHubToken = accessToken
+        this.avatarUrl = gitUserResponse.avatarUrl
+        this.gitHubUrl = gitUserResponse.gitUrl
     }
 }

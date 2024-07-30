@@ -43,7 +43,9 @@ class GitHubOAuthService(
 
         //val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
         val userInfo = parseUserInfo(userInfoResponse)
+        println("sdsdhgdshjkfbdhfdhsf")
         memberService.createGitMember(userInfo.toGitUserResponse(),accessToken,userName)
+        println("성공했나요?")
       //  val user = User(userInfo["login"].toString(), "", authorities)
 
         //val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
