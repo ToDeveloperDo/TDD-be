@@ -42,7 +42,7 @@ class LoginController(
     @GetMapping("/login/oauth2/code/github")
     fun githubCallback(
         @RequestParam("code") code: String,
-        @RequestParam("appleId") appleId: String,
+        @RequestParam("state") appleId: String,
         httpServletResponse: HttpServletResponse,
         //httpServletRequest: HttpServletRequest,
     ) {
