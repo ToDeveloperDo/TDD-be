@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.oauth.apple.util
 import com.auth0.jwt.JWT
 import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.interfaces.DecodedJWT
+import io.jsonwebtoken.ExpiredJwtException
 import io.junseok.todeveloperdo.oauth.apple.dto.response.ApplePublicKey
 import java.math.BigInteger
 import java.security.KeyFactory
@@ -31,9 +32,14 @@ object AppleJwtUtil {
 
         return try {
             verifier.verify(idToken)
-        } catch (e: JWTVerificationException) {
+        }
+        catch (e: ExpiredJwtException){
+            throw RuntimeException("j")
+        }
+        catch (e: JWTVerificationException) {
             throw RuntimeException("Invalid ID token: ${e.message}", e)
         }
+
     }
 
     fun getPayload(idToken: String, applePublicKeys: List<ApplePublicKey>): Map<String, Any> {

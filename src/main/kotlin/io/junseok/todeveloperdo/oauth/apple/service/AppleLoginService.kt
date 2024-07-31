@@ -2,9 +2,11 @@ package io.junseok.todeveloperdo.oauth.apple.service
 
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
+import io.junseok.todeveloperdo.auth.jwt.TokenProvider
 import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
+import io.junseok.todeveloperdo.oauth.apple.dto.response.IdTokenResponse
 import io.junseok.todeveloperdo.oauth.apple.dto.response.TokenResponse
 import io.junseok.todeveloperdo.oauth.git.service.CustomOAuth2UserService
 import org.slf4j.LoggerFactory
@@ -18,6 +20,7 @@ import java.util.*
 class AppleLoginService(
     private val appleClient: AppleClient,
     private val appleMemberService: AppleMemberService,
+    private val tokenProvider: TokenProvider,
     @Value("\${spring.security.oauth2.client.registration.apple.client-id}")
     private val clientId: String,
 
@@ -52,7 +55,10 @@ class AppleLoginService(
         val userIdentifier = payload["sub"] as String
 
         appleMemberService.createOrUpdateMember(userIdentifier, email,tokenResponse.refreshToken)
-        return TokenResponse(idToken = idToken)
+        return TokenResponse(
+            idToken = idToken,
+            refreshToken = tokenResponse.refreshToken
+        )
     }
 
     private fun getAppleToken(code: String, clientSecret: String): AppleTokenResponse {
@@ -88,5 +94,19 @@ class AppleLoginService(
             .setSubject(clientId)
             .signWith(privateKeyObject, SignatureAlgorithm.ES256)
             .compact()
+    }
+
+    fun refreshAppleToken(refreshToken: String): IdTokenResponse? {
+        if (tokenProvider.validateAppleToken(refreshToken,"REFRESH")){
+        val clientSecret = createClientSecret()
+        val tokenResponse =
+            appleClient.refreshToken(clientId, REFRESH_GRANT_TYPE, refreshToken, clientSecret)
+        return IdTokenResponse(idToken = tokenResponse.idToken)
+        }
+        return null
+    }
+
+    companion object {
+        const val REFRESH_GRANT_TYPE = "refresh_token"
     }
 }
