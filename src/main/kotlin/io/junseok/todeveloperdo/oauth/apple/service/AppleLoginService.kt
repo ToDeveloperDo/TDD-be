@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.oauth.apple.service
 
+import feign.FeignException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
@@ -97,13 +98,34 @@ class AppleLoginService(
     }
 
     fun refreshAppleToken(refreshToken: String): IdTokenResponse? {
-        if (tokenProvider.validateAppleToken(refreshToken,"REFRESH")){
+
+        return try {
+            val response = appleClient.refreshToken(
+                clientId = clientId,
+                clientSecret = createClientSecret(),
+                grantType = "refresh_token",
+                refreshToken = refreshToken
+            )
+            IdTokenResponse(idToken = response.idToken)
+        } catch (e: FeignException) {
+            // Apple에서 'invalid_grant' 오류가 발생하면 refresh_token이 만료된 것으로 간주
+            if (e.status() == 400 && e.contentUTF8().contains("invalid_grant")) {
+                // 처리 방법: 사용자에게 다시 로그인 요구, 오류 로그 기록 등
+                logger.error("Refresh token has expired or is invalid. Please re-authenticate.")
+                null
+            }else{
+                throw  e
+            }
+        }
+
+
+           /* if (tokenProvider.validateAppleToken(refreshToken,"REFRESH")){
         val clientSecret = createClientSecret()
         val tokenResponse =
             appleClient.refreshToken(clientId, REFRESH_GRANT_TYPE, refreshToken, clientSecret)
         return IdTokenResponse(idToken = tokenResponse.idToken)
         }
-        return null
+        return null*/
     }
 
     companion object {
