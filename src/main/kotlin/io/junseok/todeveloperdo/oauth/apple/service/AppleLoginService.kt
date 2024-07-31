@@ -102,9 +102,9 @@ class AppleLoginService(
         return try {
             val response = appleClient.refreshToken(
                 clientId = clientId,
-                clientSecret = createClientSecret(),
                 grantType = "refresh_token",
-                refreshToken = refreshToken
+                refreshToken = refreshToken,
+                clientSecret = createClientSecret()
             )
             val idTokenResponse = IdTokenResponse(idToken = response.idToken)
             logger.info(idTokenResponse.idToken)
