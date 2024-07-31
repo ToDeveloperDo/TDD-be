@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component
 @Component
 class TokenProvider(
     private val appleClient: AppleClient, // AppleClient 주입
-    private val appleLoginService: AppleLoginService,
     private val memberRepository: MemberRepository
 ) {
 
