@@ -106,7 +106,9 @@ class AppleLoginService(
                 grantType = "refresh_token",
                 refreshToken = refreshToken
             )
-            IdTokenResponse(idToken = response.idToken)
+            val idTokenResponse = IdTokenResponse(idToken = response.idToken)
+            logger.info(idTokenResponse.idToken)
+            idTokenResponse
         } catch (e: FeignException) {
             // Apple에서 'invalid_grant' 오류가 발생하면 refresh_token이 만료된 것으로 간주
             if (e.status() == 400 && e.contentUTF8().contains("invalid_grant")) {
