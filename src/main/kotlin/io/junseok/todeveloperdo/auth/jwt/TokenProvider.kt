@@ -4,9 +4,8 @@ import io.jsonwebtoken.ExpiredJwtException
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
-import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
-import io.junseok.todeveloperdo.oauth.apple.service.AppleLoginService
+import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import mu.KotlinLogging
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
