@@ -8,6 +8,7 @@ import io.junseok.todeveloperdo.oauth.git.service.loginserviceimpl.GitLinkValida
 import io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl.GitHubRepoGenerator
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.RepoValidator
+import io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl.GitHubRepoValidator
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import org.springframework.stereotype.Service
 import java.security.Principal
@@ -20,7 +21,8 @@ class GitHubService(
     private val repoValidator: RepoValidator,
     private val memberReader: MemberReader,
     private val memberUpdater: MemberUpdater,
-    private val gitLinkValidator: GitLinkValidator
+    private val gitLinkValidator: GitLinkValidator,
+    private val gitHubRepoValidator: GitHubRepoValidator
 ) {
     /**
      * 레포 생성 및 README 생성
@@ -37,6 +39,7 @@ class GitHubService(
     }
 
     fun checkGitLink(appleId: String) = gitLinkValidator.isGitLink(appleId)
+    fun checkGitRepo(appleId: String) = gitHubRepoValidator.isExistRepo(appleId)
 
     companion object {
         const val ISSUE_CLOSED = "closed"
