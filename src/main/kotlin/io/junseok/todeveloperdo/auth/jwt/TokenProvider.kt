@@ -29,7 +29,7 @@ class TokenProvider(
             val applePublicKeys = appleClient.getApplePublicKeys().keys
             AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
             true
-        } catch (e: ExpiredJwtException) {
+        } catch (e: TokenExpiredException) {
             if(type == "REFRESH"){
                if(memberRepository.existsByAppleRefreshToken(token)){
                    memberRepository.deleteByAppleRefreshToken(token)
