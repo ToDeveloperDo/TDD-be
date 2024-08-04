@@ -29,20 +29,20 @@ class TokenProvider(
             val applePublicKeys = appleClient.getApplePublicKeys().keys
             AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
             true
-        } catch (e: TokenExpiredException) {
+        }  catch (e: JWTVerificationException) {
             if(type == "REFRESH"){
-               if(memberRepository.existsByAppleRefreshToken(token)){
-                   memberRepository.deleteByAppleRefreshToken(token)
-               }else {
-                   log.info("No refresh token found to delete.")
-               }
+                if(memberRepository.existsByAppleRefreshToken(token)){
+                    memberRepository.deleteByAppleRefreshToken(token)
+                }else {
+                    log.info("No refresh token found to delete.")
+                }
             }
             throw ToDeveloperDoException{ErrorCode.EXPIRED_JWT}
-        } catch (e: JWTVerificationException) {
-            log.error("Invalid Apple JWT token", e)
+        }catch (e: ExpiredJwtException) {
             false
         }
     }
+
 
     // 애플 JWT로부터 Authentication 객체를 생성
     fun getAppleAuthentication(token: String): Authentication {

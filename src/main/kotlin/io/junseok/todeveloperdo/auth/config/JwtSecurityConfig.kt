@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.auth.config
 
+import io.junseok.todeveloperdo.auth.jwt.ExceptionHandlerFilter
 import io.junseok.todeveloperdo.auth.jwt.JwtFilter
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
 import org.springframework.security.config.annotation.SecurityConfigurerAdapter
@@ -13,9 +14,14 @@ class JwtSecurityConfig(
 
     override fun configure(http: HttpSecurity) {
         // security 로직에 JwtFilter 등록
-        http.addFilterBefore(
-            JwtFilter(tokenProvider),
-            UsernamePasswordAuthenticationFilter::class.java
-        )
+        http
+            .addFilterBefore(
+                JwtFilter(tokenProvider),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .addFilterBefore(
+                ExceptionHandlerFilter(),
+                JwtFilter::class.java
+            )
     }
 }

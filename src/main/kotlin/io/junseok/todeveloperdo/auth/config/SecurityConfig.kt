@@ -56,7 +56,7 @@ class SecurityConfig(
             .antMatchers("/login/oauth2/code/github/**").permitAll()
             .anyRequest().permitAll()
             .and()
-            .addFilterBefore(JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter::class.java)
+            .apply(JwtSecurityConfig(tokenProvider))
 
         return httpSecurity.build()
     }
