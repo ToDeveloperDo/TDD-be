@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.auth.jwt
 
+import com.auth0.jwt.exceptions.JWTVerificationException
 import com.auth0.jwt.exceptions.TokenExpiredException
 import io.jsonwebtoken.ExpiredJwtException
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
@@ -37,7 +38,7 @@ class TokenProvider(
                }
             }
             throw ToDeveloperDoException{ErrorCode.EXPIRED_JWT}
-        } catch (e: Exception) {
+        } catch (e: JWTVerificationException) {
             log.error("Invalid Apple JWT token", e)
             false
         }

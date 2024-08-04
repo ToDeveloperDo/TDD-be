@@ -30,15 +30,7 @@ object AppleJwtUtil {
         val algorithm = com.auth0.jwt.algorithms.Algorithm.RSA256(rsaPublicKey, null)
         val verifier = JWT.require(algorithm).build()
 
-        return try {
-            verifier.verify(idToken)
-        }
-        catch (e: ExpiredJwtException){
-            throw RuntimeException("j")
-        }
-        catch (e: JWTVerificationException) {
-            throw RuntimeException("Invalid ID token: ${e.message}", e)
-        }
+        return verifier.verify(idToken)
 
     }
 
