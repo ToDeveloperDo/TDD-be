@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.auth.jwt
 
+import com.auth0.jwt.exceptions.TokenExpiredException
 import io.jsonwebtoken.ExpiredJwtException
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
@@ -27,7 +28,7 @@ class TokenProvider(
             val applePublicKeys = appleClient.getApplePublicKeys().keys
             AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
             true
-        } catch (e: ExpiredJwtException) {
+        } catch (e: TokenExpiredException) {
             if(type == "REFRESH"){
                if(memberRepository.existsByAppleRefreshToken(token)){
                    memberRepository.deleteByAppleRefreshToken(token)
