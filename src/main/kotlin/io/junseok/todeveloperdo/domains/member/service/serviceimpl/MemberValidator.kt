@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class MemberValidator(
     private val memberRepository: MemberRepository,
-    private val memberReader: MemberReader
 ) {
     @Transactional(readOnly = true)
     fun isExistGitMember(username: String) = memberRepository.existsByGitHubUsername(username)
