@@ -11,8 +11,6 @@ class GitLinkValidator(
 ) {
     fun isGitLink(appleId: String){
         val member = memberReader.getMember(appleId)
-        if(member.gitHubUsername==null){
-            throw ToDeveloperDoException{ErrorCode.NOT_LINK_GITHUB}
-        }
+        member.gitHubUsername?: throw ToDeveloperDoException{ ErrorCode.NOT_LINK_GITHUB }
     }
 }

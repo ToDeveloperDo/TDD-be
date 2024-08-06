@@ -11,7 +11,6 @@ class GitHubRepoValidator(
 ) {
     fun isExistRepo(appleId: String){
         val member = memberReader.getMember(appleId)
-        if(member.gitHubRepo==null)
-            throw ToDeveloperDoException{ErrorCode.NOT_EXIST_REPO}
+        member.gitHubRepo?: throw ToDeveloperDoException{ErrorCode.NOT_EXIST_REPO}
     }
 }
