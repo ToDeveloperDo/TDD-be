@@ -16,7 +16,7 @@ class GitHubRepoValidator(
 ) {
     fun isExistRepo(appleId: String) {
         val member = memberReader.getMember(appleId)
-        memberValidator.isExistRepo(member) // DB에서 repo 유무 확인
+        memberValidator.isExistRepo(member)
 
         try {
             gitHubRepoClient.isExistRepo(
@@ -27,6 +27,5 @@ class GitHubRepoValidator(
         } catch (e: Exception) {
             throw ToDeveloperDoException { ErrorCode.NOT_EXIST_REPO }
         }
-
     }
 }
