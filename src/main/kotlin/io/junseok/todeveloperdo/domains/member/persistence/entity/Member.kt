@@ -53,4 +53,8 @@ class Member(
         this.avatarUrl = gitUserResponse.avatarUrl
         this.gitHubUrl = gitUserResponse.gitUrl
     }
+
+    fun removeRepo(){
+        this.gitHubRepo = null
+    }
 }

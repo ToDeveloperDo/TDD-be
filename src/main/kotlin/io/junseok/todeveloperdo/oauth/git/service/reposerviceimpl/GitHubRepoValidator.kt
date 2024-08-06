@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl
 
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
+import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberUpdater
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberValidator
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component
 class GitHubRepoValidator(
     private val memberReader: MemberReader,
     private val memberValidator: MemberValidator,
+    private val memberUpdater: MemberUpdater,
     private val gitHubRepoClient: GitHubRepoClient
 ) {
     fun isExistRepo(appleId: String) {
@@ -25,6 +27,7 @@ class GitHubRepoValidator(
                 member.gitHubToken!!.toGeneratorBearerToken()
             ).statusCode.is2xxSuccessful
         } catch (e: Exception) {
+            memberUpdater.removeMemberRepo(member)
             throw ToDeveloperDoException { ErrorCode.NOT_EXIST_REPO }
         }
     }

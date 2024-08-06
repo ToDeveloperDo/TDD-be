@@ -15,6 +15,8 @@ class MemberUpdater {
     fun updateMemberRepo(repoName: String, member: Member) = member.updateGitHubRepo(repoName)
 
     @Transactional
+    fun removeMemberRepo(member: Member) = member.removeRepo()
+    @Transactional
     fun updateGitMemberInfo(
         gitUserResponse: GitUserResponse,
         accessToken: String,
