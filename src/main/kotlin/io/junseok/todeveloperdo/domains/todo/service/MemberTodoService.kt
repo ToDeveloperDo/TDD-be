@@ -4,6 +4,7 @@ import io.junseok.todeveloperdo.aop.annotation.close.EventHandler
 import io.junseok.todeveloperdo.aop.annotation.create.CreateEvent
 import io.junseok.todeveloperdo.aop.annotation.update.UpdateEvent
 import io.junseok.todeveloperdo.aop.annotation.create.ReadMeCreate
+import io.junseok.todeveloperdo.aop.annotation.delete.DeleteEventHandler
 import io.junseok.todeveloperdo.domains.gitissue.service.GitIssueService
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.*
@@ -74,11 +75,8 @@ class MemberTodoService(
         todoUpdater.update(todoList, todoRequest)
         issueValidator.isExist(todoList)
     }
-    @EventHandler
-    fun removeTodoList(todoListId: Long, username: String, state: String) {
-        val todoList = todoReader.findTodoList(todoListId)
-        todoDeleter.delete(todoList)
-    }
+    @DeleteEventHandler
+    fun removeTodoList(todoListId: Long, username: String, state: String) {}
 
 
     @Transactional(readOnly = true)
