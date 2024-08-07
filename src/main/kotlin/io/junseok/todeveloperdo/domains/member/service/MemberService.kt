@@ -19,7 +19,6 @@ class MemberService(
         username: String
     ) {
         val member = memberReader.getMember(username)
-        println("member = ${member}")
         if (!memberValidator.isExistGitMember(gitUserResponse.username)) {
             memberUpdater.updateGitMemberInfo(gitUserResponse, accessToken, member)
         } else {
