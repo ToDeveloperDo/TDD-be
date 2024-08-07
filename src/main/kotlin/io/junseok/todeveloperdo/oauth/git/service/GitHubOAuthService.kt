@@ -2,24 +2,18 @@ package io.junseok.todeveloperdo.oauth.git.service
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import io.junseok.todeveloperdo.auth.jwt.TokenProvider
 import io.junseok.todeveloperdo.domains.member.service.MemberService
 import io.junseok.todeveloperdo.oauth.git.client.GitHubAccessTokenClient
 import io.junseok.todeveloperdo.oauth.git.client.GitHubApiClient
 import io.junseok.todeveloperdo.oauth.git.dto.response.TokenResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.toGitUserResponse
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
-import javax.print.attribute.standard.JobOriginatingUserName
 
 @Service
 class GitHubOAuthService(
     private val accessTokenClient: GitHubAccessTokenClient,
     private val gitHubApiClient: GitHubApiClient,
-    private val tokenProvider: TokenProvider,
     private val memberService: MemberService
 ) {
 
@@ -41,16 +35,8 @@ class GitHubOAuthService(
 
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
-        //val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
         val userInfo = parseUserInfo(userInfoResponse)
-        println("sdsdhgdshjkfbdhfdhsf")
         memberService.createGitMember(userInfo.toGitUserResponse(),accessToken,userName)
-        println("성공했나요?")
-      //  val user = User(userInfo["login"].toString(), "", authorities)
-
-        //val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
-        // JWT 발급
-        //val jwtToken = tokenProvider.createToken(authentication)*/
         return TokenResponse(bearerToken)
     }
 
