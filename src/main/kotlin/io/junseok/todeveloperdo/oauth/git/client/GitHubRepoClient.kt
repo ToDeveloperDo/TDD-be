@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.oauth.git.client
 
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
+import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubRepoResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -26,6 +27,6 @@ interface GitHubRepoClient {
     fun isExistRepo(
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @PathVariable("Authorization") token: String
-    ): ResponseEntity<Map<String,Any>>
+        @RequestHeader("Authorization") token: String
+    ): GitHubRepoResponse
 }

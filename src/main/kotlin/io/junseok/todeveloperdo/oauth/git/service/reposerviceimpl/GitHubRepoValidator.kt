@@ -16,17 +16,16 @@ class GitHubRepoValidator(
     private val memberUpdater: MemberUpdater,
     private val gitHubRepoClient: GitHubRepoClient
 ) {
+
     fun isExistRepo(appleId: String) {
         val member = memberReader.getMember(appleId)
         memberValidator.isExistRepo(member)
-
-        try {
-            gitHubRepoClient.isExistRepo(
-                member.gitHubUsername!!,
-                member.gitHubRepo!!,
-                member.gitHubToken!!.toGeneratorBearerToken()
-            ).statusCode.is2xxSuccessful
-        } catch (e: Exception) {
+        val existRepo = gitHubRepoClient.isExistRepo(
+            member.gitHubUsername!!,
+            member.gitHubRepo!!,
+            member.gitHubToken!!.toGeneratorBearerToken()
+        )
+        existRepo.id ?: run {
             memberUpdater.removeMemberRepo(member)
             throw ToDeveloperDoException { ErrorCode.NOT_EXIST_REPO }
         }
