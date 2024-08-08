@@ -9,15 +9,20 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-class MemberReader(private val memberRepository: MemberRepository ) {
+class MemberReader(private val memberRepository: MemberRepository) {
     @Transactional(readOnly = true)
     fun getMember(username: String): Member = memberRepository.findByAppleId(username)
         ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
 
     @Transactional(readOnly = true)
-    fun getAllMember(): List<Member>? =  memberRepository.findAll()
+    fun getAllMember(): List<Member>? = memberRepository.findAll()
 
     @Transactional(readOnly = true)
     fun getFriendMember(memberId: Long) = memberRepository.findByIdOrNull(memberId)
-        ?: throw ToDeveloperDoException{ErrorCode.NOT_EXIST_MEMBER}
+        ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
+
+    @Transactional(readOnly = true)
+    fun getFriendMemberByGit(gitUserName: String) =
+        memberRepository.findByGitHubUsername(gitUserName)
+            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
 }

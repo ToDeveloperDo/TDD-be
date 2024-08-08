@@ -95,7 +95,7 @@ class MemberFriendService(
             member,
             FriendStatus.UNFOLLOW
         )
-            .map { toMemberFriendResponse(it.senderMember) }
+            .map { it.senderMember.toMemberFriendResponse() }
     }
 
     @Transactional
@@ -115,7 +115,7 @@ class MemberFriendService(
             member,
             FriendStatus.UNFOLLOW
         )
-            .map { toMemberFriendResponse(it.receiverMember) }
+            .map { it.receiverMember.toMemberFriendResponse() }
     }
 
     @Transactional(readOnly = true)
@@ -127,4 +127,8 @@ class MemberFriendService(
         }
         return todoReader.bringTodoLists(LocalDate.now(), friendMember)
     }
+
+    fun getFriend(gitUserName: String): MemberFriendResponse =
+        memberReader.getFriendMemberByGit(gitUserName).toMemberFriendResponse()
+
 }

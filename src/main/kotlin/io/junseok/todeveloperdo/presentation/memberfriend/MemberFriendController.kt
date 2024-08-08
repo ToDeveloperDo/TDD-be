@@ -1,12 +1,15 @@
 package io.junseok.todeveloperdo.presentation.memberfriend
 
 import io.junseok.todeveloperdo.domains.memberfriend.service.MemberFriendService
+import io.junseok.todeveloperdo.presentation.memberfriend.dto.request.FriendNameRequest
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
@@ -39,8 +42,7 @@ class MemberFriendController(
      */
     @GetMapping("/{memberId}")
     fun searchMemberFriend(
-        @PathVariable memberId: Long,
-        principal: Principal
+        @PathVariable memberId: Long, principal: Principal
     ): ResponseEntity<MemberFriendResponse> =
         ResponseEntity.ok(memberFriendService.findMemberFriend(principal.name, memberId))
 
@@ -66,10 +68,9 @@ class MemberFriendController(
      */
     @GetMapping("/accept/{friendId}")
     fun acceptFriendRequest(
-        @PathVariable friendId: Long,
-        principal: Principal
+        @PathVariable friendId: Long, principal: Principal
     ): ResponseEntity<Unit> =
-        ResponseEntity.ok(memberFriendService.approveRequest(friendId,principal.name))
+        ResponseEntity.ok(memberFriendService.approveRequest(friendId, principal.name))
 
     /**
      * NOTE
@@ -85,8 +86,17 @@ class MemberFriendController(
      */
     @GetMapping("/lookup/todolist/{friendId}")
     fun lookUpFriendTodo(
-        @PathVariable friendId: Long,
-        principal: Principal
+        @PathVariable friendId: Long, principal: Principal
     ): ResponseEntity<List<TodoResponse>> =
-        ResponseEntity.ok(memberFriendService.searchFriendTodo(friendId,principal.name))
+        ResponseEntity.ok(memberFriendService.searchFriendTodo(friendId, principal.name))
+
+    /**
+     * NOTE
+     * 친구 깃허브 이름으로 친구 검색
+     */
+    @PostMapping("/search")
+    fun searchFriend(@RequestBody friendNameRequest: FriendNameRequest)
+    : ResponseEntity<MemberFriendResponse> =
+        ResponseEntity.ok(memberFriendService.getFriend(friendNameRequest.gitUserName))
+
 }
