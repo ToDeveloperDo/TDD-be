@@ -52,4 +52,11 @@ class TodoReader(
             member
         )
     }
+
+    @Transactional(readOnly = true)
+    fun bringTodoListForWeek(deadline: LocalDate, member: Member): List<TodoResponse> {
+        val weeksDay = deadline.minusWeeks(1)
+        return todoListRepository.findByMemberAndDeadlineBetween(member,weeksDay,deadline)
+            .map { it.toTodoResponse() }
+    }
 }

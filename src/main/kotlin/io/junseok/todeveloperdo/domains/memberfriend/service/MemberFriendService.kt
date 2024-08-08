@@ -125,10 +125,9 @@ class MemberFriendService(
         if (!memberFriendValidator.isAlreadyFriend(member, friendMember, FriendStatus.FOLLOW)) {
             throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
         }
-        return todoReader.bringTodoLists(LocalDate.now(), friendMember)
+        return todoReader.bringTodoListForWeek(LocalDate.now(), friendMember)
     }
 
     fun getFriend(gitUserName: String): MemberFriendResponse =
         memberReader.getFriendMemberByGit(gitUserName).toMemberFriendResponse()
-
 }

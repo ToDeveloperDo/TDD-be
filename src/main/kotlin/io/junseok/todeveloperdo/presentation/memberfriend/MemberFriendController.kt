@@ -98,5 +98,4 @@ class MemberFriendController(
     fun searchFriend(@RequestBody friendNameRequest: FriendNameRequest)
     : ResponseEntity<MemberFriendResponse> =
         ResponseEntity.ok(memberFriendService.getFriend(friendNameRequest.gitUserName))
-
 }

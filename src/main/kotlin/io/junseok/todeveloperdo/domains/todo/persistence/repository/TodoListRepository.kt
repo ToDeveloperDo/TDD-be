@@ -20,4 +20,9 @@ interface TodoListRepository : JpaRepository<MemberTodoList, Long> {
 
     fun existsByTodoListIdAndMember(todoListId: Long, member: Member): Boolean
 
+    fun findByMemberAndDeadlineBetween(
+        member: Member,
+        startDt: LocalDate,
+        endDt: LocalDate
+    ): List<MemberTodoList>
 }
