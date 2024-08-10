@@ -12,7 +12,6 @@ import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFri
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
@@ -85,14 +84,12 @@ class MemberFriendService(
         memberFriendDeleter.delete(memberFriend)
     }
 
-    @Transactional(readOnly = true)
     fun findWaitFriends(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
         return memberFriendReader.receiverMemberByFriendStatus(member)
             .map { it.senderMember.toMemberFriendResponse() }
     }
 
-    @Transactional
     fun approveRequest(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
@@ -100,14 +97,12 @@ class MemberFriendService(
         memberFriendUpdater.updateStatus(memberFriend)
     }
 
-    @Transactional(readOnly = true)
     fun findSendRequestList(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
         return memberFriendReader.senderMemberByFriendStatus(member)
             .map { it.receiverMember.toMemberFriendResponse() }
     }
 
-    @Transactional(readOnly = true)
     fun searchFriendTodo(friendId: Long, username: String): List<TodoResponse> {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
