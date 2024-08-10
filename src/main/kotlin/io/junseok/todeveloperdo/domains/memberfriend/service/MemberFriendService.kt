@@ -4,8 +4,7 @@ import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriend
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriendId
-import io.junseok.todeveloperdo.domains.memberfriend.persistence.repository.MemberFriendRepository
-import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.MemberFriendValidator
+import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.*
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
@@ -18,17 +17,19 @@ import java.time.LocalDate
 
 @Service
 class MemberFriendService(
-    private val memberFriendRepository: MemberFriendRepository,
     private val memberReader: MemberReader,
     private val memberFriendValidator: MemberFriendValidator,
-    private val todoReader: TodoReader
+    private val todoReader: TodoReader,
+    private val memberFriendReader: MemberFriendReader,
+    private val memberFriendSaver: MemberFriendSaver,
+    private val memberFriendDeleter: MemberFriendDeleter,
+    private val memberFriendUpdater: MemberFriendUpdater
+
 ) {
     fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
         val member = memberReader.getMember(username)
-        val senderMember =
-            memberFriendRepository.findBySenderMemberAndFriendStatus(member, FriendStatus.FOLLOW)
-        val receiverMember =
-            memberFriendRepository.findByReceiverMemberAndFriendStatus(member, FriendStatus.FOLLOW)
+        val senderMember = memberFriendReader.findSenderMemberList(member)
+        val receiverMember = memberFriendReader.findReceiverMemberList(member)
 
         val friends = (senderMember + receiverMember).distinct()
 
@@ -62,7 +63,6 @@ class MemberFriendService(
         )
     }
 
-    @Transactional
     fun registerFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
@@ -75,26 +75,20 @@ class MemberFriendService(
             receiverMember = friendMember,
             friendStatus = FriendStatus.UNFOLLOW
         )
-        memberFriendRepository.save(memberFriend)
+        memberFriendSaver.save(memberFriend)
     }
 
-    @Transactional
     fun deleteFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        val memberFriend =
-            memberFriendRepository.findBySenderMemberAndReceiverMember(member, friendMember)
-                ?: throw ToDeveloperDoException { ErrorCode.NOT_REQUEST_FRIEND }
-        memberFriendRepository.delete(memberFriend)
+        val memberFriend = memberFriendReader.findSenderMemberAndReceiverMember(member,friendMember)
+        memberFriendDeleter.delete(memberFriend)
     }
 
     @Transactional(readOnly = true)
     fun findWaitFriends(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        return memberFriendRepository.findByReceiverMemberAndFriendStatus(
-            member,
-            FriendStatus.UNFOLLOW
-        )
+        return memberFriendReader.receiverMemberByFriendStatus(member)
             .map { it.senderMember.toMemberFriendResponse() }
     }
 
@@ -102,19 +96,14 @@ class MemberFriendService(
     fun approveRequest(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        val memberFriend =
-            memberFriendRepository.findBySenderMemberAndReceiverMember(friendMember, member)
-                ?: throw ToDeveloperDoException { ErrorCode.NOT_REQUEST_FRIEND }
-        memberFriend.updateFriendStatus()
+        val memberFriend = memberFriendReader.findSenderMemberAndReceiverMember(friendMember,member)
+        memberFriendUpdater.updateStatus(memberFriend)
     }
 
     @Transactional(readOnly = true)
     fun findSendRequestList(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        return memberFriendRepository.findBySenderMemberAndFriendStatus(
-            member,
-            FriendStatus.UNFOLLOW
-        )
+        return memberFriendReader.senderMemberByFriendStatus(member)
             .map { it.receiverMember.toMemberFriendResponse() }
     }
 
