@@ -1,6 +1,5 @@
 package io.junseok.todeveloperdo.auth.jwt
 
-import io.junseok.todeveloperdo.auth.jwt.SecurityMessage.Companion.SUCCESS_AUTHENTICATION
 import mu.KotlinLogging
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.StringUtils
@@ -13,7 +12,7 @@ import javax.servlet.http.HttpServletRequest
 class JwtFilter(
     private val tokenProvider: TokenProvider
 ) : GenericFilterBean() {
-    val log = KotlinLogging.logger {}
+    private val log = KotlinLogging.logger {}
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val httpServletRequest = request as HttpServletRequest
