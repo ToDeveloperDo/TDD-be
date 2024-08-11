@@ -56,7 +56,7 @@ class MemberService(
 
         return memberReader.getAllMember().map { friend ->
             val friendStatus = when {
-                map1.contains(friend.memberId) -> FriendStatus.SEND
+                map1.contains(friend.memberId) -> FriendStatus.RECEIVE
                 map2.contains(friend.memberId) -> FriendStatus.REQUEST
                 friends.any {
                     it.senderMember == friend || it.receiverMember == friend
