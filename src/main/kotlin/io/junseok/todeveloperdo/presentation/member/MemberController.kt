@@ -2,6 +2,7 @@ package io.junseok.todeveloperdo.presentation.member
 
 import io.junseok.todeveloperdo.domains.member.service.MemberService
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberInfoResponse
+import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -34,8 +35,9 @@ class MemberController(
     /**
      * NOTE
      * 서비스에 등록된 멤버 전부 조회
+     * TODO -> FriendStatus 값 필요
      */
     @GetMapping("/all")
-    fun showAllMember(): ResponseEntity<List<MemberInfoResponse>> =
-        ResponseEntity.ok(memberService.findAllMember())
+    fun showAllMember(principal: Principal): ResponseEntity<List<MemberResponse>> =
+        ResponseEntity.ok(memberService.findAllMember(principal.name))
 }

@@ -19,7 +19,18 @@ interface MemberFriendRepository : JpaRepository<MemberFriend, MemberFriendId> {
         friendStatus: FriendStatus
     ): List<MemberFriend>
 
-    fun findBySenderMemberAndReceiverMember(member: Member, friendMember: Member): MemberFriend?
+    fun findBySenderMemberAndReceiverMember(friendMember: Member, member: Member): MemberFriend?
+
+    @Query(
+        "select mf " +
+                "from MemberFriend mf " +
+                "where mf.friendStatus = :friendStatus and " +
+                "mf.receiverMember = :member or mf.senderMember = :member "
+    )
+    fun findAllByFriend(
+        @Param(value = "member") member: Member,
+        @Param(value = "friendStatus") friendStatus: FriendStatus
+    ): List<MemberFriend>
 
     @Query(
         "select case " +

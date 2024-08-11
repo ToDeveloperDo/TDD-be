@@ -21,6 +21,6 @@ class MemberFriend(
     var receiverMember: Member // 요청을 받은 사람(수신자)
 ) {
     fun updateFriendStatus() {
-        this.friendStatus = FriendStatus.FOLLOW
+        this.friendStatus = FriendStatus.FOLLOWING
     }
 }

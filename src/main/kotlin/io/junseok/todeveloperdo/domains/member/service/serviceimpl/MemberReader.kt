@@ -15,7 +15,7 @@ class MemberReader(private val memberRepository: MemberRepository) {
         ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
 
     @Transactional(readOnly = true)
-    fun getAllMember(): List<Member>? = memberRepository.findAll()
+    fun getAllMember(): List<Member> = memberRepository.findAll()
 
     @Transactional(readOnly = true)
     fun getFriendMember(memberId: Long) = memberRepository.findByIdOrNull(memberId)

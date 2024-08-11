@@ -72,7 +72,7 @@ class MemberFriendService(
             memberFriendId = memberFriendId,
             senderMember = member,
             receiverMember = friendMember,
-            friendStatus = FriendStatus.UNFOLLOW
+            friendStatus = FriendStatus.NOT_FRIEND
         )
         memberFriendSaver.save(memberFriend)
     }
@@ -91,8 +91,8 @@ class MemberFriendService(
     }
 
     fun approveRequest(friendId: Long, username: String) {
-        val member = memberReader.getMember(username)
-        val friendMember = memberReader.getFriendMember(friendId)
+        val member = memberReader.getMember(username) //나
+        val friendMember = memberReader.getFriendMember(friendId) //친구 요청을 보낸 사람
         val memberFriend = memberFriendReader.findSenderMemberAndReceiverMember(friendMember,member)
         memberFriendUpdater.updateStatus(memberFriend)
     }
@@ -106,7 +106,7 @@ class MemberFriendService(
     fun searchFriendTodo(friendId: Long, username: String): List<TodoResponse> {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        if (!memberFriendValidator.isAlreadyFriend(member, friendMember, FriendStatus.FOLLOW)) {
+        if (!memberFriendValidator.isAlreadyFriend(member, friendMember, FriendStatus.FOLLOWING)) {
             throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
         }
         return todoReader.bringTodoListForWeek(LocalDate.now(), friendMember)

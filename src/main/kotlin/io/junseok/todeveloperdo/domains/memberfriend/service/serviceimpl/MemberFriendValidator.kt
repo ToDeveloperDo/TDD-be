@@ -17,11 +17,11 @@ class MemberFriendValidator(private val memberFriendRepository: MemberFriendRepo
 
     // 통합검사 (회원가입할 떄)
     fun isFriend(member: Member, friend: Member) {
-        if(isAlreadyFriend(member, friend, FriendStatus.FOLLOW)){
+        if(isAlreadyFriend(member, friend, FriendStatus.FOLLOWING)){
             throw ToDeveloperDoException{ErrorCode.ALREADY_FRIENDSHIP}
         }
-        isSendRequestFriend(member, friend, FriendStatus.UNFOLLOW)
-        isRequestedFriend(member, friend, FriendStatus.UNFOLLOW)
+        isSendRequestFriend(member, friend, FriendStatus.NOT_FRIEND)
+        isRequestedFriend(member, friend, FriendStatus.NOT_FRIEND)
     }
 
 
