@@ -61,5 +61,5 @@ class MemberFriendReader(
      */
     @Transactional(readOnly = true)
     fun findAllWithFriend(member: Member) =
-        memberFriendRepository.findAllByFriend(member, FriendStatus.FOLLOWING)
+        memberFriendRepository.findAllByFriend(member,FriendStatus.FOLLOWING)
 }

@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.presentation.memberfriend
 
 import io.junseok.todeveloperdo.domains.memberfriend.service.MemberFriendService
+import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.request.FriendNameRequest
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
@@ -94,10 +95,14 @@ class MemberFriendController(
     /**
      * NOTE
      * 친구 깃허브 이름으로 친구 검색
-     * TODO -> FriendStatus 값 필요
      */
     @PostMapping("/search")
-    fun searchFriend(@RequestBody friendNameRequest: FriendNameRequest)
-    : ResponseEntity<MemberFriendResponse> =
-        ResponseEntity.ok(memberFriendService.getFriend(friendNameRequest.gitUserName))
+    fun searchFriend(@RequestBody friendNameRequest: FriendNameRequest, principal: Principal)
+            : ResponseEntity<MemberResponse> =
+        ResponseEntity.ok(
+            memberFriendService.getFriend(
+                friendNameRequest.gitUserName,
+                principal.name
+            )
+        )
 }

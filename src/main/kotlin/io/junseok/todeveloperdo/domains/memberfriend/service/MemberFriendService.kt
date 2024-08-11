@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.domains.memberfriend.service
 
+import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberProcessor
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriend
@@ -8,6 +9,7 @@ import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.*
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
@@ -22,7 +24,8 @@ class MemberFriendService(
     private val memberFriendReader: MemberFriendReader,
     private val memberFriendSaver: MemberFriendSaver,
     private val memberFriendDeleter: MemberFriendDeleter,
-    private val memberFriendUpdater: MemberFriendUpdater
+    private val memberFriendUpdater: MemberFriendUpdater,
+    private val memberProcessor: MemberProcessor
 
 ) {
     fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
@@ -80,7 +83,8 @@ class MemberFriendService(
     fun deleteFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        val memberFriend = memberFriendReader.findSenderMemberAndReceiverMember(member,friendMember)
+        val memberFriend =
+            memberFriendReader.findSenderMemberAndReceiverMember(member, friendMember)
         memberFriendDeleter.delete(memberFriend)
     }
 
@@ -93,7 +97,8 @@ class MemberFriendService(
     fun approveRequest(friendId: Long, username: String) {
         val member = memberReader.getMember(username) //나
         val friendMember = memberReader.getFriendMember(friendId) //친구 요청을 보낸 사람
-        val memberFriend = memberFriendReader.findSenderMemberAndReceiverMember(friendMember,member)
+        val memberFriend =
+            memberFriendReader.findSenderMemberAndReceiverMember(friendMember, member)
         memberFriendUpdater.updateStatus(memberFriend)
     }
 
@@ -112,6 +117,8 @@ class MemberFriendService(
         return todoReader.bringTodoListForWeek(LocalDate.now(), friendMember)
     }
 
-    fun getFriend(gitUserName: String): MemberFriendResponse =
-        memberReader.getFriendMemberByGit(gitUserName).toMemberFriendResponse()
+    fun getFriend(gitUserName: String, appleId: String): MemberResponse =
+        memberProcessor.findMemberList(appleId)
+            .find { it.username==gitUserName }
+            ?: throw ToDeveloperDoException{ErrorCode.NOT_EXIST_MEMBER}
 }

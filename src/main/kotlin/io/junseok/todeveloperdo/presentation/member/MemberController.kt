@@ -35,7 +35,6 @@ class MemberController(
     /**
      * NOTE
      * 서비스에 등록된 멤버 전부 조회
-     * TODO -> FriendStatus 값 필요
      */
     @GetMapping("/all")
     fun showAllMember(principal: Principal): ResponseEntity<List<MemberResponse>> =
