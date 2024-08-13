@@ -66,6 +66,8 @@ logging.level:
   org.hibernate.SQL: debug
   org.hibernate.type: info
   org.springframework.security: DEBUG
+  org.springframework.cache: DEBUG
+  ##org.springframework.data.redis.cache: DEBUG
 
 springfox:
   documentation:

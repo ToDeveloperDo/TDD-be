@@ -34,7 +34,10 @@ class Member(
     var avatarUrl: String? = null,
 
     @Column(name = "github_url")
-    var gitHubUrl: String? = null
+    var gitHubUrl: String? = null,
+
+    @Enumerated(EnumType.STRING)
+    val authority: Authority? = Authority.ROLE_USER
 ) {
     fun updateGitHubRepo(repoName: String) {
         this.gitHubRepo = repoName

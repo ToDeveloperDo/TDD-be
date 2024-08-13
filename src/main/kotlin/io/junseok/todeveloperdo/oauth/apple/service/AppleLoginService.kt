@@ -12,6 +12,9 @@ import io.junseok.todeveloperdo.oauth.apple.dto.response.TokenResponse
 import io.junseok.todeveloperdo.oauth.git.service.CustomOAuth2UserService
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
+import org.springframework.security.core.userdetails.User
 import org.springframework.stereotype.Service
 import java.security.KeyFactory
 import java.security.spec.PKCS8EncodedKeySpec
@@ -48,16 +51,21 @@ class AppleLoginService(
         val clientSecret = createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)
         logger.info("토큰 만료시간: ${tokenResponse.expiresIn}")
-        val idToken = tokenResponse.idToken
+        val idToken = tokenResponse.idToken //access token
+
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+
         val applePublicKeys = appleClient.getApplePublicKeys().keys
         val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
 
         val email = payload["email"] as String
         val userIdentifier = payload["sub"] as String
-
+        val user = User(email,"",authorities)
+        val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
+        val jwtToken = tokenProvider.createToken(authentication)
         appleMemberService.createOrUpdateMember(userIdentifier, email,tokenResponse.refreshToken!!)
         return TokenResponse(
-            idToken = idToken,
+            idToken = jwtToken,
             refreshToken = tokenResponse.refreshToken
         )
     }
@@ -119,15 +127,6 @@ class AppleLoginService(
                 throw  e
             }
         }
-
-
-           /* if (tokenProvider.validateAppleToken(refreshToken,"REFRESH")){
-        val clientSecret = createClientSecret()
-        val tokenResponse =
-            appleClient.refreshToken(clientId, REFRESH_GRANT_TYPE, refreshToken, clientSecret)
-        return IdTokenResponse(idToken = tokenResponse.idToken)
-        }
-        return null*/
     }
 
     companion object {

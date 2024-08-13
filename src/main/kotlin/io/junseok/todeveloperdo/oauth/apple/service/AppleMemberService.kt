@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.oauth.apple.service
 
+import io.junseok.todeveloperdo.domains.member.persistence.entity.Authority
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import org.springframework.stereotype.Service
@@ -19,7 +20,8 @@ class AppleMemberService(
             val newMember = Member(
                 appleId = appleId,
                 appleEmail = email,
-                appleRefreshToken = refreshToken
+                appleRefreshToken = refreshToken,
+                authority = Authority.ROLE_USER
             )
             memberRepository.save(newMember)
         }

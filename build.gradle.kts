@@ -59,9 +59,8 @@ dependencies {
     implementation("io.github.microutils:kotlin-logging:3.0.5")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.springframework.boot:spring-boot-starter-aop")
-
-
-    implementation("org.jetbrains.kotlin:kotlin-reflect") // blog
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
 
     //mysql
     runtimeOnly("com.mysql:mysql-connector-j")
@@ -71,14 +70,16 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
 
 
+    //feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8")
     implementation("io.github.openfeign:feign-jackson:12.1")
-
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-
     implementation("com.squareup.okhttp3:okhttp:4.9.1")
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.github.openfeign:feign-okhttp:11.8")
+
+    //redis
+    //implementation ("org.springframework.boot:spring-boot-starter-data-redis")
+    implementation ("org.springframework.boot:spring-boot-starter-cache")
 }
 allOpen {
     annotation("javax.persistence.Entity")
