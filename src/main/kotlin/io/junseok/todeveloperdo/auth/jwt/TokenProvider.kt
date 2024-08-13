@@ -52,7 +52,7 @@ class TokenProvider(
 
         return Jwts.builder()
             .setSubject(authentication.name) //Payload에 유저 네임 저장
-            .setIssuer("MealMate") //토큰 발급자 iss 지정
+            .setIssuer("TDD") //토큰 발급자 iss 지정
             .claim(AUTHORITIES_KEY, authorities) // 정보 저장
             .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
             .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함

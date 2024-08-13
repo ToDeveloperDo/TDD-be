@@ -60,7 +60,7 @@ class AppleLoginService(
 
         val email = payload["email"] as String
         val userIdentifier = payload["sub"] as String
-        val user = User(email,"",authorities)
+        val user = User(userIdentifier,"",authorities)
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)
         appleMemberService.createOrUpdateMember(userIdentifier, email,tokenResponse.refreshToken!!)
