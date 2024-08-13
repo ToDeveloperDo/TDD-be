@@ -1,7 +1,6 @@
 package io.junseok.todeveloperdo.auth.jwt
 
 import com.auth0.jwt.exceptions.JWTVerificationException
-import com.auth0.jwt.exceptions.TokenExpiredException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -10,8 +9,6 @@ import io.jsonwebtoken.security.Keys
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
-import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
-import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import mu.KotlinLogging
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
@@ -27,7 +24,6 @@ import java.util.stream.Collectors
 
 @Component
 class TokenProvider(
-    private val appleClient: AppleClient, // AppleClient 주입
     private val memberRepository: MemberRepository,
     @Value("\${jwt.secret}") private val secret: String,
     @Value("\${jwt.token-validity-in-seconds}")private val tokenValidityInSeconds: Long
