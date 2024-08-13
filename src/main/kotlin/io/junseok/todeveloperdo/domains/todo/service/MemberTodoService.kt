@@ -2,9 +2,9 @@ package io.junseok.todeveloperdo.domains.todo.service
 
 import io.junseok.todeveloperdo.aop.annotation.close.EventHandler
 import io.junseok.todeveloperdo.aop.annotation.create.CreateEvent
-import io.junseok.todeveloperdo.aop.annotation.update.UpdateEvent
 import io.junseok.todeveloperdo.aop.annotation.create.ReadMeCreate
 import io.junseok.todeveloperdo.aop.annotation.delete.DeleteEventHandler
+import io.junseok.todeveloperdo.aop.annotation.update.UpdateEvent
 import io.junseok.todeveloperdo.domains.gitissue.service.GitIssueService
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.*
@@ -28,7 +28,6 @@ class MemberTodoService(
     private val todoUpdater: TodoUpdater,
     private val gitIssueService: GitIssueService,
     private val todoValidator: TodoValidator,
-    private val todoDeleter: TodoDeleter,
     private val issueValidator: GitHubIssueValidator,
 ) {
     @CreateEvent
