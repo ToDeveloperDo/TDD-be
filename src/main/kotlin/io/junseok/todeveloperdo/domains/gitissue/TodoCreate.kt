@@ -6,18 +6,8 @@ import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
 import java.time.LocalDate
 
-data class TodoCreate(
-    var issueId: Long?=null,
-    val content:String,
-    val memo:String?="",
-    val tag: String,
-    @JsonFormat(pattern = "yyyy-MM-dd")
-    val deadline: LocalDate,
-    val member: Member
-)
-
 fun GitIssue.toTodoCreate() = TodoCreate(
-    issueId= this.issueId,
+    issueId = this.issueId,
     content = this.content,
     memo = this.memo,
     tag = this.tag,
@@ -26,11 +16,21 @@ fun GitIssue.toTodoCreate() = TodoCreate(
 )
 
 fun TodoCreate.toCreateIssueTemplate() = GitHubIssuesRequest(
-        title = "${this.deadline} / ${this.content}",
-        body = """
+    title = "${this.deadline} / ${this.content}",
+    body = """
                    TODO : ${this.content}
                    MEMO : ${this.memo}
                    TAG : ${this.tag}
                 """.trimIndent(),
-        assignees = listOf(this.member.gitHubUsername!!)
-    )
+    assignees = listOf(this.member.gitHubUsername!!)
+)
+
+data class TodoCreate(
+    var issueId: Long? = null,
+    val content: String,
+    val memo: String? = "",
+    val tag: String,
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    val deadline: LocalDate,
+    val member: Member
+)
