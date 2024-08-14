@@ -16,4 +16,7 @@ class MemberValidator(
 
     fun isExistRepo(member: Member) =
         member.gitHubRepo ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_REPO }
+
+    @Transactional(readOnly = true)
+    fun isExistMember(appleId: String) = memberRepository.existsByAppleId(appleId)
 }
