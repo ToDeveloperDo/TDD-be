@@ -51,6 +51,11 @@ class MemberFriendService(
                     friend.receiverMember.gitHubUrl!!
                 } else {
                     friend.senderMember.gitHubUrl!!
+                },
+                avatarUrl = if (memberFriendValidator.checkMember(friend, member)){
+                    friend.receiverMember.avatarUrl!!
+                }else{
+                    friend.senderMember.avatarUrl!!
                 }
             )
         }
@@ -58,11 +63,7 @@ class MemberFriendService(
 
     fun findMemberFriend(username: String, memberId: Long): MemberFriendResponse {
         val member = memberReader.getFriendMember(memberId)
-        return MemberFriendResponse(
-            memberId = memberId,
-            friendUsername = member.gitHubUsername!!,
-            friendGitUrl = member.gitHubUrl!!
-        )
+        return member.toMemberFriendResponse()
     }
 
     fun registerFriend(friendId: Long, username: String) {
