@@ -14,7 +14,6 @@ fun GitIssue.toTodoCreate() = TodoCreate(
     deadline = this.deadline,
     member = this.member
 )
-
 fun TodoCreate.toCreateIssueTemplate() = GitHubIssuesRequest(
     title = "${this.deadline} / ${this.content}",
     body = """
@@ -24,7 +23,6 @@ fun TodoCreate.toCreateIssueTemplate() = GitHubIssuesRequest(
                 """.trimIndent(),
     assignees = listOf(this.member.gitHubUsername!!)
 )
-
 data class TodoCreate(
     var issueId: Long? = null,
     val content: String,
