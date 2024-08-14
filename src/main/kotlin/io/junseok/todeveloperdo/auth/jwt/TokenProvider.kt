@@ -85,7 +85,7 @@ class TokenProvider(
         return try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
             true
-        }  catch (e: JWTVerificationException) {
+        }  catch (e: ExpiredJwtException) {
             if(type == "REFRESH"){
                 if(memberRepository.existsByAppleRefreshToken(token)){
                     memberRepository.deleteByAppleRefreshToken(token)
@@ -94,7 +94,8 @@ class TokenProvider(
                 }
             }
             throw ToDeveloperDoException{ErrorCode.EXPIRED_JWT}
-        }catch (e: ExpiredJwtException) {
+        }catch (e: Exception) {
+            log.error { e.message }
             false
         }
     }
