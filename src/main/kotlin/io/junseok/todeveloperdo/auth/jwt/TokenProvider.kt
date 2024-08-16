@@ -1,6 +1,5 @@
 package io.junseok.todeveloperdo.auth.jwt
 
-import com.auth0.jwt.exceptions.JWTVerificationException
 import io.jsonwebtoken.ExpiredJwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
@@ -9,6 +8,8 @@ import io.jsonwebtoken.security.Keys
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
+import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
 import mu.KotlinLogging
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
@@ -26,7 +27,8 @@ import java.util.stream.Collectors
 class TokenProvider(
     private val memberRepository: MemberRepository,
     @Value("\${jwt.secret}") private val secret: String,
-    @Value("\${jwt.token-validity-in-seconds}")private val tokenValidityInSeconds: Long
+    @Value("\${jwt.token-validity-in-seconds}")private val tokenValidityInSeconds: Long,
+    private val appleClient: AppleClient
 ) : InitializingBean {
     private val tokenValidityInMilliseconds = tokenValidityInSeconds * 1000
     private var key: Key? = null
@@ -81,24 +83,32 @@ class TokenProvider(
     }
 
     // 애플 JWT 토큰의 유효성 검증을 수행
-    fun validateAppleToken(token: String,type: String): Boolean {
+    fun validateAppleToken(token: String, type: String): Boolean {
         return try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-            true
-        }  catch (e: ExpiredJwtException) {
-            if(type == "REFRESH"){
-                if(memberRepository.existsByAppleRefreshToken(token)){
+            if (type == "REFRESH") {
+                val applePublicKeys = appleClient.getApplePublicKeys().keys
+                val decodedJWT = AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
+                true
+            } else {
+                // 자체 생성한 토큰 검증
+                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+                true
+            }
+        } catch (e: ExpiredJwtException) {
+            if (type == "REFRESH") {
+                if (memberRepository.existsByAppleRefreshToken(token)) {
                     memberRepository.deleteByAppleRefreshToken(token)
-                }else {
+                } else {
                     log.info("No refresh token found to delete.")
                 }
             }
-            throw ToDeveloperDoException{ErrorCode.EXPIRED_JWT}
-        }catch (e: Exception) {
+            throw ToDeveloperDoException { ErrorCode.EXPIRED_JWT }
+        } catch (e: Exception) {
             log.error { e.message }
             false
         }
     }
+
     companion object {
         private const val AUTHORITIES_KEY = "auth"
     }
