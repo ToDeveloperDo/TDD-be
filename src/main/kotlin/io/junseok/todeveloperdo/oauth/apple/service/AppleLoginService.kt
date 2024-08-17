@@ -61,28 +61,34 @@ class AppleLoginService(
         return appleClient.getToken(clientId, redirectUrl, grantType, code, clientSecret)
     }
 
-    fun refreshAppleToken(refreshToken: String): IdTokenResponse? {
+    fun refreshAppleToken(refreshToken: String): IdTokenResponse {
+        //return try {
+        val response = appleClient.refreshToken(
+            clientId = clientId,
+            grantType = "refresh_token",
+            refreshToken = refreshToken,
+            clientSecret = clientSecretCreator.createClientSecret()
+        )
+        val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
+        val applePublicKeys = appleClient.getApplePublicKeys().keys
+        val payload = AppleJwtUtil.getPayload(response.idToken, applePublicKeys)
+        val userIdentifier = payload["sub"] as String
+        val user = User(userIdentifier, "", authorities)
+        val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
+        val jwtToken = tokenProvider.createToken(authentication)
 
-        return try {
-            val response = appleClient.refreshToken(
-                clientId = clientId,
-                grantType = "refresh_token",
-                refreshToken = refreshToken,
-                clientSecret = clientSecretCreator.createClientSecret()
-            )
-            val idTokenResponse = IdTokenResponse(idToken = response.idToken)
-            logger.info(idTokenResponse.idToken)
-            idTokenResponse
-        } catch (e: FeignException) {
-            // Apple에서 'invalid_grant' 오류가 발생하면 refresh_token이 만료된 것으로 간주
+        val idTokenResponse = IdTokenResponse(idToken = jwtToken)
+        logger.info(idTokenResponse.idToken)
+
+        return idTokenResponse
+        /*} catch (e: FeignException) {
             if (e.status() == 400 && e.contentUTF8().contains("invalid_grant")) {
-                // 처리 방법: 사용자에게 다시 로그인 요구, 오류 로그 기록 등
                 logger.error("Refresh token has expired or is invalid. Please re-authenticate.")
                 null
             } else {
                 throw e
             }
-        }
+        }*/
     }
 
     companion object {
