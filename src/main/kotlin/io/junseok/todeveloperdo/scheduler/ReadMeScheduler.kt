@@ -16,7 +16,7 @@ class ReadMeScheduler(
     @Scheduled(cron = "0 0 0 * * *")
     fun generatorReadMe() {
         memberReader.getAllMember()
-            ?.forEach { member ->
+            .forEach { member ->
                 memberValidator.isExistRepo(member)
                 readMeProcessor.generatorReadMe(
                     member.gitHubToken!!.toGeneratorBearerToken(),
