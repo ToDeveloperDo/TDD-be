@@ -4,6 +4,7 @@ import io.junseok.todeveloperdo.domains.memberfriend.service.MemberFriendService
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.request.FriendNameRequest
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -89,7 +90,7 @@ class MemberFriendController(
     @GetMapping("/lookup/todolist/{friendId}")
     fun lookUpFriendTodo(
         @PathVariable friendId: Long, principal: Principal
-    ): ResponseEntity<List<TodoResponse>> =
+    ): ResponseEntity<List<DeadlineTodoResponse>> =
         ResponseEntity.ok(memberFriendService.searchFriendTodo(friendId, principal.name))
 
     /**

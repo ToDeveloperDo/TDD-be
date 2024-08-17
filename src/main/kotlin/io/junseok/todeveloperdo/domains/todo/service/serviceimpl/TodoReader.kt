@@ -7,6 +7,7 @@ import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoQueryRep
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.toTodoResponse
@@ -54,9 +55,15 @@ class TodoReader(
     }
 
     @Transactional(readOnly = true)
-    fun bringTodoListForWeek(deadline: LocalDate, member: Member): List<TodoResponse> {
+    fun bringTodoListForWeek(deadline: LocalDate, member: Member): List<DeadlineTodoResponse> {
         val weeksDay = deadline.minusWeeks(1)
         return todoListRepository.findByMemberAndDeadlineBetween(member,weeksDay,deadline)
-            .map { it.toTodoResponse() }
+            .groupBy { it.deadline }
+            .map{ todo ->
+                DeadlineTodoResponse(
+                    deadline = todo.key,
+                    todoResponse = todo.value.map { it.toTodoResponse() }
+                )
+            }
     }
 }

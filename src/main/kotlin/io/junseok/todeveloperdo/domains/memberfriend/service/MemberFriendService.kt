@@ -12,6 +12,7 @@ import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -109,7 +110,7 @@ class MemberFriendService(
             .map { it.receiverMember.toMemberFriendResponse() }
     }
 
-    fun searchFriendTodo(friendId: Long, username: String): List<TodoResponse> {
+    fun searchFriendTodo(friendId: Long, username: String): List<DeadlineTodoResponse> {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
         if (!memberFriendValidator.isAlreadyFriend(member, friendMember, FriendStatus.FOLLOWING)) {
