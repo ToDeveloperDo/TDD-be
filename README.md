@@ -1,4 +1,4 @@
-# 취준 개발자를 위한 TodoList
+# 취준생 개발자를 위한 TodoList
 
 ## 팀원 구성
 <div align="center">
@@ -38,6 +38,7 @@
 ---
 
 ## DB구조도
+![image](https://github.com/user-attachments/assets/aa77934c-432a-4893-aa09-731ca96783c1)
 
 
 ---
