@@ -1,6 +1,5 @@
 package io.junseok.todeveloperdo.oauth.apple.service
 
-import feign.FeignException
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
@@ -30,9 +29,7 @@ class AppleLoginService(
 
     @Value("\${spring.security.oauth2.client.registration.apple.authorization-grant-type}")
     private val grantType: String,
-
-
-    ) {
+) {
 
     private val logger = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
     fun processAppleOAuth(code: String): TokenResponse {
@@ -50,6 +47,7 @@ class AppleLoginService(
         val user = User(userIdentifier, "", authorities)
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)
+        println("jwtToken = ${jwtToken}")
         appleMemberService.createOrUpdateMember(userIdentifier, email, tokenResponse.refreshToken!!)
         return TokenResponse(
             idToken = jwtToken,
@@ -81,14 +79,6 @@ class AppleLoginService(
         logger.info(idTokenResponse.idToken)
 
         return idTokenResponse
-        /*} catch (e: FeignException) {
-            if (e.status() == 400 && e.contentUTF8().contains("invalid_grant")) {
-                logger.error("Refresh token has expired or is invalid. Please re-authenticate.")
-                null
-            } else {
-                throw e
-            }
-        }*/
     }
 
     companion object {
