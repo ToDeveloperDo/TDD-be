@@ -7,6 +7,7 @@ import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 
 @Aspect
 @Component
@@ -15,19 +16,22 @@ class CreateIssueAspect (
     private val memberReader: MemberReader
 ){
     @Around("@annotation(CreateEvent)")
-    fun aroundCreateIssue(joinPoint: ProceedingJoinPoint): Any? {
+    fun aroundCreateIssue(joinPoint: ProceedingJoinPoint) {
         val args = joinPoint.args
         val username = args[1] as String
         val member = memberReader.getMember(username)
         val todoRequest = args[0] as TodoRequest
+        if(LocalDate.now()==todoRequest.deadline) {
+            val issueEventRequest = eventProcessor.createIssue(member, todoRequest)
 
-        val issueEventRequest = eventProcessor.createIssue(member, todoRequest)
+            // 새로운 args 배열 생성 및 issueEventRequest 추가
+            val newArgs = args.copyOf()
+            newArgs[2] = issueEventRequest
 
-        // 새로운 args 배열 생성 및 issueEventRequest 추가
-        val newArgs = args.copyOf()
-        newArgs[2] = issueEventRequest
-
-        // 원래 메소드 호출
-        return joinPoint.proceed(newArgs)
+            // 원래 메소드 호출
+             joinPoint.proceed(newArgs)
+        }
+        else
+            joinPoint.proceed()
     }
 }

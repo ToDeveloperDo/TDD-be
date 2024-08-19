@@ -6,10 +6,12 @@ import io.junseok.todeveloperdo.aop.annotation.create.ReadMeCreate
 import io.junseok.todeveloperdo.aop.annotation.delete.DeleteEventHandler
 import io.junseok.todeveloperdo.aop.annotation.update.UpdateEvent
 import io.junseok.todeveloperdo.domains.gitissue.service.GitIssueService
+import io.junseok.todeveloperdo.domains.gitissue.service.serviceimpl.GitIssueUpdater
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.*
 import io.junseok.todeveloperdo.event.issue.dto.request.IssueEventRequest
-import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueValidator
+import io.junseok.todeveloperdo.exception.ErrorCode
+import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
@@ -28,7 +30,7 @@ class MemberTodoService(
     private val todoUpdater: TodoUpdater,
     private val gitIssueService: GitIssueService,
     private val todoValidator: TodoValidator,
-    private val issueValidator: GitHubIssueValidator,
+    private val gitIssueUpdater: GitIssueUpdater
 ) {
     @CreateEvent
     @ReadMeCreate
@@ -41,41 +43,46 @@ class MemberTodoService(
 
         //오늘 할 일이 아닌 경우
         if (LocalDate.now() != todoRequest.deadline) {
-            gitIssueService.saveGitIssue(todoRequest, member)
             val memberTodoList = todoCreator.generatorTodo(todoRequest, member)
-            return todoSaver.saveTodoList(memberTodoList)
+            val saveTodoList = todoSaver.saveTodoList(memberTodoList)
+            gitIssueService.saveGitIssue(todoRequest, member,memberTodoList)
+            return saveTodoList
         }
 
         val issueNumber = issueEventRequest?.issueNumber?.get()
-            ?: throw IllegalStateException("IssueEventRequest cannot be null")
-
+            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_ISSUE }
         val memberTodoList =
             todoCreator.generatorTodo(todoRequest, member, issueNumber)
-        val todoListId = todoSaver.saveTodoList(memberTodoList)
-        return todoListId
+        return todoSaver.saveTodoList(memberTodoList)
     }
 
+    // 할 일 찾기
     fun findTodoLists(todoDateRequest: TodoDateRequest, username: String): List<TodoResponse> {
         val member = memberReader.getMember(username)
         return todoReader.bringTodoLists(todoDateRequest.deadline, member)
     }
 
+    // 완료한 한 일 체크 NOTE
     @EventHandler
-    fun finishTodoList(todoListId: Long, username: String,state: String) {
+    fun finishTodoList(todoListId: Long, username: String, state: String) {
         val memberTodoList = todoReader.findTodoList(todoListId)
         todoUpdater.doneTodoList(memberTodoList)
     }
 
+    // 할 일 수정 NOTE
     @UpdateEvent
     fun modifyTodoList(todoListId: Long, todoRequest: TodoRequest, username: String) {
         val member = memberReader.getMember(username)
         val todoList = todoReader.findTodoList(todoListId)
         todoValidator.isWriter(todoListId, member)
         todoUpdater.update(todoList, todoRequest)
-        issueValidator.isExist(todoList)
+        gitIssueUpdater.update(member, todoList, todoRequest)
     }
+
+    //할 일 삭제 NOTE
     @DeleteEventHandler
-    fun removeTodoList(todoListId: Long, username: String, state: String) {}
+    fun removeTodoList(todoListId: Long, username: String, state: String) {
+    }
 
 
     @Transactional(readOnly = true)
@@ -87,6 +94,8 @@ class MemberTodoService(
         return todoReader.countByTodoList(todoCountRequest, member)
     }
 
+
+    // 다시 미 완료로 변환 TODO
     @EventHandler
     fun unFinishedTodoList(todoListId: Long, username: String, state: String) {
         val findTodoList = todoReader.findTodoList(todoListId)
