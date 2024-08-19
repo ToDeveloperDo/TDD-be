@@ -20,7 +20,8 @@ class JwtFilter(
         if (StringUtils.hasText(jwt) && tokenProvider.validateAppleToken(jwt!!,"ACCESS")) {
             val authentication = tokenProvider.getAuthentication(jwt)
             SecurityContextHolder.getContext().authentication = authentication
-            log.info { "JWT : ${jwt}" }
+            log.info { "JWT : $jwt" }
+            println("JWT :$jwt")
             log.info(SUCCESS_AUTHENTICATION)
         }
         chain.doFilter(request, response)
