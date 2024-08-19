@@ -23,8 +23,6 @@ class HandleIssueAspect(
         val state = args[2] as String
         val member = memberReader.getMember(userName)
         val todoList = todoReader.findTodoList(todoListId)
-
-        eventProcessor.closeIssueWithReadMe(member, todoList.issueNumber!!, state)
-
+        eventProcessor.closeIssueWithReadMe(member, todoList, state)
     }
 }

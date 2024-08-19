@@ -25,6 +25,4 @@ class AppleLoginController(
     @PostMapping("/refresh")
     fun reLogin(@RequestBody refreshTokenRequest: RefreshTokenRequest): ResponseEntity<IdTokenResponse> =
         ResponseEntity.ok(appleLoginService.refreshAppleToken(refreshTokenRequest.refreshToken))
-
-
 }

@@ -20,7 +20,7 @@ class MemberProcessor(
             .map { it.senderMember.memberId }
 
         //내가 보낸 친구 목록
-        val requestList = memberFriendReader.senderMemberByFriendStatus(member)
+        val sendList = memberFriendReader.senderMemberByFriendStatus(member)
             .map { it.receiverMember.memberId }
 
         //친구인 사람
@@ -29,7 +29,7 @@ class MemberProcessor(
         return memberReader.getMembersExcludeMe(member).map { friend ->
             val friendStatus = when {
                 receiveList.contains(friend.memberId) -> FriendStatus.RECEIVE
-                requestList.contains(friend.memberId) -> FriendStatus.REQUEST
+                sendList.contains(friend.memberId) -> FriendStatus.REQUEST
                 friendList.any {
                     it.senderMember == friend || it.receiverMember == friend
                 } -> FriendStatus.FOLLOWING

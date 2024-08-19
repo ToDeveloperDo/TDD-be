@@ -3,7 +3,6 @@ package io.junseok.todeveloperdo.domains.memberfriend.service
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberProcessor
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
-import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriend
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriendId
 import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.*
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
@@ -13,7 +12,6 @@ import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
-import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -26,7 +24,8 @@ class MemberFriendService(
     private val memberFriendSaver: MemberFriendSaver,
     private val memberFriendDeleter: MemberFriendDeleter,
     private val memberFriendUpdater: MemberFriendUpdater,
-    private val memberProcessor: MemberProcessor
+    private val memberProcessor: MemberProcessor,
+    private val memberFriendCreator: MemberFriendCreator
 
 ) {
     fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
@@ -37,27 +36,13 @@ class MemberFriendService(
         val friends = (senderMember + receiverMember).distinct()
 
         return friends.map { friend ->
+            val isFriend = memberFriendValidator.checkMember(friend, member)
+            val targetMember = if (isFriend) friend.receiverMember else friend.senderMember
             MemberFriendResponse(
-                memberId = if (memberFriendValidator.checkMember(friend, member)) {
-                    friend.receiverMember.memberId!! //
-                } else {
-                    friend.senderMember.memberId!!
-                },
-                friendUsername = if (memberFriendValidator.checkMember(friend, member)) {
-                    friend.receiverMember.gitHubUsername!!
-                } else {
-                    friend.senderMember.gitHubUsername!!
-                },
-                friendGitUrl = if (memberFriendValidator.checkMember(friend, member)) {
-                    friend.receiverMember.gitHubUrl!!
-                } else {
-                    friend.senderMember.gitHubUrl!!
-                },
-                avatarUrl = if (memberFriendValidator.checkMember(friend, member)){
-                    friend.receiverMember.avatarUrl!!
-                }else{
-                    friend.senderMember.avatarUrl!!
-                }
+                memberId = targetMember.memberId!!,
+                friendUsername = targetMember.gitHubUsername!!,
+                friendGitUrl = targetMember.gitHubUrl!!,
+                avatarUrl = targetMember.avatarUrl!!
             )
         }
     }
@@ -73,21 +58,16 @@ class MemberFriendService(
         memberFriendValidator.isFriend(member, friendMember)
         val memberFriendId = MemberFriendId(member.memberId!!, friendId)
 
-        val memberFriend = MemberFriend(
-            memberFriendId = memberFriendId,
-            senderMember = member,
-            receiverMember = friendMember,
-            friendStatus = FriendStatus.NOT_FRIEND
-        )
+        val memberFriend =
+            memberFriendCreator.create(memberFriendId, member, friendMember)
         memberFriendSaver.save(memberFriend)
     }
 
     fun deleteFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        val memberFriend =
-            memberFriendReader.findSenderMemberAndReceiverMember(member, friendMember)
-        memberFriendDeleter.delete(memberFriend)
+        val findFriend = memberFriendReader.findFriend(member, friendMember)
+        memberFriendDeleter.delete(findFriend)
     }
 
     fun findWaitFriends(username: String): List<MemberFriendResponse> {
@@ -121,6 +101,6 @@ class MemberFriendService(
 
     fun getFriend(gitUserName: String, appleId: String): MemberResponse =
         memberProcessor.findMemberList(appleId)
-            .find { it.username==gitUserName }
-            ?: throw ToDeveloperDoException{ErrorCode.NOT_EXIST_MEMBER}
+            .find { it.username == gitUserName }
+            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
 }

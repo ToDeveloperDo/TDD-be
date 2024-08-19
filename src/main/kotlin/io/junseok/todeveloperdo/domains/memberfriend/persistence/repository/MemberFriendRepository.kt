@@ -59,4 +59,17 @@ interface MemberFriendRepository : JpaRepository<MemberFriend, MemberFriendId> {
         @Param(value = "receiverMember") receiverMember: Member,
         @Param(value = "friendStatus") friendStatus: FriendStatus
     ): Boolean
+
+    @Query(
+        "select mf " +
+                "from MemberFriend mf " +
+                "where mf.friendStatus = :friendStatus and " +
+                "mf.senderMember = :senderMember and mf.receiverMember = :receiverMember " +
+                "or mf.senderMember = :receiverMember and mf.receiverMember = :senderMember"
+    )
+    fun findByFriendRelationship(
+        @Param(value = "senderMember") senderMember: Member,
+        @Param(value = "receiverMember") receiverMember: Member,
+        @Param(value = "friendStatus") friendStatus: FriendStatus
+    ): MemberFriend?
 }

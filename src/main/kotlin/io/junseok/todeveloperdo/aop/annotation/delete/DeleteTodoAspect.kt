@@ -26,7 +26,7 @@ class DeleteTodoAspect(
         val member = memberReader.getMember(userName)
         val todoList = todoReader.findTodoList(todoListId)
         todoDeleter.delete(todoList)
-        eventProcessor.closeIssueWithReadMe(member, todoList.issueNumber!!, state)
+        eventProcessor.closeIssueWithReadMe(member, todoList, state)
     }
 }
 

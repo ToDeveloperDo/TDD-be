@@ -25,10 +25,12 @@ class UpdateAspect(
         val username = args[2] as String
         val member = memberReader.getMember(username)
         val findTodoList = todoReader.findTodoList(todoListId)
-        eventProcessor.updateIssueWithReadMe(
-            member,
-            findTodoList.issueNumber!!,
-            todoRequest.toTodoCreate(member)
-        )
+        findTodoList.issueNumber?.let {
+            eventProcessor.updateIssueWithReadMe(
+                member,
+                findTodoList.issueNumber!!,
+                todoRequest.toTodoCreate(member)
+            )
+        }
     }
 }
