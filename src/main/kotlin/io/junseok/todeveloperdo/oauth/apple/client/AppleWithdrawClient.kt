@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.RequestParam
     configuration = [AppleWithdrawConfig::class]
 )
 interface AppleWithdrawClient {
+
     @PostMapping("/auth/revoke")
     @Headers("Content-Type: application/x-www-form-urlencoded")
     fun revokeToken(
         @RequestParam("client_id") clientId: String,
         @RequestParam("client_secret") clientSecret: String,
-        @RequestParam("refresh_token") refreshToken: String,
-        @RequestParam("token_type_hint") tokenTypeHint: String = "refresh_token"
+        @RequestParam("token") token: String,
+        @RequestParam("token_type_hint") tokenTypeHint: String
     )
 }
