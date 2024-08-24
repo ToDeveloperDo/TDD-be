@@ -57,7 +57,6 @@ class MemberFriendService(
         val friendMember = memberReader.getFriendMember(friendId)
         memberFriendValidator.isFriend(member, friendMember)
         val memberFriendId = MemberFriendId(member.memberId!!, friendId)
-
         val memberFriend =
             memberFriendCreator.create(memberFriendId, member, friendMember)
         memberFriendSaver.save(memberFriend)

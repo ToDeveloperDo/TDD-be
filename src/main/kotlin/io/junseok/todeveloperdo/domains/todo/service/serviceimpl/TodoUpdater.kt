@@ -26,4 +26,9 @@ class TodoUpdater() {
     fun proceedTodoList(memberTodoList: MemberTodoList) {
         memberTodoList.unFinishTodoList()
     }
+
+    @Transactional
+    fun modifyIssueNumber(issueNumber: Int,todoList: MemberTodoList){
+        todoList.updateIssueNumber(issueNumber)
+    }
 }

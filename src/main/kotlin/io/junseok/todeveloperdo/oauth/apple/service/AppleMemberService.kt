@@ -6,16 +6,6 @@ import io.junseok.todeveloperdo.oauth.apple.service.serviceimpl.ClientSecretCrea
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-import java.net.URI
-import java.net.URLEncoder
-import java.net.http.HttpClient
-import java.net.http.HttpRequest
-import java.net.http.HttpRequest.BodyPublisher
-import java.net.http.HttpResponse
-import java.nio.charset.StandardCharsets
-import java.util.stream.Collectors
-
-
 
 
 @Service
@@ -55,7 +45,6 @@ class AppleMemberService(
             )
             memberDeleter.removeMember(appleId)
         } catch (e: Exception) {
-            // 실패 시 로그 기록이나 예외 처리 로직 추가
             logger.error("failed: ", e)
         }
     }

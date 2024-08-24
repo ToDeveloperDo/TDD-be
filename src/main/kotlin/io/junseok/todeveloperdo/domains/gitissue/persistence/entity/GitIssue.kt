@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.domains.gitissue.persistence.entity
 import com.fasterxml.jackson.annotation.JsonFormat
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import java.time.LocalDate
 import javax.persistence.*
 
@@ -15,13 +16,13 @@ class GitIssue(
     var issueId: Long? = null,
 
     @Column(name = "content")
-    val content: String,
+    var content: String,
 
     @Column(name = "memo")
-    val memo: String,
+    var memo: String,
 
     @Column(name = "tag")
-    val tag: String,
+    var tag: String,
 
     @Column(name = "deadline")
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -35,8 +36,10 @@ class GitIssue(
     @JoinColumn(name = "todo_list_id")
     val todoList: MemberTodoList
 ) {
-    fun updateDeadline(deadline: LocalDate) {
-        this.deadline = deadline
+    fun update(todoRequest: TodoRequest) {
+        this.content = todoRequest.content
+        this.memo = todoRequest.memo!!
+        this.tag =todoRequest.tag
+        this.deadline = todoRequest.deadline
     }
-
 }

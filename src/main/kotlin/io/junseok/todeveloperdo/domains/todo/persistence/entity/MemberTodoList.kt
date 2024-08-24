@@ -50,4 +50,8 @@ class MemberTodoList(
         this.tag = tag
         this.deadline=deadline
     }
+
+    fun updateIssueNumber(issueNumber: Int){
+        this.issueNumber = issueNumber
+    }
 }

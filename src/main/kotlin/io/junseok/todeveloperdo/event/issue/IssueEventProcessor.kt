@@ -30,6 +30,8 @@ class IssueEventProcessor(
         eventPublisher.publishEvent(issueCloseEventRequest)
     }
 
+
+
     fun update(
         member: Member,
         issueNumber: Int,
