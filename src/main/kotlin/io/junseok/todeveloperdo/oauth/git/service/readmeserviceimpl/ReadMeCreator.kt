@@ -1,5 +1,7 @@
 package io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl
 
+import io.junseok.todeveloperdo.exception.ErrorCode
+import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.git.client.GtiHubReadMeClient
 import io.junseok.todeveloperdo.oauth.git.dto.request.fileCommitRequestInit
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService
@@ -24,7 +26,7 @@ class ReadMeCreator(
     ) {
         val branches = gitHubReadMeClient.getBranches(token, owner, repo)
         val defaultBranch = branches.firstOrNull { it.name == "main" || it.name == "master" }
-            ?: throw IllegalStateException("No b ranches found")
+            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_BRANCH }
 
         val newReadme = gitHubReadMeClient.getFile(token, owner, repo, GitHubService.PATH)
 
