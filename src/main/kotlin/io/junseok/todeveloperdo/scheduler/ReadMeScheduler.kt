@@ -12,8 +12,7 @@ class ReadMeScheduler(
     private val memberReader: MemberReader,
     private val readMeProcessor: ReadMeProcessor,
 ) {
-    //@Scheduled(cron = "0 0 0 * * *")
-    @Scheduled(fixedDelay = 10000)
+    @Scheduled(cron = "0 0 0 * * *")
     fun generatorReadMe() {
         memberReader.getAllMember()
             .forEach { member ->
