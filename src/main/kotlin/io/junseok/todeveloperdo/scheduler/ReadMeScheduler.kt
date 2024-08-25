@@ -11,18 +11,19 @@ import org.springframework.stereotype.Component
 class ReadMeScheduler(
     private val memberReader: MemberReader,
     private val readMeProcessor: ReadMeProcessor,
-    private val memberValidator: MemberValidator
 ) {
-    @Scheduled(cron = "0 0 0 * * *")
+    //@Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(fixedDelay = 10000)
     fun generatorReadMe() {
         memberReader.getAllMember()
             .forEach { member ->
-                memberValidator.isExistRepo(member)
-                readMeProcessor.generatorReadMe(
-                    member.gitHubToken!!.toGeneratorBearerToken(),
-                    member,
-                    member.gitHubRepo!!
-                )
+                member.gitHubRepo?.let {
+                    readMeProcessor.generatorReadMe(
+                        member.gitHubToken!!.toGeneratorBearerToken(),
+                        member,
+                        member.gitHubRepo!!
+                    )
+                }
             }
     }
 }
