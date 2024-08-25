@@ -6,11 +6,12 @@ import io.junseok.todeveloperdo.domains.gitissue.toTodoCreate
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDate
 
 @Component
 class GitIssueReader(private val gitIssueRepository: GitIssueRepository) {
     @Transactional(readOnly = true)
-    fun findGitIssueList() = gitIssueRepository.findAll()
+    fun findGitIssueList() = gitIssueRepository.findAllByDeadline(LocalDate.now())
         .map { it.toTodoCreate() }
 
     @Transactional(readOnly = true)

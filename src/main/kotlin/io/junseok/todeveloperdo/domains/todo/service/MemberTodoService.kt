@@ -30,30 +30,28 @@ class MemberTodoService(
     private val todoUpdater: TodoUpdater,
     private val gitIssueService: GitIssueService,
     private val todoValidator: TodoValidator,
-    private val gitIssueUpdater: GitIssueUpdater
+    private val gitIssueUpdater: GitIssueUpdater,
 ) {
     @CreateEvent
     @ReadMeCreate
     fun createTodoList(
         todoRequest: TodoRequest,
         username: String,
-        issueEventRequest: IssueEventRequest? = null
+        issueEventRequest: IssueEventRequest? = null,
     ): Long? {
         val member = memberReader.getMember(username)
 
-        //오늘 할 일이 아닌 경우
-        if (LocalDate.now() != todoRequest.deadline) {
-            val memberTodoList = todoCreator.generatorTodo(todoRequest, member)
-            val saveTodoList = todoSaver.saveTodoList(memberTodoList)
-            gitIssueService.saveGitIssue(todoRequest, member,memberTodoList)
-            return saveTodoList
-        }
+        val memberTodoList = todoCreator.generatorTodo(
+            todoRequest,
+            member,
+            issueEventRequest?.issueNumber?.get()
+                ?.takeIf { LocalDate.now() == todoRequest.deadline }
+                ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_ISSUE }
+        )
 
-        val issueNumber = issueEventRequest?.issueNumber?.get()
-            ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_ISSUE }
-        val memberTodoList =
-            todoCreator.generatorTodo(todoRequest, member, issueNumber)
-        return todoSaver.saveTodoList(memberTodoList)
+        val saveTodoList = todoSaver.saveTodoList(memberTodoList)
+        gitIssueService.saveGitIssue(todoRequest, member, memberTodoList)
+        return saveTodoList
     }
 
     // 할 일 찾기
@@ -76,7 +74,9 @@ class MemberTodoService(
         val todoList = todoReader.findTodoList(todoListId)
         todoValidator.isWriter(todoListId, member)
         todoUpdater.update(todoList, todoRequest)
-        gitIssueUpdater.update(member, todoList, todoRequest)
+        if (LocalDate.now() != todoRequest.deadline) {
+            gitIssueUpdater.update(member, todoList, todoRequest)
+        }
     }
 
     //할 일 삭제 NOTE
@@ -88,7 +88,7 @@ class MemberTodoService(
     @Transactional(readOnly = true)
     fun calculateTodoList(
         todoCountRequest: TodoCountRequest,
-        username: String
+        username: String,
     ): List<TodoCountResponse> {
         val member = memberReader.getMember(username)
         return todoReader.countByTodoList(todoCountRequest, member)
