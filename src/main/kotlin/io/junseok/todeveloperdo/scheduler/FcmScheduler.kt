@@ -18,7 +18,7 @@ class FcmScheduler(
     fun sendNotificationScheduler() {
         val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
             LocalDate.now(),
-            TodoStatus.DONE
+            TodoStatus.PROCEED
         ).map { it.toFcmRequest() }.distinct()
 
         fcmRequestList.stream()

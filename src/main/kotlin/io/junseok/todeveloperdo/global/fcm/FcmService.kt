@@ -8,12 +8,14 @@ import org.springframework.stereotype.Service
 
 @Service
 class FcmService() {
-    fun sendNotification(fcmRequest: FcmRequest){
-        val message = Message.builder()
-            .setToken(fcmRequest.clientToken)
-            .setNotification(fcmRequest.toNotification())
-            .build()
+    fun sendNotification(fcmRequest: FcmRequest) {
+        if (fcmRequest.clientToken != null) {
+            val message = Message.builder()
+                .setToken(fcmRequest.clientToken)
+                .setNotification(fcmRequest.toNotification())
+                .build()
 
-        FirebaseMessaging.getInstance().send(message)
+            FirebaseMessaging.getInstance().send(message)
+        }
     }
 }
