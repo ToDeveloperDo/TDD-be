@@ -16,11 +16,12 @@ class CreateIssueAspect (
     private val memberReader: MemberReader
 ){
     @Around("@annotation(CreateEvent)")
-    fun aroundCreateIssue(joinPoint: ProceedingJoinPoint) {
+    fun aroundCreateIssue(joinPoint: ProceedingJoinPoint):Any? {
         val args = joinPoint.args
         val username = args[1] as String
         val member = memberReader.getMember(username)
         val todoRequest = args[0] as TodoRequest
+        val result: Any?
         if(LocalDate.now()==todoRequest.deadline) {
             val issueEventRequest = eventProcessor.createIssue(member, todoRequest)
 
@@ -29,9 +30,10 @@ class CreateIssueAspect (
             newArgs[2] = issueEventRequest
 
             // 원래 메소드 호출
-             joinPoint.proceed(newArgs)
+              result= joinPoint.proceed(newArgs)
         }
         else
-            joinPoint.proceed()
+            result = joinPoint.proceed()
+        return result
     }
 }
