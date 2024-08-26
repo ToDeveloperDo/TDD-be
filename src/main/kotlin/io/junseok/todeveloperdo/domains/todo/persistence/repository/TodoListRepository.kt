@@ -9,13 +9,13 @@ import java.time.LocalDate
 interface TodoListRepository : JpaRepository<MemberTodoList, Long> {
     fun findByDeadlineAndMember(
         date: LocalDate,
-        member: Member
+        member: Member,
     ): List<MemberTodoList>
 
     fun findByDeadlineAndTodoStatusAndMember(
         date: LocalDate,
         todoStatus: TodoStatus,
-        member: Member
+        member: Member,
     ): List<MemberTodoList>
 
     fun existsByTodoListIdAndMember(todoListId: Long, member: Member): Boolean
@@ -23,6 +23,11 @@ interface TodoListRepository : JpaRepository<MemberTodoList, Long> {
     fun findByMemberAndDeadlineBetween(
         member: Member,
         startDt: LocalDate,
-        endDt: LocalDate
+        endDt: LocalDate,
+    ): List<MemberTodoList>
+
+    fun findAllByDeadlineAndTodoStatus(
+        deadline: LocalDate,
+        todoStatus: TodoStatus,
     ): List<MemberTodoList>
 }

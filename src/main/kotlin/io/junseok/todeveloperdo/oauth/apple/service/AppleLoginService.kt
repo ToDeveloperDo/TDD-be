@@ -32,7 +32,7 @@ class AppleLoginService(
 ) {
 
     private val logger = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
-    fun processAppleOAuth(code: String): TokenResponse {
+    fun processAppleOAuth(code: String, clientToken: String): TokenResponse {
         val clientSecret = clientSecretCreator.createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)
         val idToken = tokenResponse.idToken //access token
@@ -48,7 +48,12 @@ class AppleLoginService(
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)
         println("jwtToken = ${jwtToken}")
-        appleMemberService.createOrUpdateMember(userIdentifier, email, tokenResponse.refreshToken!!)
+        appleMemberService.createOrUpdateMember(
+            userIdentifier,
+            email,
+            tokenResponse.refreshToken!!,
+            clientToken
+        )
         return TokenResponse(
             idToken = jwtToken,
             refreshToken = tokenResponse.refreshToken
@@ -72,7 +77,7 @@ class AppleLoginService(
         val payload = AppleJwtUtil.getPayload(response.idToken, applePublicKeys)
         val userIdentifier = payload["sub"] as String
         val user = User(userIdentifier, "", authorities)
-        val b =  payload["email_verified"] as? Boolean ?: false
+        val b = payload["email_verified"] as? Boolean ?: false
 
         println("email_verified::  ${b}")
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)

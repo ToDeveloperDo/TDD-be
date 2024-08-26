@@ -69,6 +69,19 @@ logging.level:
   org.springframework.cache: DEBUG
   ##org.springframework.data.redis.cache: DEBUG
 
+fcm:
+  project-id: ${PROJECT_ID}
+  private-key: ${PRIVATE_KEY}
+  private-key-id: ${PRIVATE_KEY_ID}
+  client-email: ${CLIENT_EMAIL}
+  client-id: ${CLIENT_ID}
+  type: ${TYPE}
+  auth-url: ${AUTH_URL}
+  token-url: ${TOKEN_URL}
+  auth-provider-x509-cert-url: ${AUTH_PROVIDER_X509_CERT_URL}
+  client-x509-cert-url: ${CLIENT_X509_CERT_URL}
+  universe-domain: ${UNIVERSE_DOMAIN}
+
 springfox:
   documentation:
     swagger:

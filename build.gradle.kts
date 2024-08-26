@@ -80,6 +80,9 @@ dependencies {
     //redis
     //implementation ("org.springframework.boot:spring-boot-starter-data-redis")
     implementation ("org.springframework.boot:spring-boot-starter-cache")
+
+    //fcm
+    implementation ("com.google.firebase:firebase-admin:9.1.1")
 }
 allOpen {
     annotation("javax.persistence.Entity")

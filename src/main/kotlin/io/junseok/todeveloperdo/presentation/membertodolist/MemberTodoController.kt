@@ -8,6 +8,7 @@ import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDate
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
+import io.junseok.todeveloperdo.scheduler.FcmScheduler
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
@@ -16,7 +17,8 @@ import java.security.Principal
 @RequestMapping("/api/todo")
 @CrossOrigin
 class MemberTodoController(
-    private val memberTodoService: MemberTodoService
+    private val memberTodoService: MemberTodoService,
+    private val fcmScheduler: FcmScheduler
 ) {
 
     /**
@@ -80,4 +82,9 @@ class MemberTodoController(
         ResponseEntity.ok(
             memberTodoService.unFinishedTodoList(todoListId, principal.name, ISSUE_OPEN)
         )
+
+    @GetMapping("/test")
+    fun test() {
+        fcmScheduler.sendNotificationScheduler()
+    }
 }

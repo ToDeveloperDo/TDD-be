@@ -36,6 +36,9 @@ class Member(
     @Column(name = "github_url")
     var gitHubUrl: String? = null,
 
+    @Column(name = "client_token")
+    var clientToken: String? = null,
+
     @Enumerated(EnumType.STRING)
     val authority: Authority? = Authority.ROLE_USER
 ) {
@@ -50,14 +53,14 @@ class Member(
     fun updateGitInfo(
         gitUserResponse: GitUserResponse,
         accessToken: String
-    ){
+    ) {
         this.gitHubUsername = gitUserResponse.username
         this.gitHubToken = accessToken
         this.avatarUrl = gitUserResponse.avatarUrl
         this.gitHubUrl = gitUserResponse.gitUrl
     }
 
-    fun removeRepo(){
+    fun removeRepo() {
         this.gitHubRepo = null
     }
 }

@@ -22,13 +22,20 @@ class AppleMemberService(
 ) {
     private val logger = LoggerFactory.getLogger(AppleMemberService::class.java)
 
-    fun createOrUpdateMember(appleId: String, email: String, refreshToken: String) {
+    fun createOrUpdateMember(
+        appleId: String,
+        email: String,
+        refreshToken: String,
+        clientToken: String
+    ) {
         if (!memberValidator.isExistMember(appleId)) {
-            val member = memberCreator.generatorAppleMember(appleId, email, refreshToken)
+            val member =
+                memberCreator.generatorAppleMember(appleId, email, refreshToken, clientToken)
             memberSaver.saveMember(member)
         } else {
             val member = memberReader.getMember(appleId)
             member.appleEmail = email
+            member.clientToken = clientToken
         }
     }
 
