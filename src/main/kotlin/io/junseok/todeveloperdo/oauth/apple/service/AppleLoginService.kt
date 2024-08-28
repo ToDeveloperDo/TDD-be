@@ -32,7 +32,7 @@ class AppleLoginService(
 ) {
 
     private val logger = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
-    fun processAppleOAuth(code: String, clientToken: String): TokenResponse {
+    fun processAppleOAuth(code: String, clientToken: String?): TokenResponse {
         val clientSecret = clientSecretCreator.createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)
         val idToken = tokenResponse.idToken //access token
@@ -52,7 +52,7 @@ class AppleLoginService(
             userIdentifier,
             email,
             tokenResponse.refreshToken!!,
-            clientToken
+            clientToken!!
         )
         return TokenResponse(
             idToken = jwtToken,
