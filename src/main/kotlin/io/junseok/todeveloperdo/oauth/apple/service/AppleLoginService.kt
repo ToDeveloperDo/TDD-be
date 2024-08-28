@@ -38,7 +38,7 @@ class AppleLoginService(
         val idToken = tokenResponse.idToken //access token
 
         val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
-
+        println("clientToken = ${clientToken}")
         val applePublicKeys = appleClient.getApplePublicKeys().keys
         val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
 
