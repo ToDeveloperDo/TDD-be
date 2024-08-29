@@ -1,6 +1,8 @@
 package io.junseok.todeveloperdo.oauth.apple.service
 
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
+import io.junseok.todeveloperdo.exception.ErrorCode
+import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
 import io.junseok.todeveloperdo.oauth.apple.dto.response.IdTokenResponse
@@ -33,6 +35,11 @@ class AppleLoginService(
 
     private val logger = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
     fun processAppleOAuth(code: String, clientToken: String?): TokenResponse {
+
+        if(clientToken==null){
+            throw ToDeveloperDoException{ErrorCode.NOT_EXIST_BRANCH}
+        }
+
         val clientSecret = clientSecretCreator.createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)
         val idToken = tokenResponse.idToken //access token
@@ -43,16 +50,19 @@ class AppleLoginService(
         val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
 
         val email = payload["email"] as String
+        println("email = ${email}")
         val userIdentifier = payload["sub"] as String
+        println("userIdentifier = ${userIdentifier}")
         val user = User(userIdentifier, "", authorities)
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)
+
         println("jwtToken = ${jwtToken}")
         appleMemberService.createOrUpdateMember(
             userIdentifier,
             email,
             tokenResponse.refreshToken!!,
-            clientToken!!
+            clientToken
         )
         return TokenResponse(
             idToken = jwtToken,
