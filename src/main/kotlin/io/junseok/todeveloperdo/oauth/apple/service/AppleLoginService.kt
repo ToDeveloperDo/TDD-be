@@ -43,8 +43,13 @@ class AppleLoginService(
         val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
         println("clientToken = ${clientToken}")
         val applePublicKeys = appleClient.getApplePublicKeys().keys
-        val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
-
+        //val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
+        val payload = try {
+            AppleJwtUtil.getPayload(idToken, applePublicKeys)
+        } catch (e: Exception) {
+            println("Failed to parse idToken: ${e.message}")
+            throw e
+        }
         val email = payload["email"] as String
         println("email = ${email}")
         val userIdentifier = payload["sub"] as String
