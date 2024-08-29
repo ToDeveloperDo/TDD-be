@@ -34,11 +34,7 @@ class AppleLoginService(
 ) {
 
     private val logger = LoggerFactory.getLogger(CustomOAuth2UserService::class.java)
-    fun processAppleOAuth(code: String, clientToken: String?): TokenResponse {
-
-        if(clientToken==null){
-            throw ToDeveloperDoException{ErrorCode.NOT_EXIST_BRANCH}
-        }
+    fun processAppleOAuth(code: String, clientToken: String): TokenResponse {
 
         val clientSecret = clientSecretCreator.createClientSecret()
         val tokenResponse = getAppleToken(code, clientSecret)

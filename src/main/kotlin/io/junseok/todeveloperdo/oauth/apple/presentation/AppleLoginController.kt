@@ -21,7 +21,7 @@ class AppleLoginController(
     @PostMapping("/apple")
     fun appleLogin(
         @RequestParam code: String,
-        @RequestParam clientToken: String?
+        @RequestParam clientToken: String
     ): ResponseEntity<TokenResponse> =
         ResponseEntity.ok(appleLoginService.processAppleOAuth(code,clientToken))
 
