@@ -5,6 +5,7 @@ import io.junseok.todeveloperdo.oauth.git.dto.response.GitUserResponse
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberInfoResponse
 import io.junseok.todeveloperdo.presentation.member.dto.response.toMemberInfoResponse
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class MemberService(
@@ -38,4 +39,9 @@ class MemberService(
     }
 
     fun findAllMember(appleId: String) = memberProcessor.findMemberList(appleId)
+    @Transactional
+    fun updateMember(username: String, newRepoName: String) {
+        val member = memberReader.getMember(username)
+        member.updateGitHubRepo(newRepoName)
+    }
 }

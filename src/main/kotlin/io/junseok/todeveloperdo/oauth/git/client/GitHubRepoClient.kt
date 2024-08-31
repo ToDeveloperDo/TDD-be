@@ -1,7 +1,12 @@
 package io.junseok.todeveloperdo.oauth.git.client
 
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
+import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
+import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubRequest
+import io.junseok.todeveloperdo.oauth.git.dto.request.WebhookRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubRepoResponse
+import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubResponse
+import io.junseok.todeveloperdo.oauth.git.dto.response.WebhookResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -20,8 +25,8 @@ interface GitHubRepoClient {
     @PostMapping(value = ["/user/repos"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRepository(
         @RequestHeader("Authorization") token: String,
-        @RequestBody body: Map<String, Any>
-    ): Map<String, Any>
+        @RequestBody body: GItHubRepo
+    ): GitHubResponse
 
     @GetMapping("/repos/{owner}/{repo}")
     fun isExistRepo(
@@ -29,4 +34,12 @@ interface GitHubRepoClient {
         @PathVariable("repo") repo: String,
         @RequestHeader("Authorization") token: String
     ): GitHubRepoResponse
+
+    @PostMapping("/repos/{owner}/{repo}/hooks")
+    fun createWebhook(
+        @RequestHeader("Authorization") token: String,
+        @PathVariable("owner") owner: String,
+        @PathVariable("repo") repo: String,
+        @RequestBody webhookRequest: WebhookRequest
+    ): WebhookResponse
 }

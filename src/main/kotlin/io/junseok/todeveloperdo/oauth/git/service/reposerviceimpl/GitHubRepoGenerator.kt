@@ -5,12 +5,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class GitHubRepoGenerator {
-    fun generatorRepo(gitHubRequest: GitHubRequest): Map<String, Any> {
-        return mapOf(
-            "name" to gitHubRequest.repoName,
-            "description" to gitHubRequest.description!!,
-            "private" to gitHubRequest.isPrivate,
-            "auto_init" to true
+    fun generatorRepo(gitHubRequest: GitHubRequest): GitHubRequest {
+        return GitHubRequest(
+            repoName = gitHubRequest.repoName,
+            description = gitHubRequest.description ?: "",
+            isPrivate = gitHubRequest.isPrivate
         )
     }
 }
