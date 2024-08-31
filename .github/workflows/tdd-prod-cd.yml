@@ -1,4 +1,4 @@
-name: Dev build & deploy
+name: Prod build & deploy
 on:
   workflow_dispatch:
     inputs:
