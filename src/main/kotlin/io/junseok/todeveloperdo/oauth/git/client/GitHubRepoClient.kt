@@ -2,19 +2,13 @@ package io.junseok.todeveloperdo.oauth.git.client
 
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
 import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
-import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubRequest
 import io.junseok.todeveloperdo.oauth.git.dto.request.WebhookRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubRepoResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.WebhookResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
-import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestHeader
+import org.springframework.web.bind.annotation.*
 
 @FeignClient(
     name = "githubUserClient",
