@@ -46,7 +46,12 @@ class GitHubController(
                 if (newRepoName != null) {
                     println("ownerName = ${ownerName}")
                     println(22222)
-                    memberService.updateMember(ownerName,newRepoName)
+                    try {
+                        memberService.updateMember(ownerName, newRepoName)
+                    } catch (e: Exception) {
+                        println("Exception occurred while updating member: ${e.message}")
+                        e.printStackTrace()
+                    }
                 }
             }
         }
