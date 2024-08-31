@@ -23,5 +23,9 @@ class MemberReader(private val memberRepository: MemberRepository) {
 
     @Transactional(readOnly = true)
     fun getMembersExcludeMe(member: Member): List<Member> = memberRepository.findAll()
-        .filter { it.memberId!=member.memberId }
+        .filter { it.memberId != member.memberId }
+
+    @Transactional(readOnly = true)
+    fun findByGitUserName(username: String) = memberRepository.findByGitHubUsername(username)
+        ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
 }

@@ -40,7 +40,7 @@ class MemberService(
 
     fun findAllMember(appleId: String) = memberProcessor.findMemberList(appleId)
     fun updateMember(username: String, newRepoName: String) {
-        val member = memberReader.getMember(username)
+        val member = memberReader.findByGitUserName(username)
         println(3333)
         memberUpdater.updateMemberRepo(newRepoName,member)
         println(4444)
