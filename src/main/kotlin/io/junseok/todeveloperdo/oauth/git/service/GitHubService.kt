@@ -38,8 +38,10 @@ class GitHubService(
         memberUpdater.updateMemberRepo(gitHubRequest.repoName, member)
         val bearerToken = member.gitHubToken!!.trim().toGeneratorBearerToken()
         //val body = gitHubRepoGenerator.generatorRepo(gitHubRequest)
+        println("sdsdsdsds")
         val repository =
             gitHubRepoClient.createRepository(bearerToken, gitHubRequest.toGithubRepo())
+        println("repository.name = ${repository.name}")
         webHookCreator.create(bearerToken, repository)
         readMeProcessor.generatorReadMe(bearerToken, member, gitHubRequest.repoName)
         return repository
