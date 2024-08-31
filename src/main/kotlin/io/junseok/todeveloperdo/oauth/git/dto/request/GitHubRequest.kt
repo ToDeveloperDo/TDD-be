@@ -4,10 +4,10 @@ import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
 
 fun GitHubRequest.toGithubRepo() =
     GItHubRepo(
-        repoName = this.repoName,
+        name = this.repoName,
         description = this.description!!,
-        isPrivate = this.isPrivate,
-        auto_init = true
+        private = this.isPrivate,
+        autoInit = true
     )
 
 
