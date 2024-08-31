@@ -76,8 +76,8 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.8
         with:
-          key: ${{ secrets.AWS_SSH_PRIVATE_KEY }}
-          host: ${{ secrets.AWS_HOST }}
+          key: ${{ secrets.AWS_DEV_SSH_PRIVATE_KEY }}
+          host: ${{ secrets.AWS_DEV_HOST }}
           username: ${{ secrets.AWS_USERNAME }}
           port: ${{ secrets.AWS_PORT }}
           script: |
