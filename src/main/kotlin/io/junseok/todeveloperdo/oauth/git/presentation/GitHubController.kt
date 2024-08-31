@@ -32,6 +32,9 @@ class GitHubController(
         @RequestBody payload: Map<String, Any>,
         @RequestHeader("X-GitHub-Event") event: String
     ) {
+        if (event == "ping") {
+            return
+        }
         if (event == "repository" && payload["action"] == "renamed") {
             val repository = payload["repository"] as? Map<String, Any>
             val oldRepoName = ((payload["changes"] as Map<String, Map<String, String>>)["repository"]?.get("from"))
