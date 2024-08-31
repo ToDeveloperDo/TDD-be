@@ -6,6 +6,7 @@ import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepo
 import io.junseok.todeveloperdo.global.fcm.dto.request.toFcmRequest
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Component
@@ -14,7 +15,8 @@ class FcmScheduler(
     private val fcmService: FcmService,
 ) {
 
-    @Scheduled(cron = "0 40 22 * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 30 23 * * *", zone = "Asia/Seoul")
+    @Transactional
     fun sendNotificationScheduler() {
         val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
             LocalDate.now(),
