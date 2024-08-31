@@ -86,6 +86,4 @@ jobs:
             sudo docker rm ${{ secrets.DOCKER_APP_CONTAINER }}
             sudo docker rmi ${{ secrets.DOCKER_USERNAME }}/tdd-0.0.1-snapshot
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/tdd-0.0.1-snapshot
-            cd TDD-be
-            git pull origin ${{ needs.env.outputs.branch }}
-            sudo docker-compose up -d
+            sudo docker-compose -f ${{ secrets.PROD_DOCKER_COMPOSE_PATH }} up -d
