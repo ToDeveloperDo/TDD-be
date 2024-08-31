@@ -41,8 +41,12 @@ class GitHubController(
             val newRepoName = repository?.get("name") as? String
             val ownerName = (repository?.get("owner") as? Map<String, Any>)?.get("login") as? String
 
-            if (oldRepoName != null && newRepoName != null && ownerName != null) {
-                memberService.updateMember(ownerName,newRepoName)
+            if (ownerName != null) {
+                println(1111)
+                if (newRepoName != null) {
+                    println(22222)
+                    memberService.updateMember(ownerName,newRepoName)
+                }
             }
         }
     }
