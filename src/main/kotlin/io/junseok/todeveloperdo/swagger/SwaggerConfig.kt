@@ -22,6 +22,7 @@ class SwaggerConfig {
             .servers(
                 listOf(
                     Server().url("https://api.todeveloperdo.shop"),
+                    Server().url("https://dev.todeveloperdo.shop"),
                     Server().url("http://localhost:8080")
                 )
             )
