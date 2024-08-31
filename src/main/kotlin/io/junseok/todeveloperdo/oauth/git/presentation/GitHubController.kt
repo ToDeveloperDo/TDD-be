@@ -44,6 +44,7 @@ class GitHubController(
             if (ownerName != null) {
                 println(1111)
                 if (newRepoName != null) {
+                    println("ownerName = ${ownerName}")
                     println(22222)
                     memberService.updateMember(ownerName,newRepoName)
                 }
