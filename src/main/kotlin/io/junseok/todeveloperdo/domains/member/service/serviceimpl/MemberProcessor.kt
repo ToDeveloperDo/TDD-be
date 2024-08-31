@@ -26,7 +26,9 @@ class MemberProcessor(
         //친구인 사람
         val friendList = memberFriendReader.findAllWithFriend(member)
 
-        return memberReader.getMembersExcludeMe(member).map { friend ->
+        return memberReader.getMembersExcludeMe(member)
+            .filter { it.gitHubUsername!=null }
+            .map { friend ->
             val friendStatus = when {
                 receiveList.contains(friend.memberId) -> FriendStatus.RECEIVE
                 sendList.contains(friend.memberId) -> FriendStatus.REQUEST
