@@ -13,13 +13,13 @@ import java.security.Principal
 @CrossOrigin
 class GitHubController(
     private val gitHubService: GitHubService,
-    private val memberService: MemberService
+    private val memberService: MemberService,
 ) {
     @PostMapping("/create/repo")
     fun registerGitRepo(
         @RequestBody gitHubRequest: GitHubRequest,
-        principal: Principal
-    ):GitHubResponse = gitHubService.createRepository(gitHubRequest,principal.name)
+        principal: Principal,
+    ): GitHubResponse = gitHubService.createRepository(gitHubRequest, principal.name)
 
     @GetMapping("/check")
     fun isGitHubLink(principal: Principal) = gitHubService.checkGitLink(principal.name)
@@ -30,28 +30,22 @@ class GitHubController(
     @PostMapping("/webhook")
     fun handleWebhook(
         @RequestBody payload: Map<String, Any>,
-        @RequestHeader("X-GitHub-Event") event: String
+        @RequestHeader("X-GitHub-Event") event: String,
     ) {
         if (event == "ping") {
             return
         }
         if (event == "repository" && payload["action"] == "renamed") {
             val repository = payload["repository"] as? Map<String, Any>
-            val oldRepoName = ((payload["changes"] as Map<String, Map<String, String>>)["repository"]?.get("from"))
             val newRepoName = repository?.get("name") as? String
             val ownerName = (repository?.get("owner") as? Map<String, Any>)?.get("login") as? String
 
-            if (ownerName != null) {
-                println(1111)
-                if (newRepoName != null) {
-                    println("ownerName = ${ownerName}")
-                    println(22222)
-                    try {
-                        memberService.updateMember(ownerName, newRepoName)
-                    } catch (e: Exception) {
-                        println("Exception occurred while updating member: ${e.message}")
-                        e.printStackTrace()
-                    }
+            if (ownerName != null && newRepoName != null) {
+                try {
+                    memberService.updateMember(ownerName, newRepoName)
+                } catch (e: Exception) {
+                    println("Exception occurred while updating member: ${e.message}")
+                    e.printStackTrace()
                 }
             }
         }
