@@ -39,8 +39,4 @@ class MemberService(
     }
 
     fun findAllMember(appleId: String) = memberProcessor.findMemberList(appleId)
-    fun updateMember(username: String, newRepoName: String) {
-        val member = memberReader.findByGitUserName(username)
-        memberUpdater.updateMemberRepo(newRepoName,member)
-    }
 }
