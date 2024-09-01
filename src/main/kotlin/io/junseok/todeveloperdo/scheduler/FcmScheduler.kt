@@ -15,7 +15,7 @@ class FcmScheduler(
     private val fcmService: FcmService,
 ) {
     @Transactional
-    @Scheduled(cron = "0 55 23 * * *")
+    @Scheduled(cron = "0 0 22 * * *")
     fun sendNotificationScheduler() {
         val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
             LocalDate.now(),
