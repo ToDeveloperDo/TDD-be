@@ -82,7 +82,7 @@ jobs:
           port: ${{ secrets.AWS_PORT }}
           script: |
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
-            cd tdd-remote-dev
+            cd TDD-remote-dev
             sudo chmod +x ./nginx-deploy.sh
             sudo ./nginx-deploy.sh
             sudo chmod +x ./deploy.sh
