@@ -56,4 +56,4 @@
 4. GitHub 소셜로그인
 5. Apple 소셜로그인
 6. 푸시 알림 전송
-7. Webhook을 통한 실시간 연동
+7. Webhook을 통한 Github Repository와 연동
