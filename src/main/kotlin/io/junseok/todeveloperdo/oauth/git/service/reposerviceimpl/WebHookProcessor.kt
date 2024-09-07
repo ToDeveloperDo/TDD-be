@@ -9,13 +9,23 @@ import org.springframework.stereotype.Component
 class WebHookProcessor(
     private val payloadCreator: PayloadCreator,
     private val memberReader: MemberReader,
-    private val memberUpdater: MemberUpdater
+    private val memberUpdater: MemberUpdater,
 ) {
     fun process(payload: Map<String, Any>, event: String) {
-        if (event == GitHubService.REPOSITORY && payload["action"] == GitHubService.RENAMED_ACTION) {
-            val payloadResponse = payloadCreator.create(payload)
-            val member = memberReader.findByGitUserName(payloadResponse.username)
-            memberUpdater.updateMemberRepo(payloadResponse.newRepoName,member)
+        if (event == GitHubService.REPOSITORY) {
+            when (payload["action"]) {
+                GitHubService.RENAMED_REPO_ACTION -> {
+                    val payloadResponse = payloadCreator.create(payload)
+                    val member = memberReader.findByGitUserName(payloadResponse.username)
+                    memberUpdater.updateMemberRepo(payloadResponse.newRepoName, member)
+                }
+
+                GitHubService.DELETE_REPO_ACTION -> {
+                    val payloadResponse = payloadCreator.create(payload)
+                    val member = memberReader.findByGitUserName(payloadResponse.username)
+                    memberUpdater.removeMemberRepo(member)
+                }
+            }
         }
     }
 }

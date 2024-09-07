@@ -64,11 +64,10 @@ class MemberFriendReader(
         memberFriendRepository.findAllByFriend(member, FriendStatus.FOLLOWING)
 
     @Transactional(readOnly = true)
-    fun findFriend(member: Member, friendMember: Member) =
+    fun findFriend(member: Member, friendMember: Member, friendStatus: FriendStatus) =
         memberFriendRepository.findByFriendRelationship(
             member,
             friendMember,
-            FriendStatus.FOLLOWING
-        )
-            ?: throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
+            friendStatus
+        ) ?: throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
 }

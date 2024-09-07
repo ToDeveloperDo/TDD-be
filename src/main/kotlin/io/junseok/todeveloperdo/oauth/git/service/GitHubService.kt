@@ -55,6 +55,7 @@ class GitHubService(
         const val PATH = "README.md"
         const val PING = "ping"
         const val REPOSITORY = "repository"
-        const val RENAMED_ACTION = "renamed"
+        const val RENAMED_REPO_ACTION = "renamed"
+        const val DELETE_REPO_ACTION = "deleted"
     }
 }

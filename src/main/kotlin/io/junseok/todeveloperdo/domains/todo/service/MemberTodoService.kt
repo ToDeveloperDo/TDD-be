@@ -81,8 +81,7 @@ class MemberTodoService(
 
     //할 일 삭제 NOTE
     @DeleteEventHandler
-    fun removeTodoList(todoListId: Long, username: String, state: String) {
-    }
+    fun removeTodoList(todoListId: Long, username: String, state: String) { }
 
 
     @Transactional(readOnly = true)
@@ -95,7 +94,7 @@ class MemberTodoService(
     }
 
 
-    // 다시 미 완료로 변환 TODO
+    // 다시 미 완료로 변환
     @EventHandler
     fun unFinishedTodoList(todoListId: Long, username: String, state: String) {
         val findTodoList = todoReader.findTodoList(todoListId)

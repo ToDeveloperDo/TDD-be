@@ -62,10 +62,14 @@ class MemberFriendService(
         memberFriendSaver.save(memberFriend)
     }
 
-    fun deleteFriend(friendId: Long, username: String) {
+    fun deleteFriend(friendId: Long, username: String, type: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
-        val findFriend = memberFriendReader.findFriend(member, friendMember)
+        val findFriend = memberFriendReader.findFriend(
+            member,
+            friendMember,
+            FriendStatus.valueOf(type)
+        )
         memberFriendDeleter.delete(findFriend)
     }
 
