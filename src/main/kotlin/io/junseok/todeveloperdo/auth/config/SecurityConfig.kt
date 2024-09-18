@@ -2,8 +2,8 @@ package io.junseok.todeveloperdo.auth.config
 
 import io.junseok.todeveloperdo.auth.jwt.JwtAccessDeniedHandler
 import io.junseok.todeveloperdo.auth.jwt.JwtAuthenticationEntryPoint
-import io.junseok.todeveloperdo.auth.jwt.JwtFilter
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
+import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberValidator
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.HttpMethod
@@ -14,7 +14,6 @@ import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.web.filter.CorsFilter
 
 @Configuration
@@ -23,6 +22,7 @@ import org.springframework.web.filter.CorsFilter
 class SecurityConfig(
     private val corsFilter: CorsFilter,
     private val tokenProvider: TokenProvider,
+    private val memberValidator: MemberValidator,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
     private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
 ) {
@@ -59,7 +59,7 @@ class SecurityConfig(
             .antMatchers("/api/github/webhook").denyAll()
             .anyRequest().permitAll()
             .and()
-            .apply(JwtSecurityConfig(tokenProvider))
+            .apply(JwtSecurityConfig(tokenProvider,memberValidator))
 
         return httpSecurity.build()
     }
