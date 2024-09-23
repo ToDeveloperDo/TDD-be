@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 import java.net.URLEncoder
-import java.security.Principal
-import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @RestController
@@ -26,10 +24,7 @@ class LoginController(
     fun redirectToGithub(
         httpServletResponse: HttpServletResponse,
         @RequestParam("appleId") appleId: String
-        //httpServletRequest: HttpServletRequest,
-        //principal: Principal
     ) {
-        //httpServletRequest.session.setAttribute("principal",principal)
         // GitHub 인증 URL 구성
         val scope = URLEncoder.encode("repo user", "UTF-8")
         val state = URLEncoder.encode(appleId, "UTF-8")  // appleId를 state로 사용
@@ -43,12 +38,8 @@ class LoginController(
     fun githubCallback(
         @RequestParam("code") code: String,
         @RequestParam("state") appleId: String,
-        httpServletResponse: HttpServletResponse,
-        //httpServletRequest: HttpServletRequest,
+        httpServletResponse: HttpServletResponse
     ) {
-   /*     val principal = httpServletRequest.session.getAttribute("principal") as? Principal
-            ?: throw IllegalStateException("No principal found in session")*/
-
         val tokenResponse = gitHubOAuthService.processGitHubOAuth(code, appleId)
         val redirectUrl = "myapp://callback?token=${tokenResponse.token}"
         httpServletResponse.sendRedirect(redirectUrl)
