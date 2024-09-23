@@ -19,7 +19,7 @@ class GitHubRepoValidator(
 
     fun isExistRepo(appleId: String) {
         val member = memberReader.getMember(appleId)
-        memberValidator.isExistRepo(member)
+        memberValidator.isExistRepo(appleId)
         val existRepo = gitHubRepoClient.isExistRepo(
             member.gitHubUsername!!,
             member.gitHubRepo!!,
