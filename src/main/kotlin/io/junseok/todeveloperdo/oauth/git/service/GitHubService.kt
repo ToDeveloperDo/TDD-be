@@ -43,7 +43,6 @@ class GitHubService(
     }
 
     fun checkGitLink(appleId: String) = gitLinkValidator.isGitLink(appleId)
-    fun checkGitRepo(appleId: String) = gitHubRepoValidator.isExistRepo(appleId)
     fun webhookProcess(payload: Map<String, Any>, event: String) {
         if (event == PING) return
         webHookProcessor.process(payload,event)

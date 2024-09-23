@@ -11,22 +11,24 @@ import javax.servlet.http.HttpServletResponse
 
 
 class GitHubRepoVerificationFilter(
-    private val memberValidator: MemberValidator
+    private val memberValidator: MemberValidator,
 ) : OncePerRequestFilter() {
 
     override fun doFilterInternal(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        filterChain: FilterChain
+        filterChain: FilterChain,
     ) {
         val authentication = SecurityContextHolder.getContext().authentication
 
         if (authentication != null && authentication.isAuthenticated) {
             val principal = authentication.principal
-
             if (principal is UserDetails) {
                 val username = principal.username
-                memberValidator.isExistRepo(username)
+                if (!request.requestURI.equals("/api/github/create/repo")) {
+                    // 레포 검증을 수행
+                    memberValidator.isExistRepo(username)
+                }
             }
         }
         filterChain.doFilter(request, response)
