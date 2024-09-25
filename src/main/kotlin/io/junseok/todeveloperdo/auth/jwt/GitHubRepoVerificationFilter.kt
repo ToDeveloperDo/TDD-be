@@ -26,9 +26,9 @@ class GitHubRepoVerificationFilter(
             if (principal is UserDetails) {
                 val username = principal.username
                 if (
+                    !request.requestURI.equals("/api/github/check") &&
                     !request.requestURI.equals("/api/github/create/repo")
-                    || !request.requestURI.equals("/api/github/check")
-                    ) {
+                ) {
                     // 레포 검증을 수행
                     memberValidator.isExistRepo(username)
                 }
