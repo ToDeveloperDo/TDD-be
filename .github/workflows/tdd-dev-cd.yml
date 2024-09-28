@@ -83,8 +83,9 @@ jobs:
           script: |
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
             cd TDD-remote-dev
-            sudo chmod +x ./nginx-deploy.sh
-            sudo ./nginx-deploy.sh
-            sudo chmod +x ./deploy.sh
-            sudo ./deploy.sh
-            sudo docker image prune -f
+            chmod +x ./nginx-deploy.sh
+            ./nginx-deploy.sh
+            chmod +x ./deploy.sh
+            ./deploy.sh
+            docker image prune -f
+            docker rm -f tdd-remote-dev-certbot-1
