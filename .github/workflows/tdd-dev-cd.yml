@@ -76,10 +76,10 @@ jobs:
       - name: Deploy
         uses: appleboy/ssh-action@v0.1.8
         with:
-          key: ${{ secrets.AWS_DEV_SSH_PRIVATE_KEY }}
-          host: ${{ secrets.AWS_DEV_HOST }}
-          username: ${{ secrets.AWS_USERNAME }}
-          port: ${{ secrets.AWS_PORT }}
+          host: ${{ secrets.MY_SERVER_HOST }}
+          username: ${{ secrets.MY_SERVER_USERNAME }}
+          password: ${{ secrets.MY_SERVER_PASSWORD }}
+          port: ${{ secrets.MY_SERVER_PORT }}
           script: |
             sudo docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_TOKEN }}
             cd TDD-remote-dev
