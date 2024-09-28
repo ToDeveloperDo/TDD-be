@@ -17,7 +17,7 @@ class ReadMeCreator(
     private val gitHubReadMeClient: GtiHubReadMeClient
 ) {
     fun readMeContentCreate(todoListContent: String) = """
-            |# 📝${LocalDateTime.now().toStringDateTime()}(${LocalDateTime.now().toKoreanDayName()} / TODOLIST📝
+            |# 📝${LocalDateTime.now().toStringDateTime()}(${LocalDateTime.now().toKoreanDayName()}) / TODOLIST📝
             |$todoListContent
         """.trimMargin()
 
