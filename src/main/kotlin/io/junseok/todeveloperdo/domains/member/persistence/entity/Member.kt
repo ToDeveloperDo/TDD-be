@@ -50,6 +50,10 @@ class Member(
         this.gitHubToken = accessToken
     }
 
+    fun updateClientToken(fcmToken: String){
+        this.clientToken = clientToken
+    }
+
     fun updateGitInfo(
         gitUserResponse: GitUserResponse,
         accessToken: String
