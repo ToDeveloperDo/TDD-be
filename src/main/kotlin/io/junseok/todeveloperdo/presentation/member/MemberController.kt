@@ -1,12 +1,15 @@
 package io.junseok.todeveloperdo.presentation.member
 
 import io.junseok.todeveloperdo.domains.member.service.MemberService
+import io.junseok.todeveloperdo.presentation.member.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberInfoResponse
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import java.security.Principal
@@ -39,4 +42,10 @@ class MemberController(
     @GetMapping("/all")
     fun showAllMember(principal: Principal): ResponseEntity<List<MemberResponse>> =
         ResponseEntity.ok(memberService.findAllMember(principal.name))
+
+    @PostMapping("/fcm")
+    fun reIssuance(principal: Principal, @RequestBody fcmRequest: FcmRequest):ResponseEntity<Unit>{
+        memberService.reIssued(principal.name,fcmRequest.fcmToken)
+        return ResponseEntity.ok().build()
+    }
 }

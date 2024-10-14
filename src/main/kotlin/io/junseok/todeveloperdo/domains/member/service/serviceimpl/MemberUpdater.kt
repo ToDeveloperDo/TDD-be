@@ -24,4 +24,9 @@ class MemberUpdater {
     ) {
         member.updateGitInfo(gitUserResponse,accessToken)
     }
+
+    @Transactional
+    fun updateFcmToken(fcmToken: String, member: Member) {
+        member.updateClientToken(fcmToken)
+    }
 }

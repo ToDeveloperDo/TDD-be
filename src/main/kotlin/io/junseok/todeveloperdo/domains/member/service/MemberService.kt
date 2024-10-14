@@ -39,4 +39,8 @@ class MemberService(
     }
 
     fun findAllMember(appleId: String) = memberProcessor.findMemberList(appleId)
+    fun reIssued(appleId: String, fcmToken: String) {
+        val member = memberReader.getMember(appleId)
+        memberUpdater.updateFcmToken(fcmToken,member)
+    }
 }
