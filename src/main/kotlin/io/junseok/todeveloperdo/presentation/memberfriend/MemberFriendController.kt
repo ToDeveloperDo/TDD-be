@@ -42,7 +42,7 @@ class MemberFriendController(
         ResponseEntity.ok(memberFriendService.findMemberFriend(principal.name, memberId))
 
     /**
-     * NOTE
+     * NOTE, TODO
      * 친구 추가 요청
      */
     @GetMapping("/add/{friendId}")
@@ -62,7 +62,7 @@ class MemberFriendController(
         ResponseEntity.ok(memberFriendService.deleteFriend(friendId, principal.name,type))
 
     /**
-     * NOTE
+     * NOTE, TODO
      * 친구 요청 수락
      */
     @GetMapping("/accept/{friendId}")

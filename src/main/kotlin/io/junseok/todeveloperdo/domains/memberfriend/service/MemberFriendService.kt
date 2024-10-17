@@ -8,6 +8,8 @@ import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.*
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.global.fcm.FcmProcessor
+import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
@@ -25,8 +27,8 @@ class MemberFriendService(
     private val memberFriendDeleter: MemberFriendDeleter,
     private val memberFriendUpdater: MemberFriendUpdater,
     private val memberProcessor: MemberProcessor,
-    private val memberFriendCreator: MemberFriendCreator
-
+    private val memberFriendCreator: MemberFriendCreator,
+    private val fcmProcessor: FcmProcessor
 ) {
     fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
         val member = memberReader.getMember(username)
@@ -52,6 +54,7 @@ class MemberFriendService(
         return member.toMemberFriendResponse()
     }
 
+    // TODO
     fun registerFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
@@ -60,6 +63,9 @@ class MemberFriendService(
         val memberFriend =
             memberFriendCreator.create(memberFriendId, member, friendMember)
         memberFriendSaver.save(memberFriend)
+        fcmProcessor.byReceiveNotification(
+            FcmRequest(friendMember.clientToken!! ,member.gitHubUsername!!)
+        )
     }
 
     fun deleteFriend(friendId: Long, username: String, type: String) {
@@ -79,12 +85,16 @@ class MemberFriendService(
             .map { it.senderMember.toMemberFriendResponse() }
     }
 
+    // TODO
     fun approveRequest(friendId: Long, username: String) {
         val member = memberReader.getMember(username) //나
         val friendMember = memberReader.getFriendMember(friendId) //친구 요청을 보낸 사람
         val memberFriend =
             memberFriendReader.findSenderMemberAndReceiverMember(friendMember, member)
         memberFriendUpdater.updateStatus(memberFriend)
+        fcmProcessor.bySendNotification(
+            FcmRequest(friendMember.clientToken!!,member.gitHubUsername!!)
+        )
     }
 
     fun findSendRequestList(username: String): List<MemberFriendResponse> {
