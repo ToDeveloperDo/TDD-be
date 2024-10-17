@@ -51,7 +51,7 @@ class Member(
     }
 
     fun updateClientToken(fcmToken: String){
-        this.clientToken = clientToken
+        this.clientToken = fcmToken
     }
 
     fun updateGitInfo(
