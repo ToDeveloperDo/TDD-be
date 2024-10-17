@@ -9,6 +9,19 @@ fun FcmRequest.toNotification() =
         .setBody("${this.gitUserName}님! 아직 오늘의 할 일이 남았어요.")
         .build()
 
+fun FcmRequest.toReceiveNotification() =
+    Notification.builder()
+        .setTitle("TDD")
+        .setBody("${this.gitUserName}님이 친구요청을 보냈습니다!")
+        .build()
+
+fun FcmRequest.toSendNotification() =
+    Notification.builder()
+        .setTitle("TDD")
+        .setBody("${this.gitUserName}님께 친구요청을 수락했습니다!")
+        .build()
+
+
 fun MemberTodoList.toFcmRequest() = FcmRequest(
     clientToken = this.member.clientToken!!,
     gitUserName = this.member.gitHubUsername!!

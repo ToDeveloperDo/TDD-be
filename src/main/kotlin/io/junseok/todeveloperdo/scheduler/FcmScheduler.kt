@@ -1,8 +1,8 @@
 package io.junseok.todeveloperdo.scheduler
 
-import io.junseok.todeveloperdo.global.fcm.FcmService
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
+import io.junseok.todeveloperdo.global.fcm.FcmProcessor
 import io.junseok.todeveloperdo.global.fcm.dto.request.toFcmRequest
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -12,7 +12,8 @@ import java.time.LocalDate
 @Component
 class FcmScheduler(
     private val todoListRepository: TodoListRepository,
-    private val fcmService: FcmService,
+    //private val fcmService: FcmService,
+    private val fcmProcessor: FcmProcessor
 ) {
     @Transactional
     @Scheduled(cron = "0 0 20 * * *")
@@ -24,7 +25,7 @@ class FcmScheduler(
 
         fcmRequestList.stream()
             .forEach { request ->
-                fcmService.sendNotification(request)
+                fcmProcessor.dailyNotification(request)
             }
     }
 }
