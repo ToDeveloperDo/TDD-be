@@ -46,7 +46,6 @@ class MemberTodoService(
             member,
             issueEventRequest?.issueNumber?.get()
                 ?.takeIf { LocalDate.now() == todoRequest.deadline }
-                ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_ISSUE }
         )
 
         val saveTodoList = todoSaver.saveTodoList(memberTodoList)
