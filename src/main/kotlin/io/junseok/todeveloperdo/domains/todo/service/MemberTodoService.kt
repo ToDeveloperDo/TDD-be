@@ -73,9 +73,10 @@ class MemberTodoService(
         val todoList = todoReader.findTodoList(todoListId)
         todoValidator.isWriter(todoListId, member)
         todoUpdater.update(todoList, todoRequest)
-        if (LocalDate.now() != todoRequest.deadline) {
+        // 오늘이 아닌 경우
+        //if (LocalDate.now() != todoRequest.deadline) {
             gitIssueUpdater.update(member, todoList, todoRequest)
-        }
+       // }
     }
 
     //할 일 삭제 NOTE
