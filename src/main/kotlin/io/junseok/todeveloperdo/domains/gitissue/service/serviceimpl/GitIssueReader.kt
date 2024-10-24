@@ -14,7 +14,7 @@ class GitIssueReader(private val gitIssueRepository: GitIssueRepository) {
     @Transactional
     fun findGitIssueList() :List<TodoCreate>{
         println("LocalDate =  ${LocalDate.now()}")
-        val list = gitIssueRepository.findByDeadlineList(LocalDate.of(2024, 10, 19))
+        val list = gitIssueRepository.findByDeadlineList(LocalDate.now())
             .map { it.toTodoCreate() }
         println("list = ${list.size}")
         return list
