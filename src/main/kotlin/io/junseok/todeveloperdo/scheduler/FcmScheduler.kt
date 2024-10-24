@@ -12,7 +12,6 @@ import java.time.LocalDate
 @Component
 class FcmScheduler(
     private val todoListRepository: TodoListRepository,
-    //private val fcmService: FcmService,
     private val fcmProcessor: FcmProcessor
 ) {
     @Transactional
