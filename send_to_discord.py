@@ -9,6 +9,7 @@ def send_issue_update_to_discord(issue_id_or_key):
     DISCORD_WEBHOOK_URL = os.getenv("DISCORD_WEBHOOK_URL")
 
     jira_api_url = f"{JIRA_URL}/rest/api/3/issue/{issue_id_or_key}?expand=changelog"
+
     response = requests.get(jira_api_url, auth=HTTPBasicAuth(JIRA_EMAIL, JIRA_API_TOKEN))
 
     if response.status_code == 200:
