@@ -2,6 +2,7 @@ package io.junseok.todeveloperdo.presentation.membertodolist
 
 import io.junseok.todeveloperdo.domains.gitissue.service.serviceimpl.GitIssueReader
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
+import io.junseok.todeveloperdo.global.fcm.FcmProcessor
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_CLOSED
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_OPEN
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
@@ -89,6 +90,6 @@ class MemberTodoController(
 
     @GetMapping("/test")
     fun test() {
-        issueScheduler.makeIssue()
+        fcmScheduler.sendEveningNotificationScheduler()
     }
 }

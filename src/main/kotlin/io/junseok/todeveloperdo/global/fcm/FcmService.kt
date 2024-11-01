@@ -1,13 +1,13 @@
+/*
 package io.junseok.todeveloperdo.global.fcm
 
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
-import io.junseok.todeveloperdo.global.fcm.dto.request.toNotification
 import org.springframework.stereotype.Service
 import java.util.Objects
 
-/*
+
 @Service
 class FcmService(private val fcmProcessor: FcmProcessor) {
     fun dailyNotification(fcmRequest: FcmRequest) {
@@ -26,4 +26,5 @@ class FcmService(private val fcmProcessor: FcmProcessor) {
 
     fun sendNotification(fcmRequest: FcmRequest) =
         fcmProcessor.bySendNotification(fcmRequest)
-}*/
+}
+*/
