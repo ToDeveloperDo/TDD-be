@@ -77,8 +77,6 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.github.openfeign:feign-okhttp:11.8")
 
-    //redis
-    //implementation ("org.springframework.boot:spring-boot-starter-data-redis")
     implementation ("org.springframework.boot:spring-boot-starter-cache")
 
     //fcm
