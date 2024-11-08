@@ -20,7 +20,7 @@ object NotificationFactory {
     fun FcmRequest.toSendNotification() =
         Notification.builder()
             .setTitle("TDD")
-            .setBody("${this.gitUserName}님아 친구요청을 수락했습니다!")
+            .setBody("${this.gitUserName}님이 친구요청을 수락했습니다!")
             .build()
 
     fun toSendMorningNotification() =
