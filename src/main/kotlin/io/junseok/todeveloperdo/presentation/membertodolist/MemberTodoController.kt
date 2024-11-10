@@ -1,8 +1,6 @@
 package io.junseok.todeveloperdo.presentation.membertodolist
 
-import io.junseok.todeveloperdo.domains.gitissue.service.serviceimpl.GitIssueReader
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
-import io.junseok.todeveloperdo.global.fcm.FcmProcessor
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_CLOSED
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_OPEN
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
@@ -11,7 +9,6 @@ import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequ
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import io.junseok.todeveloperdo.scheduler.FcmScheduler
-import io.junseok.todeveloperdo.scheduler.IssueScheduler
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.Principal
@@ -21,9 +18,7 @@ import java.security.Principal
 @CrossOrigin
 class MemberTodoController(
     private val memberTodoService: MemberTodoService,
-    private val fcmScheduler: FcmScheduler,
-    private val gitIssueReader: GitIssueReader,
-    private val issueScheduler: IssueScheduler
+    private val fcmScheduler: FcmScheduler
 ) {
 
     /**
