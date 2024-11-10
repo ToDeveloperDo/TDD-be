@@ -104,6 +104,4 @@ class MemberFriendController(
             principal.name
         )
     )
-
-
 }

@@ -87,3 +87,7 @@ springfox:
     swagger:
       v2:
         host: ${SPRING_SWAGGER_HOST}
+
+openai:
+  api-key: ${OPEN_AI_KEY}
+  model: ${OPEN_AI_MODEL}
