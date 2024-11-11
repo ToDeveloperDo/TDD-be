@@ -24,6 +24,7 @@ class GitHubOAuthService(
     private lateinit var clientSecret: String
 
     fun processGitHubOAuth(code: String,userName: String): TokenResponse {
+        println("clientSecret = ${clientSecret}")
         val accessTokenResponse = accessTokenClient.getAccessToken(clientId, clientSecret, code)
 
         if (accessTokenResponse.contains("error")) {
