@@ -24,7 +24,6 @@ class GitHubOAuthService(
     private lateinit var clientSecret: String
 
     fun processGitHubOAuth(code: String,userName: String): TokenResponse {
-        println("clientSecret = ${clientSecret}")
         val accessTokenResponse = accessTokenClient.getAccessToken(clientId, clientSecret, code)
 
         if (accessTokenResponse.contains("error")) {
@@ -33,7 +32,6 @@ class GitHubOAuthService(
 
         val accessToken = extractAccessToken(accessTokenResponse)
         val bearerToken = "Bearer $accessToken"
-        println("bearerToken = ${bearerToken}")
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
         val userInfo = parseUserInfo(userInfoResponse)

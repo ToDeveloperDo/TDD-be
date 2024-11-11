@@ -93,3 +93,6 @@ springfox:
 openai:
   api-key: ${OPEN_AI_KEY}
   model: ${OPEN_AI_MODEL}
+
+github:
+  access-token: ${GB_TOKEN}
