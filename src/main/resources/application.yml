@@ -67,6 +67,8 @@ logging.level:
   org.hibernate.type: info
   org.springframework.security: DEBUG
   org.springframework.cache: DEBUG
+  org.springframework.web: DEBUG
+  feign.Logger: FULL
   ##org.springframework.data.redis.cache: DEBUG
 
 fcm:
