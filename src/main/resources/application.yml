@@ -68,7 +68,7 @@ logging.level:
   org.springframework.security: DEBUG
   org.springframework.cache: DEBUG
   org.springframework.web: DEBUG
-  feign.Logger: FULL
+  feign.Logger: DEBUG
   ##org.springframework.data.redis.cache: DEBUG
 
 fcm:
