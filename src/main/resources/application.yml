@@ -73,7 +73,7 @@ logging.level:
   org.springframework.security: DEBUG
   org.springframework.cache: DEBUG
   org.springframework.web: DEBUG
-  feign: ERROR
+  io.junseok.todeveloperdo.oauth.git.client.GitHubApiClient: DEBUG
   ##org.springframework.data.redis.cache: DEBUG
 
 fcm:
