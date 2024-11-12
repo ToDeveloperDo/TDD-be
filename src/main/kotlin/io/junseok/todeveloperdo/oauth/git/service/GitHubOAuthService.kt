@@ -31,7 +31,9 @@ class GitHubOAuthService(
         }
 
         val accessToken = extractAccessToken(accessTokenResponse)
+        println("accessToken = ${accessToken}")
         val bearerToken = "Bearer $accessToken"
+        println("bearerToken = ${bearerToken}")
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
         val userInfo = parseUserInfo(userInfoResponse)
