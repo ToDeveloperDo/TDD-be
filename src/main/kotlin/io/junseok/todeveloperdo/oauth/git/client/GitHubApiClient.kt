@@ -12,5 +12,5 @@ import org.springframework.web.bind.annotation.RequestHeader
 )
 interface GitHubApiClient {
     @GetMapping("/user")
-    fun getUserInfo(@RequestHeader("Authorization") token: String): String
+    fun getUserInfo(): String
 }
