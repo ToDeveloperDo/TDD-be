@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.oauth.git.client
 
+import io.junseok.todeveloperdo.client.openai.config.OpenChatAiConfig.Companion.AUTHORIZATION
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
 import io.junseok.todeveloperdo.oauth.git.dto.request.FileCommitRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.FileCommitResponse
@@ -16,14 +17,14 @@ import org.springframework.web.bind.annotation.*
 interface GtiHubReadMeClient {
     @GetMapping("/repos/{owner}/{repo}/branches")
     fun getBranches(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String
     ): List<GitHubBranchResponse>
 
     @PutMapping("/repos/{owner}/{repo}/contents/{path}")
     fun createOrUpdateFile(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @PathVariable("path") path: String,
@@ -32,7 +33,7 @@ interface GtiHubReadMeClient {
 
     @GetMapping("/repos/{owner}/{repo}/contents/{path}")
     fun getFile(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @PathVariable("path") path: String

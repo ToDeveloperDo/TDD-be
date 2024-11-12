@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.oauth.git.client
 
+import io.junseok.todeveloperdo.client.openai.config.OpenChatAiConfig.Companion.AUTHORIZATION
 import io.junseok.todeveloperdo.oauth.git.config.FeignConfig
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssueStateRequest
 import io.junseok.todeveloperdo.oauth.git.dto.request.GitHubIssuesRequest
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*
 interface GitHubIssuesClient {
     @PostMapping("/repos/{owner}/{repo}/issues")
     fun createIssue(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @RequestBody issue: GitHubIssuesRequest
@@ -23,7 +24,7 @@ interface GitHubIssuesClient {
 
     @PatchMapping("/repos/{owner}/{repo}/issues/{issue_number}")
     fun issueStateUpdate(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @PathVariable("issue_number") issueNumber: Int,
@@ -32,7 +33,7 @@ interface GitHubIssuesClient {
 
     @PatchMapping("/repos/{owner}/{repo}/issues/{issue_number}")
     fun updateIssue(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @PathVariable("issue_number") issueNumber: Int,

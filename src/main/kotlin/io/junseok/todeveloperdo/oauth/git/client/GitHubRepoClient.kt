@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.oauth.git.client
 
+import io.junseok.todeveloperdo.client.openai.config.OpenChatAiConfig.Companion.AUTHORIZATION
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
 import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
 import io.junseok.todeveloperdo.oauth.git.dto.request.WebhookRequest
@@ -18,7 +19,7 @@ import org.springframework.web.bind.annotation.*
 interface GitHubRepoClient {
     @PostMapping(value = ["/user/repos"], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun createRepository(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @RequestBody body: GItHubRepo
     ): GitHubResponse
 
@@ -26,12 +27,12 @@ interface GitHubRepoClient {
     fun isExistRepo(
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
-        @RequestHeader("Authorization") token: String
+        @RequestHeader(AUTHORIZATION) token: String
     ): GitHubRepoResponse
 
     @PostMapping("/repos/{owner}/{repo}/hooks")
     fun createWebhook(
-        @RequestHeader("Authorization") token: String,
+        @RequestHeader(AUTHORIZATION) token: String,
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @RequestBody webhookRequest: WebhookRequest

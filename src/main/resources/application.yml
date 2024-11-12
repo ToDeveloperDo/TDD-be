@@ -73,7 +73,6 @@ logging.level:
   org.springframework.security: DEBUG
   org.springframework.cache: DEBUG
   org.springframework.web: DEBUG
-  io.junseok.todeveloperdo.oauth.git.client.GitHubApiClient: DEBUG
   ##org.springframework.data.redis.cache: DEBUG
 
 fcm:
@@ -98,6 +97,3 @@ springfox:
 openai:
   api-key: ${OPEN_AI_KEY}
   model: ${OPEN_AI_MODEL}
-
-github:
-  access-token: ${GB_TOKEN}
