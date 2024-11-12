@@ -60,6 +60,8 @@ feign:
     config:
       default:
         logger-level: full
+  okhttp:
+    enabled: false
 
 apple:
   team-id: ${APPLE_TEAM_ID}
