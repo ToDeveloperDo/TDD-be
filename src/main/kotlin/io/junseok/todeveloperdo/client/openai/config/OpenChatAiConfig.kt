@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration
 class OpenChatAiConfig(
     @Value("\${openai.api-key}") private val secretKey: String
 ) {
-    @Bean
+/*    @Bean
     fun requestInterceptor(): RequestInterceptor {
         return RequestInterceptor { requestTemplate: RequestTemplate ->
             requestTemplate.header(
@@ -21,7 +21,7 @@ class OpenChatAiConfig(
             )
             requestTemplate.header(SECRET_KEY_KEY, "$SECRET_KEY_PREFIX$secretKey")
         }
-    }
+    }*/
 
     @Bean
     fun feignEncoder(): Encoder {
