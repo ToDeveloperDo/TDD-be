@@ -57,6 +57,9 @@ feign:
       url: ${FEIGN_ACCESS_TOKEN_URL}
     user-profile:
       url: ${FEIGN_USER_PROFILE_URL}
+    config:
+      default:
+        logger-level: full
 
 apple:
   team-id: ${APPLE_TEAM_ID}
@@ -68,7 +71,6 @@ logging.level:
   org.springframework.security: DEBUG
   org.springframework.cache: DEBUG
   org.springframework.web: DEBUG
-  feign.Logger: DEBUG
   ##org.springframework.data.redis.cache: DEBUG
 
 fcm:
