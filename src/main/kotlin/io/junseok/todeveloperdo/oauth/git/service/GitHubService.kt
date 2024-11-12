@@ -35,6 +35,7 @@ class GitHubService(
         val member = memberReader.getMember(username)
         memberUpdater.updateMemberRepo(gitHubRequest.repoName, member)
         val bearerToken = member.gitHubToken!!.trim().toGeneratorBearerToken()
+        println("bearerToken = ${bearerToken}")
         val repository =
             gitHubRepoClient.createRepository(bearerToken, gitHubRequest.toGithubRepo())
         webHookCreator.create(bearerToken, repository)
