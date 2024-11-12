@@ -31,11 +31,11 @@ class GitHubClientConfig() {
         return Logger.Level.FULL
     }
 
-    @Bean
+   /* @Bean
     fun requestInterceptor(): RequestInterceptor {
         return RequestInterceptor { template ->
             val hardcodedAccessToken = "Bearer $accessToken"  // 하드코딩된 토큰 설정
             template.header("Authorization", hardcodedAccessToken)
         }
-    }
+    }*/
 }

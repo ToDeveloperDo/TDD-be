@@ -32,7 +32,7 @@ class GitHubOAuthService(
 
         val accessToken = extractAccessToken(accessTokenResponse)
         val bearerToken = "Bearer $accessToken"
-        val userInfoResponse = gitHubApiClient.getUserInfo()
+        val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
         val userInfo = parseUserInfo(userInfoResponse)
         memberService.createGitMember(userInfo.toGitUserResponse(),accessToken,userName)
