@@ -73,6 +73,9 @@ dependencies {
     //feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8")
     implementation("io.github.openfeign:feign-jackson:12.1")
+    implementation("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
+    implementation("io.github.openfeign:feign-okhttp:11.8")
 
     implementation ("org.springframework.boot:spring-boot-starter-cache")
 
