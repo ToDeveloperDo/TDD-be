@@ -15,7 +15,7 @@
 
 ## 개발 환경
 - BACKEND : Spring Framework, Kotlin 1.9.24, Mysql, Spring Data Jpa, AWS ec2, Docker, Docker-compose, CI/CD, Nginx, FeignClient   <br>
-- APIs : GitHub API, Apple API <br>
+- APIs : GitHub API, Apple API, OpenAI <br>
 - 버전 및 이슈관리 : Github, Github actions   <br>
 ---
 ## 주제
@@ -30,15 +30,20 @@
 - 친구 추가를 통해 친구의 할 일을 확인할 수 있어야한다.
 - 매일 자정이 넘으면 ReadME파일을 해당 요일로 변경하고 해당요일에 할 일이 있다면 자동으로 작성되게 하여야한다.
 - 할 일이 아직 남아있는 경우 사용자에게 푸시알림을 전송해야한다.
+- 사용자가 입력한 기술스택, 학습기간, 능숙도, 기간에 맞는 커리큘럼을 추천해주어야 한다.
+- 생성된 커리큘럼에서 사용자가 선택한 목표들만 할 일에 자동으로 등록을 해야한다.
 
 ## 참고사항 및 조건
 - ReadME에는 오늘 할 일만 작성이 되어야한다.
 - 친구가 아닌 사람의 할 일 목록은 볼 수 없다.
 - 친구가 되는 조건은 한 쪽만 친추를 걸어서가 아닌 쌍방으로 친추가 되어야한다.
+- 생성된 커리큘럼 중 사용자가 선택한 목표만 할 일에 등록되어야한다.
+- 
 ---
 
 ## DB구조도
-![image](https://github.com/user-attachments/assets/618f7ea4-5151-488a-9410-f1fc29550824)
+<img width="685" alt="image" src="https://github.com/user-attachments/assets/1c22744b-1c88-4eb2-9cfd-99395dc22875">
+
 
 
 
