@@ -61,5 +61,6 @@
 3. 친구 추가를 통한 서로 할 일 조회 기능
 4. GitHub 소셜로그인
 5. Apple 소셜로그인
-6. 푸시 알림 전송
+6. Push 알림 전송
 7. Webhook을 통한 Github Repository와 연동
+8. OpenAI를 통한 사용자 맞춤 커리큘럼 생성
