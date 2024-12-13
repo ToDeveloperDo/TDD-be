@@ -94,6 +94,13 @@ springfox:
       v2:
         host: ${SPRING_SWAGGER_HOST}
 
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+      exposure:
+        include: "prometheus,health"
+
 openai:
   api-key: ${OPEN_AI_KEY}
   model: ${OPEN_AI_MODEL}
