@@ -49,7 +49,7 @@
 ---
 
 ## System Architecture
-<img width="1483" alt="image" src="https://github.com/user-attachments/assets/eaddf981-5fe4-44dd-8ec0-c2a5bcf0e55f" />
+<img width="1468" alt="image" src="https://github.com/user-attachments/assets/dabdd7f4-01ea-4193-8b00-4b57518acbed" />
 
 
 
