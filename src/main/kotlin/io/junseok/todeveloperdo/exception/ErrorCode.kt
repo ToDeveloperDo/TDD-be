@@ -19,5 +19,6 @@ enum class ErrorCode(
     NOT_LINK_GITHUB(HttpStatusCode.BAD_REQUEST.status,"Github와 연동되지 않은 계정입니다!"),
     NOT_EXIST_REPO(HttpStatusCode.NOT_FOUND.status,"레포지토리가 존재하지 않습니다!"),
     FAILED_TO_GENERATE_ISSUE(HttpStatusCode.BAD_REQUEST.status,"Git Issue생성에 실패했습니다!"),
-    NOT_EXIST_BRANCH(HttpStatusCode.BAD_REQUEST.status,"branch가 존재하지 않습니다!")
+    NOT_EXIST_BRANCH(HttpStatusCode.BAD_REQUEST.status,"branch가 존재하지 않습니다!"),
+    NOT_EXIST_PLAN(HttpStatusCode.NOT_FOUND.status,"존재하자 않는 커리큘럼 계획입니다!")
 }

@@ -6,6 +6,7 @@ import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequests
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import io.junseok.todeveloperdo.scheduler.FcmScheduler
@@ -27,10 +28,10 @@ class MemberTodoController(
      */
     @PostMapping
     fun registerTodoList(
-        @RequestBody todoRequest: TodoRequest,
+        @RequestBody todoRequests: TodoRequests,
         principal: Principal
     ): ResponseEntity<Long> =
-        ResponseEntity.ok(memberTodoService.createTodoList(todoRequest, principal.name))
+        ResponseEntity.ok(memberTodoService.createTodoList(todoRequests.todos, principal.name))
 
     /**
      * NOTE

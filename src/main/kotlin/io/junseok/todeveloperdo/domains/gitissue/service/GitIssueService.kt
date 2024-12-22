@@ -14,8 +14,10 @@ class GitIssueService(
     private val gitIssueCreator: GitIssueCreator,
 ) {
     @Transactional
-    fun saveGitIssue(todoRequest: TodoRequest, member: Member, memberTodoList: MemberTodoList) {
-        val gitIssue = gitIssueCreator.create(todoRequest, member,memberTodoList)
-        gitIssueSaver.save(gitIssue)
+    fun saveGitIssue(member: Member, memberTodoList: List<MemberTodoList>) {
+        val gitIssues = memberTodoList.map { todo ->
+            gitIssueCreator.create(member, todo)
+        }
+        gitIssueSaver.save(gitIssues)
     }
 }

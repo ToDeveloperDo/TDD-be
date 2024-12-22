@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.client.openai.dto
+package io.junseok.todeveloperdo.client.openai.dto.request
 
 
 data class CurriculumAiRequest(

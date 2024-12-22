@@ -8,11 +8,11 @@ import org.springframework.stereotype.Component
 
 @Component
 class GitIssueCreator {
-    fun create(todoRequest: TodoRequest, member: Member, memberTodoList: MemberTodoList) = GitIssue(
-        content = todoRequest.content,
-        memo = todoRequest.memo!!,
-        tag = todoRequest.tag,
-        deadline = todoRequest.deadline,
+    fun create(member: Member, memberTodoList: MemberTodoList) = GitIssue(
+        content = memberTodoList.content,
+        memo = memberTodoList.memo!!,
+        tag = memberTodoList.tag,
+        deadline = memberTodoList.deadline,
         member = member,
         todoList = memberTodoList
     )

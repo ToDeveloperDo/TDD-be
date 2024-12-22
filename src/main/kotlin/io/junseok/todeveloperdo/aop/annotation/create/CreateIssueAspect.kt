@@ -11,29 +11,28 @@ import java.time.LocalDate
 
 @Aspect
 @Component
-class CreateIssueAspect (
+class CreateIssueAspect(
     private val eventProcessor: EventProcessor,
-    private val memberReader: MemberReader
-){
+    private val memberReader: MemberReader,
+) {
     @Around("@annotation(CreateEvent)")
-    fun aroundCreateIssue(joinPoint: ProceedingJoinPoint):Any? {
+    fun aroundCreateIssue(joinPoint: ProceedingJoinPoint): Any? {
         val args = joinPoint.args
         val username = args[1] as String
         val member = memberReader.getMember(username)
-        val todoRequest = args[0] as TodoRequest
-        val result: Any?
-        if(LocalDate.now()==todoRequest.deadline) {
-            val issueEventRequest = eventProcessor.createIssue(member, todoRequest)
+        val todoRequest = args[0] as List<TodoRequest>
 
-            // 새로운 args 배열 생성 및 issueEventRequest 추가
-            val newArgs = args.copyOf()
-            newArgs[2] = issueEventRequest
+        val issueEventRequests =
+            todoRequest
+                .filter { LocalDate.now() == it.deadline }
+                .map { eventProcessor.createIssue(member, it) }
 
-            // 원래 메소드 호출
-              result= joinPoint.proceed(newArgs)
-        }
-        else
-            result = joinPoint.proceed()
-        return result
+        val newArgs = args.copyOf()
+        newArgs[2] =
+            if (issueEventRequests.isNotEmpty())
+                issueEventRequests.first()
+            else null
+
+        return joinPoint.proceed(newArgs)
     }
 }
