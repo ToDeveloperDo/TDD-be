@@ -8,5 +8,5 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class GitIssueSaver(private val gitIssueRepository: GitIssueRepository) {
     @Transactional
-    fun save(gitIssue: GitIssue) = gitIssueRepository.save(gitIssue)
+    fun save(gitIssue: List<GitIssue>) = gitIssueRepository.saveAll(gitIssue)
 }

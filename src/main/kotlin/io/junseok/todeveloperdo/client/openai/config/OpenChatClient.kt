@@ -1,8 +1,8 @@
 package io.junseok.todeveloperdo.client.openai.config
 
 import io.junseok.todeveloperdo.client.openai.config.OpenChatAiConfig.Companion.AUTHORIZATION
-import io.junseok.todeveloperdo.client.openai.dto.CurriculumAiRequest
-import io.junseok.todeveloperdo.client.openai.dto.CurriculumAiResponse
+import io.junseok.todeveloperdo.client.openai.dto.request.CurriculumAiRequest
+import io.junseok.todeveloperdo.client.openai.dto.request.CurriculumAiResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody

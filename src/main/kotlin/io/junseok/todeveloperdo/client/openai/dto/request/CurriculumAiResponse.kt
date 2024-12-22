@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.client.openai.dto
+package io.junseok.todeveloperdo.client.openai.dto.request
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty

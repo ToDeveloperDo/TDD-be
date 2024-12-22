@@ -10,8 +10,6 @@ import io.junseok.todeveloperdo.domains.gitissue.service.serviceimpl.GitIssueUpd
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.*
 import io.junseok.todeveloperdo.event.issue.dto.request.IssueEventRequest
-import io.junseok.todeveloperdo.exception.ErrorCode
-import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
@@ -35,21 +33,22 @@ class MemberTodoService(
     @CreateEvent
     @ReadMeCreate
     fun createTodoList(
-        todoRequest: TodoRequest,
+        todoRequest: List<TodoRequest>,
         username: String,
         issueEventRequest: IssueEventRequest? = null,
     ): Long? {
         val member = memberReader.getMember(username)
 
-        val memberTodoList = todoCreator.generatorTodo(
-            todoRequest,
-            member,
-            issueEventRequest?.issueNumber?.get()
-                ?.takeIf { LocalDate.now() == todoRequest.deadline }
-        )
-
-        val saveTodoList = todoSaver.saveTodoList(memberTodoList)
-        gitIssueService.saveGitIssue(todoRequest, member, memberTodoList)
+        val memberTodoLists = todoRequest.map { todo ->
+            todoCreator.generatorTodo(
+                todo,
+                member,
+                issueEventRequest?.issueNumber?.get()
+                    ?.takeIf { LocalDate.now() == todo.deadline }
+            )
+        }
+        val saveTodoList = todoSaver.saveTodoList(memberTodoLists)
+        gitIssueService.saveGitIssue(member, memberTodoLists)
         return saveTodoList
     }
 
