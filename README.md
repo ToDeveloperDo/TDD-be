@@ -14,7 +14,7 @@
 <br>
 
 ## 개발 환경
-- BACKEND : Spring Framework, Kotlin 1.9.24, Mysql, Spring Data Jpa, AWS ec2, Docker, Docker-compose, CI/CD, Nginx, FeignClient   <br>
+- BACKEND : Spring Framework 2.7.13, Kotlin 1.9.24, Mysql, Spring Data Jpa, AWS ec2, Docker, Docker-compose, CI/CD, Nginx, FeignClient   <br>
 - APIs : GitHub API, Apple API, OpenAI <br>
 - 버전 및 이슈관리 : Github, Github actions   <br>
 ---
@@ -41,7 +41,7 @@
 ---
 
 ## DB구조도
-<img width="685" alt="image" src="https://github.com/user-attachments/assets/1c22744b-1c88-4eb2-9cfd-99395dc22875">
+![image](https://github.com/user-attachments/assets/466c871d-1d60-4c96-815c-008dc3c7840c)
 
 
 
