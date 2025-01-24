@@ -8,5 +8,5 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(ToDeveloperDoException::class)
     protected fun errorCodeResponseEntity(ex: ToDeveloperDoException): ResponseEntity<ErrorResponseEntity> =
-        ex.errorCode().responseEntity()
+        ex.errorCode.responseEntity()
 }

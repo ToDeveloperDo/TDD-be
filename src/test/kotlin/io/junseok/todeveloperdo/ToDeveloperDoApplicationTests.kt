@@ -1,4 +1,3 @@
-/*
 package io.junseok.todeveloperdo
 
 import org.junit.jupiter.api.Test
@@ -12,4 +11,3 @@ class ToDeveloperDoApplicationTests {
     }
 
 }
-*/

@@ -1,5 +1,7 @@
 package io.junseok.todeveloperdo.exception
 
 class ToDeveloperDoException(
-    var errorCode: () -> ErrorCode
-) : RuntimeException()
+    errorCodeSupplier: () -> ErrorCode
+) : RuntimeException() {
+    val errorCode: ErrorCode = errorCodeSupplier()
+}
