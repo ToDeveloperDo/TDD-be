@@ -50,6 +50,9 @@ dependencies {
     testImplementation ("org.springframework.security:spring-security-test")
     testImplementation("io.mockk:mockk:${mockkVersion}")
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
+    testImplementation("io.kotest:kotest-assertions-core:5.7.2")
+    testImplementation("io.kotest:kotest-framework-datatest-jvm:5.7.2")
 
     //etc
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -81,6 +84,10 @@ dependencies {
 
     //fcm
     implementation ("com.google.firebase:firebase-admin:9.1.1")
+
+    //h2
+    testImplementation("com.h2database:h2:2.1.214") // 최신 버전 사용 가능
+
 }
 allOpen {
     annotation("javax.persistence.Entity")
@@ -88,7 +95,6 @@ allOpen {
     annotation("javax.persistence.Embeddable")
 }
 
-//  kapt가 Java 애노테이션 프로세서를 유지
 kapt {
     keepJavacAnnotationProcessors = true
 }
