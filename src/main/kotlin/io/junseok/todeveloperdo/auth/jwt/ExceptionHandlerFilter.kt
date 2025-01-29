@@ -22,7 +22,7 @@ class ExceptionHandlerFilter : OncePerRequestFilter() {
         try {
             filterChain.doFilter(request, response)
         } catch (e: ToDeveloperDoException) {
-            setErrorResponse(response,e.errorCode())
+            setErrorResponse(response,e.errorCode)
         }
     }
 
