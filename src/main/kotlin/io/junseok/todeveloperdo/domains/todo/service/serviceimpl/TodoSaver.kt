@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional
 class TodoSaver(private val todoListRepository: TodoListRepository) {
     @Transactional
     fun saveTodoList(memberTodoList: List<MemberTodoList>):Long? {
-        println("memberTodoList = ${memberTodoList.size}")
         return todoListRepository.saveAll(memberTodoList)[FIRST_INDEX].todoListId
     }
     companion object{
