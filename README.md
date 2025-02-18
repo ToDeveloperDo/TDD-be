@@ -32,7 +32,7 @@
 - 할 일이 아직 남아있는 경우 사용자에게 푸시알림을 전송해야한다.
 - 사용자가 입력한 기술스택, 학습기간, 능숙도, 기간에 맞는 커리큘럼을 추천해주어야 한다.
 - 생성된 커리큘럼에서 사용자가 선택한 목표들만 할 일에 자동으로 등록을 해야한다.
-
+---
 ## 참고사항 및 조건
 - ReadME에는 오늘 할 일만 작성이 되어야한다.
 - 친구가 아닌 사람의 할 일 목록은 볼 수 없다.
@@ -40,6 +40,102 @@
 - 생성된 커리큘럼 중 사용자가 선택한 목표만 할 일에 등록되어야한다.
 ---
 
+## 시연 영상
+<details>
+<summary>로그인 및 깃허브 연동</summary>
+
+<table>
+  <tr>
+    <td align="center"><b>로그인 및 깃허브 연동</b></td>
+    <td align="center"><b>Repository 생성</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/d0507240-e579-449b-a4dd-de4d64360886" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/191825a9-110d-4d88-a3ff-cc07c3ce26c6" width="180"/></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>TODO 관련 기능</summary>
+
+<table>
+  <tr>
+    <td align="center"><b>TODO 생성</b></td>
+    <td align="center"><b>TODO 완료</b></td>
+    <td align="center"><b>TODO 진행중</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/81de5c66-7795-419d-b531-7f67dc4ccdef" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/92eef94e-bf70-4ae3-9f87-ca2ddd0a8361" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/372883c3-8708-44e7-8914-3e80683a6089" width="180"/></td>
+  </tr>
+  <tr>
+    <td align="center"><b>TODO 내용 변경</b></td>
+    <td align="center"><b>TODO 날짜 변경</b></td>
+    <td align="center"><b>TODO 삭제</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/1df9c1e1-10ea-4cb1-83f7-d9d7225ec1ea" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/738c916f-fc46-4500-bd2a-acce1caf821b" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/b49fe43c-e5aa-4e5a-b130-8c50ff2fe3e1" width="180"/></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>친구 관련 기능</summary>
+
+<table>
+  <tr>
+    <td align="center"><b>친구 탐색</b></td>
+    <td align="center"><b>친구 프로필(팔로우)</b></td>
+    <td align="center"><b>친구 프로필(언팔로우)</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/7aa4c1db-8654-49d7-a921-538f3cda69aa" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/e8a38a63-3d05-43f1-b6c8-ff5649a9da0c" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/9f813148-3d4b-4c76-9493-b952749b593b" width="180"/></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>목표 관련 기능</summary>
+
+<table>
+  <tr>
+    <td align="center"><b>목표 생성</b></td>
+    <td align="center"><b>목표 리스트</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/e299da2d-ed91-4c02-8284-4239a348547e" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/d1ebac5d-3593-4a03-83f5-f8a90c6a42a8" width="180"/></td>
+  </tr>
+</table>
+
+</details>
+
+<details>
+<summary>내 정보 및 계정 관리</summary>
+
+<table>
+  <tr>
+    <td align="center"><b>내 정보</b></td>
+    <td align="center"><b>탈퇴</b></td>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/user-attachments/assets/300d2f4c-d7a5-41d0-949e-b24ad769e7f7" width="180"/></td>
+    <td><img src="https://github.com/user-attachments/assets/61d865e7-6dce-4ef8-9264-e17b57ebe8e5" width="180"/></td>
+  </tr>
+</table>
+
+</details>
+
+---
 ## DB구조도
 ![image](https://github.com/user-attachments/assets/466c871d-1d60-4c96-815c-008dc3c7840c)
 
