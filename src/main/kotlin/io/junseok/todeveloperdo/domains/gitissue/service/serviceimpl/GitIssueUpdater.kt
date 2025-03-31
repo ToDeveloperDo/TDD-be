@@ -10,7 +10,6 @@ import org.springframework.transaction.annotation.Transactional
 class GitIssueUpdater(
     private val issueReader: GitIssueReader
 ) {
-    //할 일
     @Transactional
     fun update(member: Member, todoList: MemberTodoList, todoRequest: TodoRequest) {
         val gitIssue = issueReader.findGitIssueByTodoList(todoList)

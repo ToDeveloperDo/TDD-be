@@ -23,7 +23,9 @@ class FcmScheduler(
         val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
             LocalDate.now(),
             TodoStatus.PROCEED
-        ).map { it.toFcmRequest()}.distinct()
+        ).map { it.toFcmRequest() }.distinct()
+            .filter { it.clientToken.isNotBlank() }
+
 
         fcmRequestList.stream()
             .forEach { request ->
@@ -40,6 +42,7 @@ class FcmScheduler(
     fun sendMorningNotificationScheduler() {
         memberRepository.findAll()
             .stream()
+            .filter { !it.clientToken.isNullOrBlank() }
             .map { it.toDailyFcmRequest() }
             .forEach { request ->
                 try {
@@ -55,6 +58,7 @@ class FcmScheduler(
     fun sendAfternoonNotificationScheduler() {
         memberRepository.findMemberNotWithDeadLine(LocalDate.now())
             .stream()
+            .filter { !it.clientToken.isNullOrBlank() }
             .map { it.toDailyFcmRequest() }
             .forEach { request ->
                 try {
@@ -71,7 +75,9 @@ class FcmScheduler(
         val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
             LocalDate.now(),
             TodoStatus.DONE
-        ).map { it.toFcmRequest()}.distinct()
+        ).map { it.toFcmRequest() }.distinct()
+            .filter { it.clientToken.isNotBlank() }
+
 
         fcmRequestList.stream()
             .forEach { request ->

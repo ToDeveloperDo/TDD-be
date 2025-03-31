@@ -1,7 +1,6 @@
 package io.junseok.todeveloperdo.domains.gitissue.service.serviceimpl
 
 import io.junseok.todeveloperdo.domains.gitissue.TodoCreate
-import io.junseok.todeveloperdo.domains.gitissue.persistence.entity.GitIssue
 import io.junseok.todeveloperdo.domains.gitissue.persistence.repository.GitIssueRepository
 import io.junseok.todeveloperdo.domains.gitissue.toTodoCreate
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
@@ -12,13 +11,9 @@ import java.time.LocalDate
 @Component
 class GitIssueReader(private val gitIssueRepository: GitIssueRepository) {
     @Transactional
-    fun findGitIssueList() :List<TodoCreate>{
-        println("LocalDate =  ${LocalDate.now()}")
-        val list = gitIssueRepository.findByDeadlineList(LocalDate.now())
+    fun findGitIssueList(today: LocalDate = LocalDate.now()): List<TodoCreate> =
+        gitIssueRepository.findByDeadlineList(today)
             .map { it.toTodoCreate() }
-        println("list = ${list.size}")
-        return list
-    }
 
     @Transactional(readOnly = true)
     fun findGitIssueByTodoList(todoList: MemberTodoList) =

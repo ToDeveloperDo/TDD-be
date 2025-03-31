@@ -5,6 +5,7 @@ import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueCr
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueProcessor
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
+import java.time.LocalDate
 
 @Component
 class IssueScheduler(

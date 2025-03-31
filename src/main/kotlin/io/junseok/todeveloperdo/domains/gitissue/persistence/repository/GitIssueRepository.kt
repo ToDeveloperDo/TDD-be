@@ -10,8 +10,6 @@ import java.time.LocalDate
 interface GitIssueRepository : JpaRepository<GitIssue, Long> {
     fun findByTodoList(memberTodoList: MemberTodoList): GitIssue
 
-    fun findAllByDeadline(deadLine: LocalDate): List<GitIssue>
-
     @Query("select issue from GitIssue issue where DATE(issue.deadline) = DATE(:deadline)")
     fun findByDeadlineList(@Param(value = "deadline") deadLine: LocalDate): List<GitIssue>
 }
