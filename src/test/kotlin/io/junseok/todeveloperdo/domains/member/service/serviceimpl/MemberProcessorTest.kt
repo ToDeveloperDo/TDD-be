@@ -28,11 +28,11 @@ class MemberProcessorTest : BehaviorSpec({
         every { memberReader.getMembersExcludeMe(member) } returns otherMembers
 
         // 받은 친구 요청 목록 (RECEIVE)
-        every { memberFriendReader.receiverMemberByFriendStatus(member) } returns listOf(
+        every { memberFriendReader.findReceiverMemberList(member,FriendStatus.NOT_FRIEND) } returns listOf(
             createMemberFriend(otherMembers[3], member, FriendStatus.RECEIVE)
         )
         // 보낸 친구 요청 목록 (REQUEST)
-        every { memberFriendReader.senderMemberByFriendStatus(member) } returns listOf(
+        every { memberFriendReader.findSenderMemberList(member,FriendStatus.NOT_FRIEND) } returns listOf(
             createMemberFriend(member, otherMembers[2], FriendStatus.REQUEST)
         )
         // 친구 목록 (FOLLOWING)

@@ -1,9 +1,11 @@
 package io.junseok.todeveloperdo.domains.memberfriend.service
 
+import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberProcessor
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFriendId
+import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.getFriendOf
 import io.junseok.todeveloperdo.domains.memberfriend.service.serviceimpl.*
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.exception.ErrorCode
@@ -28,25 +30,12 @@ class MemberFriendService(
     private val memberFriendUpdater: MemberFriendUpdater,
     private val memberProcessor: MemberProcessor,
     private val memberFriendCreator: MemberFriendCreator,
-    private val fcmProcessor: FcmProcessor
+    private val fcmProcessor: FcmProcessor,
 ) {
-    fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
+    fun findMemberFriendList(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        val senderMember = memberFriendReader.findSenderMemberList(member)
-        val receiverMember = memberFriendReader.findReceiverMemberList(member)
-
-        val friends = (senderMember + receiverMember).distinct()
-
-        return friends.map { friend ->
-            val isFriend = memberFriendValidator.checkMember(friend, member)
-            val targetMember = if (isFriend) friend.receiverMember else friend.senderMember
-            MemberFriendResponse(
-                memberId = targetMember.memberId!!,
-                friendUsername = targetMember.gitHubUsername!!,
-                friendGitUrl = targetMember.gitHubUrl!!,
-                avatarUrl = targetMember.avatarUrl!!
-            )
-        }
+        return memberFriendReader.findAllFriends(member, FriendStatus.FOLLOWING)
+            .map { friend -> friend.getFriendOf(member).toMemberFriendResponse() }
     }
 
     fun findMemberFriend(username: String, memberId: Long): MemberFriendResponse {
@@ -54,7 +43,6 @@ class MemberFriendService(
         return member.toMemberFriendResponse()
     }
 
-    // TODO
     fun registerFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
@@ -64,7 +52,7 @@ class MemberFriendService(
             memberFriendCreator.create(memberFriendId, member, friendMember)
         memberFriendSaver.save(memberFriend)
         fcmProcessor.byReceiveNotification(
-            FcmRequest(friendMember.clientToken!! ,member.gitHubUsername!!)
+            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!)
         )
     }
 
@@ -75,16 +63,16 @@ class MemberFriendService(
             member,
             friendMember,
             FriendStatus.valueOf(type)
+
         )
         memberFriendDeleter.delete(findFriend)
     }
 
     fun findWaitFriends(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        return memberFriendReader.receiverMemberByFriendStatus(member)
+        return memberFriendReader.findReceiverMemberList(member, FriendStatus.NOT_FRIEND)
             .map { it.senderMember.toMemberFriendResponse() }
     }
-
     // TODO
     fun approveRequest(friendId: Long, username: String) {
         val member = memberReader.getMember(username) //나
@@ -93,13 +81,13 @@ class MemberFriendService(
             memberFriendReader.findSenderMemberAndReceiverMember(friendMember, member)
         memberFriendUpdater.updateStatus(memberFriend)
         fcmProcessor.bySendNotification(
-            FcmRequest(friendMember.clientToken!!,member.gitHubUsername!!)
+            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!)
         )
     }
 
     fun findSendRequestList(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        return memberFriendReader.senderMemberByFriendStatus(member)
+        return memberFriendReader.findSenderMemberList(member, FriendStatus.NOT_FRIEND)
             .map { it.receiverMember.toMemberFriendResponse() }
     }
 
@@ -112,8 +100,9 @@ class MemberFriendService(
         return todoReader.bringTodoListForWeek(LocalDate.now(), friendMember)
     }
 
-    fun getFriend(gitUserName: String, appleId: String): MemberResponse =
+    fun getGitFriend(gitUserName: String, appleId: String): MemberResponse =
         memberProcessor.findMemberList(appleId)
             .find { it.username == gitUserName }
             ?: throw ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
+
 }

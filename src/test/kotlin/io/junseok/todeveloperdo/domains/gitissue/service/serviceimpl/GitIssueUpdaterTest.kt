@@ -36,7 +36,7 @@ class GitIssueUpdaterTest : BehaviorSpec({
                 with(gitIssue) {
                     memo shouldBe "modify memo"
                     tag shouldBe "modify tag"
-                    deadline shouldBe LocalDate.now().minusWeeks(1)
+                    deadline shouldBe today.minusWeeks(1)
                     content shouldBe "modify content"
                 }
             }

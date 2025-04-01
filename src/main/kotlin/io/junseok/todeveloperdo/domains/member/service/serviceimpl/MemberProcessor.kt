@@ -10,35 +10,41 @@ import org.springframework.transaction.annotation.Transactional
 @Component
 class MemberProcessor(
     private val memberReader: MemberReader,
-    private val memberFriendReader: MemberFriendReader
+    private val memberFriendReader: MemberFriendReader,
 ) {
     @Transactional(readOnly = true)
     fun findMemberList(appleId: String): List<MemberResponse> {
         val member = memberReader.getMember(appleId)
         //내가 받은 요청 목록
-        val receiveList = memberFriendReader.receiverMemberByFriendStatus(member)
+        val receiveList = memberFriendReader.findReceiverMemberList(
+            member,
+            FriendStatus.NOT_FRIEND
+        )
             .map { it.senderMember.memberId }
 
         //내가 보낸 친구 목록
-        val sendList = memberFriendReader.senderMemberByFriendStatus(member)
+        val sendList = memberFriendReader.findSenderMemberList(
+            member,
+            FriendStatus.NOT_FRIEND
+        )
             .map { it.receiverMember.memberId }
 
         //친구인 사람
         val friendList = memberFriendReader.findAllWithFriend(member)
 
         return memberReader.getMembersExcludeMe(member)
-            .filter { it.gitHubUsername!=null }
+            .filter { it.gitHubUsername != null }
             .map { friend ->
-            val friendStatus = when {
-                receiveList.contains(friend.memberId) -> FriendStatus.RECEIVE
-                sendList.contains(friend.memberId) -> FriendStatus.REQUEST
-                friendList.any {
-                    it.senderMember == friend || it.receiverMember == friend
-                } -> FriendStatus.FOLLOWING
+                val friendStatus = when {
+                    receiveList.contains(friend.memberId) -> FriendStatus.RECEIVE
+                    sendList.contains(friend.memberId) -> FriendStatus.REQUEST
+                    friendList.any {
+                        it.senderMember == friend || it.receiverMember == friend
+                    } -> FriendStatus.FOLLOWING
 
-                else -> FriendStatus.NOT_FRIEND
+                    else -> FriendStatus.NOT_FRIEND
+                }
+                friend.toMemberResponse(friendStatus)
             }
-            friend.toMemberResponse(friendStatus)
-        }
     }
 }
