@@ -43,7 +43,6 @@ class MemberFriendService(
         return member.toMemberFriendResponse()
     }
 
-    // TODO
     fun registerFriend(friendId: Long, username: String) {
         val member = memberReader.getMember(username)
         val friendMember = memberReader.getFriendMember(friendId)
@@ -64,6 +63,7 @@ class MemberFriendService(
             member,
             friendMember,
             FriendStatus.valueOf(type)
+
         )
         memberFriendDeleter.delete(findFriend)
     }
@@ -73,7 +73,6 @@ class MemberFriendService(
         return memberFriendReader.findReceiverMemberList(member, FriendStatus.NOT_FRIEND)
             .map { it.senderMember.toMemberFriendResponse() }
     }
-
     // TODO
     fun approveRequest(friendId: Long, username: String) {
         val member = memberReader.getMember(username) //나
