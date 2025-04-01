@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Component
 class MemberFriendReader(
-    private val memberFriendRepository: MemberFriendRepository
+    private val memberFriendRepository: MemberFriendRepository,
 ) {
 
     /**
@@ -19,16 +19,16 @@ class MemberFriendReader(
      * 친구 중에 내가 보낸 친구 목록 조회
      */
     @Transactional(readOnly = true)
-    fun findSenderMemberList(member: Member): List<MemberFriend> =
-        memberFriendRepository.findBySenderMemberAndFriendStatus(member, FriendStatus.FOLLOWING)
+    fun findSenderMemberList(member: Member, friendStatus: FriendStatus): List<MemberFriend> =
+        memberFriendRepository.findBySenderMemberAndFriendStatus(member, friendStatus)
 
     /**
      * NOTE
      * 친구 중에 요청을 받았던 친구 목록 조회
      */
     @Transactional(readOnly = true)
-    fun findReceiverMemberList(member: Member): List<MemberFriend> =
-        memberFriendRepository.findByReceiverMemberAndFriendStatus(member, FriendStatus.FOLLOWING)
+    fun findReceiverMemberList(member: Member, friendStatus: FriendStatus): List<MemberFriend> =
+        memberFriendRepository.findByReceiverMemberAndFriendStatus(member, friendStatus)
 
     /**
      * NOTE
@@ -38,22 +38,6 @@ class MemberFriendReader(
     fun findSenderMemberAndReceiverMember(friendMember: Member, member: Member): MemberFriend =
         memberFriendRepository.findBySenderMemberAndReceiverMember(friendMember, member)
             ?: throw ToDeveloperDoException { ErrorCode.NOT_REQUEST_FRIEND }
-
-    /**
-     * NOTE
-     * 받은 요청 목록 조회(친구X)
-     */
-    @Transactional(readOnly = true)
-    fun receiverMemberByFriendStatus(member: Member): List<MemberFriend> =
-        memberFriendRepository.findByReceiverMemberAndFriendStatus(member, FriendStatus.NOT_FRIEND)
-
-    /**
-     * NOTE
-     * 내가 보낸 요청 목록 조회(친구X)
-     */
-    @Transactional(readOnly = true)
-    fun senderMemberByFriendStatus(member: Member): List<MemberFriend> =
-        memberFriendRepository.findBySenderMemberAndFriendStatus(member, FriendStatus.NOT_FRIEND)
 
     /**
      * NOTE

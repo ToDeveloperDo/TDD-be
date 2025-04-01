@@ -28,12 +28,14 @@ class MemberFriendService(
     private val memberFriendUpdater: MemberFriendUpdater,
     private val memberProcessor: MemberProcessor,
     private val memberFriendCreator: MemberFriendCreator,
-    private val fcmProcessor: FcmProcessor
+    private val fcmProcessor: FcmProcessor,
 ) {
     fun findMemberFriendList(username: String): List<MemberFriendResponse>? {
         val member = memberReader.getMember(username)
-        val senderMember = memberFriendReader.findSenderMemberList(member)
-        val receiverMember = memberFriendReader.findReceiverMemberList(member)
+        val senderMember =
+            memberFriendReader.findSenderMemberList(member, FriendStatus.FOLLOWING)
+        val receiverMember =
+            memberFriendReader.findReceiverMemberList(member, FriendStatus.FOLLOWING)
 
         val friends = (senderMember + receiverMember).distinct()
 
@@ -64,7 +66,7 @@ class MemberFriendService(
             memberFriendCreator.create(memberFriendId, member, friendMember)
         memberFriendSaver.save(memberFriend)
         fcmProcessor.byReceiveNotification(
-            FcmRequest(friendMember.clientToken!! ,member.gitHubUsername!!)
+            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!)
         )
     }
 
@@ -81,7 +83,7 @@ class MemberFriendService(
 
     fun findWaitFriends(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        return memberFriendReader.receiverMemberByFriendStatus(member)
+        return memberFriendReader.findReceiverMemberList(member, FriendStatus.NOT_FRIEND)
             .map { it.senderMember.toMemberFriendResponse() }
     }
 
@@ -93,13 +95,13 @@ class MemberFriendService(
             memberFriendReader.findSenderMemberAndReceiverMember(friendMember, member)
         memberFriendUpdater.updateStatus(memberFriend)
         fcmProcessor.bySendNotification(
-            FcmRequest(friendMember.clientToken!!,member.gitHubUsername!!)
+            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!)
         )
     }
 
     fun findSendRequestList(username: String): List<MemberFriendResponse> {
         val member = memberReader.getMember(username)
-        return memberFriendReader.senderMemberByFriendStatus(member)
+        return memberFriendReader.findSenderMemberList(member, FriendStatus.NOT_FRIEND)
             .map { it.receiverMember.toMemberFriendResponse() }
     }
 
