@@ -99,7 +99,7 @@ class MemberFriendController(
         @RequestBody friendNameRequest: FriendNameRequest,
         principal: Principal,
     ): ResponseEntity<MemberResponse> = ResponseEntity.ok(
-        memberFriendService.getFriend(
+        memberFriendService.getGitFriend(
             friendNameRequest.gitUserName,
             principal.name
         )
