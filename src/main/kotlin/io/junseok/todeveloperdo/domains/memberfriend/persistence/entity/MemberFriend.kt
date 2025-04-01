@@ -24,3 +24,6 @@ class MemberFriend(
         this.friendStatus = FriendStatus.FOLLOWING
     }
 }
+
+fun MemberFriend.getFriendOf(member: Member): Member =
+    if (senderMember.memberId == member.memberId) receiverMember else senderMember
