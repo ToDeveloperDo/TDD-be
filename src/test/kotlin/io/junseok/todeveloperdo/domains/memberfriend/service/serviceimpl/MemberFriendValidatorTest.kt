@@ -17,8 +17,6 @@ class MemberFriendValidatorTest : BehaviorSpec({
     val sender = createMember(1L, "sender@example.com")
     val receiver = createMember(2L, "receiver@example.com")
 
-    val memberFriend = createMemberFriend(sender, receiver, FriendStatus.REQUEST)
-
     fun stubIsFriend(send: Boolean, request: Boolean) {
         every {
             memberFriendRepository.isSendFriend(sender, receiver, FriendStatus.FOLLOWING)
