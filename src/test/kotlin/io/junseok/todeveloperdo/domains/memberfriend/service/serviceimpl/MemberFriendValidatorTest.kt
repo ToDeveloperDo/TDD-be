@@ -34,16 +34,6 @@ class MemberFriendValidatorTest : BehaviorSpec({
         every { memberFriendRepository.isRequestFriend(any(), any(), any()) } returns false
     }
 
-
-    Given("내가 보낸 요청인지 확인할 때") {
-        When("내가 보낸 요청이 맞다면") {
-            val result = memberFriendValidator.checkMember(memberFriend, sender)
-            Then("true가 반환되어야한다.") {
-                result shouldBe true
-            }
-        }
-    }
-
     Given("새로운 친구를 등록할 때") {
         listOf(
             Triple(true, true, true),

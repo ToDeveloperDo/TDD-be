@@ -10,10 +10,6 @@ import org.springframework.stereotype.Component
 
 @Component
 class MemberFriendValidator(private val memberFriendRepository: MemberFriendRepository) {
-    // 내가 요청을 보냈으면 true, 아니면 false
-    fun checkMember(memberFriend: MemberFriend, member: Member): Boolean {
-        return memberFriend.senderMember.memberId == member.memberId
-    }
 
     // 통합검사 (회원가입할 떄)
     fun isFriend(member: Member, friend: Member) {

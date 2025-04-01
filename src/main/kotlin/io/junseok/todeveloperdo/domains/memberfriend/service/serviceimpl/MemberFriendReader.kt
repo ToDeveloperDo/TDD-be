@@ -54,4 +54,11 @@ class MemberFriendReader(
             friendMember,
             friendStatus
         ) ?: throw ToDeveloperDoException { ErrorCode.NOT_FRIENDSHIP }
+
+    @Transactional(readOnly = true)
+    fun findAllFriends(member: Member, status: FriendStatus): List<MemberFriend> {
+        val sent = memberFriendRepository.findBySenderMemberAndFriendStatus(member, status)
+        val received = memberFriendRepository.findByReceiverMemberAndFriendStatus(member, status)
+        return (sent + received).distinct()
+    }
 }
