@@ -15,13 +15,7 @@ class PlanGenerator(
     @Transactional
     fun create(curriculumRequest: CurriculumRequest, userName: String): CurriculumPlan{
         val member = memberReader.getMember(userName)
-        val curriculumPlan = CurriculumPlan(
-            position = curriculumRequest.position,
-            stack = curriculumRequest.stack,
-            experienceLevel = curriculumRequest.experienceLevel,
-            targetPeriod = curriculumRequest.targetPeriod,
-            member = member
-        )
+        val curriculumPlan = curriculumRequest.toEntity(member)
         return curriculumPlanRepository.save(curriculumPlan)
     }
 }
