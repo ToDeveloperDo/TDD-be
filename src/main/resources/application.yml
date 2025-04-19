@@ -1,6 +1,11 @@
 spring:
   main:
     allow-bean-definition-overriding: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
   security:
     oauth2:
       client:
@@ -104,3 +109,11 @@ management:
 openai:
   api-key: ${OPEN_AI_KEY}
   model: ${OPEN_AI_MODEL}
+
+rabbitmq:
+  queue:
+    name: todo-queue
+  exchange:
+    name: todo-exchange
+  routing:
+    key : key
