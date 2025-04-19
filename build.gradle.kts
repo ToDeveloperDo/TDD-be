@@ -34,8 +34,12 @@ dependencies {
     implementation("com.querydsl:querydsl-jpa:$querydslVersion")
     kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
 
-    //jpa
+    //db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    runtimeOnly("com.mysql:mysql-connector-j")
+
+    //RabbitMQ
+    implementation ("org.springframework.boot:spring-boot-starter-amqp")
 
     //security
     implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
@@ -64,9 +68,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-aop")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-
-    //mysql
-    runtimeOnly("com.mysql:mysql-connector-j")
 
     //swagger
     implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
