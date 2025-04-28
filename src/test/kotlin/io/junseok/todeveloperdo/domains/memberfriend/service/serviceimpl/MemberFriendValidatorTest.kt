@@ -5,7 +5,7 @@ import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendSt
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.repository.MemberFriendRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
-import io.junseok.todeveloperdo.throwsWith
+import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
