@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo
+package io.junseok.todeveloperdo.util
 
 import io.kotest.assertions.throwables.shouldThrow
 

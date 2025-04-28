@@ -7,13 +7,12 @@ import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.createMember
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
-import io.junseok.todeveloperdo.throwsWith
+import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
-import org.hibernate.annotations.WhereJoinTable
 import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDateTime
 
