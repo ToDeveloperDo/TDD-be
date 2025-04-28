@@ -13,6 +13,8 @@ plugins {
     kotlin("kapt") version kotlinVersion
     kotlin("plugin.lombok") version kotlinVersion // Lombok을 Kotlin에서 사용가능하도록 도와줌
     id("io.freefair.lombok") version lombokVersion // Lombok을 프로젝트에 쉽게 통합할 수 있도록 도와줌
+    id("org.asciidoctor.jvm.convert") version "3.3.2"
+
 }
 
 group = "io.junseok"
@@ -88,6 +90,10 @@ dependencies {
 
     //h2
     testImplementation("com.h2database:h2:2.1.214") // 최신 버전 사용 가능
+
+    //rest-docs
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
 
 }
 allOpen {
