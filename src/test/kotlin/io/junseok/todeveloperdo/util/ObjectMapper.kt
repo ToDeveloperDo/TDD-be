@@ -11,7 +11,7 @@ inline fun <reified T> MvcResult.toResponse(): T {
 }
 
 inline fun <reified T> T.toRequest(): String {
-    return jacksonObjectMapper().writeValueAsString(this)
+    return objectMapper.writeValueAsString(this)
 }
 
 object ObjectMappers {
