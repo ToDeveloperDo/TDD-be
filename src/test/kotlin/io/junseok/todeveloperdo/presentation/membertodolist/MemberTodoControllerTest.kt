@@ -35,11 +35,11 @@ import java.time.LocalDate
 class MemberTodoControllerTest : FunSpec({
     val memberTodoService = mockk<MemberTodoService>()
     val fcmScheduler = mockk<FcmScheduler>()
-    val rabbitMQProducer = mockk<RabbitMQProducer>()
+    //val rabbitMQProducer = mockk<RabbitMQProducer>()
     val memberTodoController = MemberTodoController(
         memberTodoService,
         fcmScheduler,
-        rabbitMQProducer
+        //rabbitMQProducer
     )
     val restDocumentation = ManualRestDocumentation()
     val mockMvc = MockMvcBuilders
