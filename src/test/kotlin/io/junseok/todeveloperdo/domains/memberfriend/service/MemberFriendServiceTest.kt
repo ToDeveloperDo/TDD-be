@@ -295,8 +295,8 @@ fun createTodoResponse(
 ) = TodoResponse(
     todoListId = id,
     content = content,
-    memo = "$content 메모",
-    tag = "개발",
+    memo = "",
+    tag = "",
     deadline = deadline,
     todoStatus = status
 )

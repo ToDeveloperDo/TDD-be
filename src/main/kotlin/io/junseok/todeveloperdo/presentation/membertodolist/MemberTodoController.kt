@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.presentation.membertodolist
 
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
+import io.junseok.todeveloperdo.global.rabbitmq.RabbitMQProducer
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_CLOSED
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_OPEN
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
@@ -19,7 +20,8 @@ import java.security.Principal
 @CrossOrigin
 class MemberTodoController(
     private val memberTodoService: MemberTodoService,
-    private val fcmScheduler: FcmScheduler
+    private val fcmScheduler: FcmScheduler,
+    private val rabbitMQProducer: RabbitMQProducer
 ) {
 
     /**
@@ -86,6 +88,12 @@ class MemberTodoController(
 
     @GetMapping("/test")
     fun test() {
-        fcmScheduler.sendEveningNotificationScheduler()
+        fcmScheduler.sendMorningNotificationScheduler()
+    }
+
+    @PostMapping("/send")
+    fun sendMessage() {
+        rabbitMQProducer.sendMessage("todo-queue","trigger")
+        println("Message Sent: Success")
     }
 }
