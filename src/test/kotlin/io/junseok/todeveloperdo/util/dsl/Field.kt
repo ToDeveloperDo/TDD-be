@@ -8,10 +8,12 @@ open class Field(val descriptor: FieldDescriptor) {
     open infix fun means(value: String) = apply { descriptor.description(value) }
 }
 
-open class Parameter(val descriptor: ParameterDescriptor)
+open class Parameter(val descriptor: ParameterDescriptor){
+    open infix fun parameterMeans(value: String): Parameter = apply {
+        descriptor.description(value)
+    }
+    open infix fun requestParamMeans(value: String): Parameter = apply {
+        descriptor.description(value)
+    }
+}
 
-infix fun String.parameterMeans(value: String): Parameter =
-    Parameter(parameterWithName(this).description(value))
-
-infix fun String.requestParamMeans(value: String): Parameter =
-    Parameter(parameterWithName(this).description(value))

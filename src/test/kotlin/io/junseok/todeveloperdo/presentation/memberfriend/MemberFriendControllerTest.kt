@@ -50,7 +50,7 @@ class MemberFriendControllerTest : FunSpec({
         ObjectMappers.objectMapper = ObjectMapper()
             .registerModules(KotlinModule.Builder().build())
             .registerModules(JavaTimeModule())
-        restDocumentation.beforeTest(javaClass, "MemberController")
+        restDocumentation.beforeTest(javaClass, "MemberFriendController")
     }
     afterSpec {
         restDocumentation.afterTest()
@@ -129,7 +129,7 @@ class MemberFriendControllerTest : FunSpec({
                 document(
                     "single-friend",
                     pathParameters(
-                        "memberId" parameterMeans "조회할 사용자 ID"
+                        "memberId" parameterTypeOf NUMBER parameterMeans "조회할 사용자 ID"
                     ),
                     authorizationHeader(),
                     responseFields(
@@ -154,7 +154,7 @@ class MemberFriendControllerTest : FunSpec({
                 document(
                     "request-friend",
                     pathParameters(
-                        "friendId" parameterMeans "요청할 사용자 ID"
+                        "friendId" parameterTypeOf NUMBER parameterMeans "요청할 사용자 ID"
                     ),
                     authorizationHeader()
                 )
@@ -174,10 +174,10 @@ class MemberFriendControllerTest : FunSpec({
                     "unfollow-friend",
                     authorizationHeader(),
                     pathParameters(
-                        "friendId" parameterMeans "언팔할 사용자 ID"
+                        "friendId" parameterTypeOf NUMBER parameterMeans "언팔할 사용자 ID"
                     ),
                     requestParameters(
-                        "type" requestParamMeans "FriendStatus 상태값"
+                        "type" parameterTypeOf NUMBER requestParamMeans "FriendStatus 상태값"
                     )
                 )
             )
@@ -195,7 +195,7 @@ class MemberFriendControllerTest : FunSpec({
                 document(
                     "accept-friend",
                     pathParameters(
-                        "friendId" parameterMeans "친구요청을 수락할 사용자 ID"
+                        "friendId" parameterTypeOf NUMBER parameterMeans "친구요청을 수락할 사용자 ID"
                     ),
                     authorizationHeader()
                 )
@@ -245,7 +245,7 @@ class MemberFriendControllerTest : FunSpec({
                 document(
                     "search-friend-todolist",
                     pathParameters(
-                        "friendId" parameterMeans "조회할 사용자 Id"
+                        "friendId" parameterTypeOf NUMBER parameterMeans "조회할 사용자 Id"
                     ),
                     authorizationHeader()
                 )
