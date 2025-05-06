@@ -19,7 +19,7 @@ import java.time.LocalDate
 @Component
 class TodoReader(
     private val todoListRepository: TodoListRepository,
-    private val todoQueryRepository: TodoQueryRepository
+    private val todoQueryRepository: TodoQueryRepository,
 ) {
     @Transactional(readOnly = true)
     fun bringTodoLists(deadline: LocalDate, member: Member): List<TodoResponse> {
@@ -45,7 +45,7 @@ class TodoReader(
     @Transactional(readOnly = true)
     fun countByTodoList(
         todoCountRequest: TodoCountRequest,
-        member: Member
+        member: Member,
     ): List<TodoCountResponse> {
         return todoQueryRepository.findAllByTodoListMonthAndYear(
             todoCountRequest.month,
@@ -57,13 +57,16 @@ class TodoReader(
     @Transactional(readOnly = true)
     fun bringTodoListForWeek(deadline: LocalDate, member: Member): List<DeadlineTodoResponse> {
         val weeksDay = deadline.minusWeeks(1)
-        return todoListRepository.findByMemberAndDeadlineBetween(member,weeksDay,deadline)
+        return todoListRepository.findByMemberAndDeadlineBetween(member, weeksDay, deadline)
             .groupBy { it.deadline }
-            .map{ todo ->
+            .map { todo ->
                 DeadlineTodoResponse(
                     deadline = todo.key,
                     todoResponse = todo.value.map { it.toTodoResponse() }
                 )
             }
     }
+    @Transactional(readOnly = true)
+    fun findTodoListByTodoStatus(deadline: LocalDate, todoStatus: TodoStatus) =
+        todoListRepository.findAllByDeadlineAndTodoStatus(deadline, todoStatus)
 }

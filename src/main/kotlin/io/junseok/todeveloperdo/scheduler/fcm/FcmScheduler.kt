@@ -1,8 +1,9 @@
 package io.junseok.todeveloperdo.scheduler.fcm
 
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
+import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
-import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
 import io.junseok.todeveloperdo.global.fcm.FcmProcessor
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.junseok.todeveloperdo.global.fcm.dto.request.toDailyFcmRequest
@@ -15,14 +16,14 @@ import java.time.LocalDate
 
 @Component
 class FcmScheduler(
-    private val todoListRepository: TodoListRepository,
     private val fcmProcessor: FcmProcessor,
     private val memberRepository: MemberRepository,
+    private val memberReader: MemberReader,
+    private val todoReader: TodoReader
 ) {
-    @Transactional
     @Scheduled(cron = "0 0 20 * * *")
     fun sendNotificationScheduler() {
-        val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
+        val fcmRequestList = todoReader.findTodoListByTodoStatus(
             LocalDate.now(),
             TodoStatus.PROCEED
         ).map { it.toFcmRequest() }.distinct()
@@ -30,16 +31,15 @@ class FcmScheduler(
         dispatchNotificationsByType(fcmRequestList, DAILY_TODO_REMINDER)
     }
 
-    @Transactional
     @Scheduled(cron = "0 0 8 * * *")
     fun sendMorningNotificationScheduler() {
-        val fcmRequests = memberRepository.findAll()
+        val fcmRequests = memberReader.getAllMember()
             .filter { !it.clientToken.isNullOrBlank() }
             .map { it.toDailyFcmRequest() }
         dispatchNotificationsByType(fcmRequests, DAILY_LOG_REMINDER)
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @Scheduled(cron = "0 0 12 * * *")
     fun sendAfternoonNotificationScheduler() {
         val fcmRequests = memberRepository.findMemberNotWithDeadLine(LocalDate.now())
@@ -48,10 +48,9 @@ class FcmScheduler(
         dispatchNotificationsByType(fcmRequests, NOT_YET_TODO_REGISTERED)
     }
 
-    @Transactional
     @Scheduled(cron = "0 0 23 * * *")
     fun sendEveningNotificationScheduler() {
-        val fcmRequests = todoListRepository.findAllByDeadlineAndTodoStatus(
+        val fcmRequests = todoReader.findTodoListByTodoStatus(
             LocalDate.now(),
             TodoStatus.DONE
         ).map { it.toFcmRequest() }.distinct()
