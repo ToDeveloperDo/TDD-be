@@ -5,8 +5,8 @@ import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
 import io.junseok.todeveloperdo.global.fcm.FcmProcessor
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
-import io.junseok.todeveloperdo.global.fcm.dto.request.NotificationFactory.toDailyFcmRequest
-import io.junseok.todeveloperdo.global.fcm.dto.request.NotificationFactory.toFcmRequest
+import io.junseok.todeveloperdo.global.fcm.dto.request.toDailyFcmRequest
+import io.junseok.todeveloperdo.global.fcm.dto.request.toFcmRequest
 import io.junseok.todeveloperdo.scheduler.NotificationType.*
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component

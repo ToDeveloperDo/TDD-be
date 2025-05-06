@@ -3,7 +3,7 @@ package io.junseok.todeveloperdo.global.fcm
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.Message
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
-import io.junseok.todeveloperdo.global.fcm.dto.request.NotificationFactory.setNotification
+import io.junseok.todeveloperdo.scheduler.NotificationFactory.setNotification
 import io.junseok.todeveloperdo.scheduler.NotificationType
 import org.springframework.stereotype.Component
 import java.util.*
