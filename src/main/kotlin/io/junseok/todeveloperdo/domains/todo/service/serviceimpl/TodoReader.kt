@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.domains.todo.service.serviceimpl
 
 import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
+import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
 import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoQueryRepository
@@ -67,6 +68,7 @@ class TodoReader(
             }
     }
     @Transactional(readOnly = true)
-    fun findTodoListByTodoStatus(deadline: LocalDate, todoStatus: TodoStatus) =
-        todoListRepository.findAllByDeadlineAndTodoStatus(deadline, todoStatus)
+    fun findTodoListByTodoStatus(deadline: LocalDate, todoStatus: TodoStatus): List<MemberTodoList> {
+        return todoListRepository.findAllByDeadlineAndTodoStatus(deadline, todoStatus)
+    }
 }
