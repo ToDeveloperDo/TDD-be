@@ -13,7 +13,7 @@ import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequ
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequests
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
-import io.junseok.todeveloperdo.scheduler.FcmScheduler
+import io.junseok.todeveloperdo.scheduler.fcm.FcmScheduler
 import io.junseok.todeveloperdo.util.ObjectMappers
 import io.junseok.todeveloperdo.util.dsl.*
 import io.junseok.todeveloperdo.util.setAuthorization

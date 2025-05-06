@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.scheduler
+package io.junseok.todeveloperdo.scheduler.fcm
 
 import com.google.firebase.messaging.Notification
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest

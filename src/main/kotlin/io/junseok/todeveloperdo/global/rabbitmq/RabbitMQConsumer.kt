@@ -1,6 +1,6 @@
 package io.junseok.todeveloperdo.global.rabbitmq
 
-import io.junseok.todeveloperdo.scheduler.FcmScheduler
+import io.junseok.todeveloperdo.scheduler.fcm.FcmScheduler
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.stereotype.Service
 

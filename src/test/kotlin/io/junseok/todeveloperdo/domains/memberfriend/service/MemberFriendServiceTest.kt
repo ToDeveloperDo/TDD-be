@@ -15,7 +15,7 @@ import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
-import io.junseok.todeveloperdo.scheduler.NotificationType
+import io.junseok.todeveloperdo.scheduler.fcm.NotificationType
 import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldHaveSize

@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.scheduler
+package io.junseok.todeveloperdo.scheduler.fcm
 
 /*
 object NotificationMessages{

@@ -10,7 +10,7 @@ import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequ
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequests
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
-import io.junseok.todeveloperdo.scheduler.FcmScheduler
+import io.junseok.todeveloperdo.scheduler.fcm.FcmScheduler
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.Principal

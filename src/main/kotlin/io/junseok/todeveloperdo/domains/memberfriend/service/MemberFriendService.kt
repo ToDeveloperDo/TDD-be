@@ -1,6 +1,5 @@
 package io.junseok.todeveloperdo.domains.memberfriend.service
 
-import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberProcessor
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
@@ -16,7 +15,7 @@ import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
-import io.junseok.todeveloperdo.scheduler.NotificationType
+import io.junseok.todeveloperdo.scheduler.fcm.NotificationType
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
