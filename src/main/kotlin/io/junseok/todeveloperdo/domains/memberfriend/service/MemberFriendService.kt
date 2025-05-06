@@ -16,6 +16,7 @@ import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.MemberFriendResponse
 import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
+import io.junseok.todeveloperdo.scheduler.NotificationType
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -51,8 +52,9 @@ class MemberFriendService(
         val memberFriend =
             memberFriendCreator.create(memberFriendId, member, friendMember)
         memberFriendSaver.save(memberFriend)
-        fcmProcessor.byReceiveNotification(
-            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!)
+        fcmProcessor.pushNotification(
+            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!),
+            NotificationType.FRIEND_REQUEST
         )
     }
 
@@ -80,8 +82,9 @@ class MemberFriendService(
         val memberFriend =
             memberFriendReader.findSenderMemberAndReceiverMember(friendMember, member)
         memberFriendUpdater.updateStatus(memberFriend)
-        fcmProcessor.bySendNotification(
-            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!)
+        fcmProcessor.pushNotification(
+            FcmRequest(friendMember.clientToken!!, member.gitHubUsername!!),
+            NotificationType.FRIEND_REQUEST_ACCEPTED
         )
     }
 
