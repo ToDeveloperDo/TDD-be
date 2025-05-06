@@ -1,11 +1,13 @@
-package io.junseok.todeveloperdo.scheduler
+package io.junseok.todeveloperdo.scheduler.fcm
 
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
 import io.junseok.todeveloperdo.global.fcm.FcmProcessor
-import io.junseok.todeveloperdo.global.fcm.dto.request.NotificationFactory.toDailyFcmRequest
-import io.junseok.todeveloperdo.global.fcm.dto.request.NotificationFactory.toFcmRequest
+import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
+import io.junseok.todeveloperdo.global.fcm.dto.request.toDailyFcmRequest
+import io.junseok.todeveloperdo.global.fcm.dto.request.toFcmRequest
+import io.junseok.todeveloperdo.scheduler.fcm.NotificationType.*
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -25,67 +27,45 @@ class FcmScheduler(
             TodoStatus.PROCEED
         ).map { it.toFcmRequest() }.distinct()
             .filter { it.clientToken.isNotBlank() }
-
-
-        fcmRequestList.stream()
-            .forEach { request ->
-                try {
-                    fcmProcessor.dailyNotification(request)
-                } catch (e: Exception) {
-                    println("Failed to send notification to ${request.gitUserName}: ${e.message}")
-                }
-            }
+        dispatchNotificationsByType(fcmRequestList, DAILY_TODO_REMINDER)
     }
 
     @Transactional
     @Scheduled(cron = "0 0 8 * * *")
     fun sendMorningNotificationScheduler() {
-        memberRepository.findAll()
-            .stream()
+        val fcmRequests = memberRepository.findAll()
             .filter { !it.clientToken.isNullOrBlank() }
             .map { it.toDailyFcmRequest() }
-            .forEach { request ->
-                try {
-                    fcmProcessor.morningNotification(request)
-                } catch (e: Exception) {
-                    println("Failed to send notification to ${request.gitUserName}: ${e.message}")
-                }
-            }
+        dispatchNotificationsByType(fcmRequests, DAILY_LOG_REMINDER)
     }
 
     @Transactional
     @Scheduled(cron = "0 0 12 * * *")
     fun sendAfternoonNotificationScheduler() {
-        memberRepository.findMemberNotWithDeadLine(LocalDate.now())
-            .stream()
+        val fcmRequests = memberRepository.findMemberNotWithDeadLine(LocalDate.now())
             .filter { !it.clientToken.isNullOrBlank() }
             .map { it.toDailyFcmRequest() }
-            .forEach { request ->
-                try {
-                    fcmProcessor.afternoonNotification(request)
-                } catch (e: Exception) {
-                    println("Failed to send notification to ${request.gitUserName}: ${e.message}")
-                }
-            }
+        dispatchNotificationsByType(fcmRequests, NOT_YET_TODO_REGISTERED)
     }
 
     @Transactional
     @Scheduled(cron = "0 0 23 * * *")
     fun sendEveningNotificationScheduler() {
-        val fcmRequestList = todoListRepository.findAllByDeadlineAndTodoStatus(
+        val fcmRequests = todoListRepository.findAllByDeadlineAndTodoStatus(
             LocalDate.now(),
             TodoStatus.DONE
         ).map { it.toFcmRequest() }.distinct()
             .filter { it.clientToken.isNotBlank() }
+        dispatchNotificationsByType(fcmRequests, ALL_TODOS_COMPLETED)
+    }
 
-
-        fcmRequestList.stream()
-            .forEach { request ->
-                try {
-                    fcmProcessor.eveningNotification(request)
-                } catch (e: Exception) {
-                    println("Failed to send notification to ${request.gitUserName}: ${e.message}")
-                }
+    fun dispatchNotificationsByType(fcmRequests: List<FcmRequest>, type: NotificationType) = run {
+        fcmRequests.forEach { request ->
+            try {
+                fcmProcessor.pushNotification(request, type)
+            } catch (e: Exception) {
+                println("Failed to send notification to ${request.gitUserName}: ${e.message}")
             }
+        }
     }
 }

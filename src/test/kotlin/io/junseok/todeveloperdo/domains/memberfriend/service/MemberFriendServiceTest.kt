@@ -15,6 +15,7 @@ import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
+import io.junseok.todeveloperdo.scheduler.fcm.NotificationType
 import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldHaveSize
@@ -91,11 +92,12 @@ class MemberFriendServiceTest : BehaviorSpec({
         every { memberFriendValidator.isFriend(member, sender1) } returns Unit
         every { memberFriendCreator.create(any(), any(), any()) } returns memberFriend
         memberFriendSaver.save(memberFriend)
-        fcmProcessor.byReceiveNotification(
+        fcmProcessor.pushNotification(
             FcmRequest(
                 sender1.clientToken!!,
                 sender1.gitHubUsername!!
-            )
+            ),
+            NotificationType.FRIEND_REQUEST
         )
         When("registerFriend()를 호출하면") {
             memberFriendService.registerFriend(sender1.memberId!!, member.appleId!!)
@@ -110,8 +112,9 @@ class MemberFriendServiceTest : BehaviorSpec({
 
             Then("친구에게 FCM 알림이 전송되어야 한다.") {
                 verify {
-                    fcmProcessor.byReceiveNotification(
-                        FcmRequest(sender1.clientToken!!, member.gitHubUsername!!)
+                    fcmProcessor.pushNotification(
+                        FcmRequest(sender1.clientToken!!, member.gitHubUsername!!),
+                        NotificationType.FRIEND_REQUEST
                     )
                 }
             }
@@ -157,11 +160,12 @@ class MemberFriendServiceTest : BehaviorSpec({
             memberFriendReader.findSenderMemberAndReceiverMember(any(), any())
         } returns memberFriend
         every { memberFriendUpdater.updateStatus(memberFriend) } returns Unit
-        fcmProcessor.byReceiveNotification(
+        fcmProcessor.pushNotification(
             FcmRequest(
                 sender1.clientToken!!,
                 member.gitHubUsername!!
-            )
+            ),
+            NotificationType.FRIEND_REQUEST
         )
         When("approveRequest()을 호출하면") {
             memberFriendService.approveRequest(sender1.memberId!!, member.appleId!!)
@@ -175,8 +179,9 @@ class MemberFriendServiceTest : BehaviorSpec({
             }
             Then("친구에게 FCM 알림이 전송되어야 한다.") {
                 verify {
-                    fcmProcessor.byReceiveNotification(
-                        FcmRequest(sender1.clientToken!!, member.gitHubUsername!!)
+                    fcmProcessor.pushNotification(
+                        FcmRequest(sender1.clientToken!!, member.gitHubUsername!!),
+                        NotificationType.FRIEND_REQUEST
                     )
                 }
             }
