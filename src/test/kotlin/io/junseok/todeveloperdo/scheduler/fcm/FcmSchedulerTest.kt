@@ -1,39 +1,42 @@
 package io.junseok.todeveloperdo.scheduler.fcm
 
-import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
-import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
-import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
-import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.SetUpData
-import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
-import io.junseok.todeveloperdo.global.fcm.FcmProcessor
-import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.kotest.core.spec.style.FunSpec
-import io.kotest.matchers.shouldBe
-import io.mockk.every
 import io.mockk.mockk
-import java.time.LocalDate
+import io.mockk.verify
 
 class FcmSchedulerTest : FunSpec({
-    val fcmProcessor = mockk<FcmProcessor>()
-    val memberRepository = mockk<MemberRepository>()
-    val memberReader = mockk<MemberReader>()
-    val todoReader = mockk<TodoReader>()
-    val fcmScheduler = FcmScheduler(
-        fcmProcessor,
-        memberRepository,
-        memberReader,
-        todoReader
+
+    val allTodosCompletedStrategy = mockk<AllTodosCompletedStrategy>(relaxed = true)
+    val proceedingTodoReminderStrategy = mockk<ProceedingTodoReminderStrategy>(relaxed = true)
+    val dailyLogReminderStrategy = mockk<DailyLogReminderStrategy>(relaxed = true)
+    val todoNotRegisteredStrategy = mockk<TodoNotRegisteredStrategy>(relaxed = true)
+    val fcmDispatcher = mockk<FcmDispatcher>(relaxed = true)
+
+    val scheduler = FcmScheduler(
+        allTodosCompletedStrategy,
+        proceedingTodoReminderStrategy,
+        dailyLogReminderStrategy,
+        todoNotRegisteredStrategy,
+        fcmDispatcher
     )
-    val today = LocalDate.of(2025, 5, 6)
-    test("오늘 날짜의 진행 중인 할 일 목록에서 FCM 요청 목록이 생성된다") {
-        val setUpData = SetUpData.listData(today)
-        every {
-            todoReader.findTodoListByTodoStatus(
-                today,
-                TodoStatus.PROCEED
-            )
-        } returns setUpData.todoLists
 
+    test("20시 스케줄러가 할 일 진행중 알림을 전달해야 한다") {
+        scheduler.sendNotificationScheduler()
+        verify(exactly = 1) { fcmDispatcher.dispatch(proceedingTodoReminderStrategy) }
+    }
 
+    test("8시 스케줄러가 할 일 리마인더 알림을 전달해야 한다") {
+        scheduler.sendMorningNotificationScheduler()
+        verify(exactly = 1) { fcmDispatcher.dispatch(dailyLogReminderStrategy) }
+    }
+
+    test("12시 스케줄러가 할 일 미등록 알림을 전달해야 한다") {
+        scheduler.sendAfternoonNotificationScheduler()
+        verify(exactly = 1) { fcmDispatcher.dispatch(todoNotRegisteredStrategy) }
+    }
+
+    test("23시 스케줄러가 할 일 완료 알림을 전달해야 한다") {
+        scheduler.sendEveningNotificationScheduler()
+        verify(exactly = 1) { fcmDispatcher.dispatch(allTodosCompletedStrategy) }
     }
 })
