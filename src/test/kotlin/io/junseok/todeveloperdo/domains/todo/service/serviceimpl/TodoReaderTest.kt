@@ -20,9 +20,10 @@ class TodoReaderTest : BehaviorSpec({
     val todoListRepository = mockk<TodoListRepository>()
     val todoQueryRepository = mockk<TodoQueryRepository>()
     val todoReader = TodoReader(todoListRepository, todoQueryRepository)
+    val today = LocalDate.of(2025, 5, 6)
 
     Given("해당 요일에 해당하는 ToDo목록을 불러올 때") {
-        val setUpData = SetUpData.listData()
+        val setUpData = SetUpData.listData(today)
 
         every {
             todoListRepository.findByDeadlineAndMember(
@@ -44,7 +45,7 @@ class TodoReaderTest : BehaviorSpec({
     }
 
     Given("해당 요일에 진행 중인 Todo목록을 불러올 때") {
-        val setUpData = SetUpData.listData()
+        val setUpData = SetUpData.listData(today)
         every {
             todoListRepository.findByDeadlineAndTodoStatusAndMember(
                 setUpData.currentDate,
@@ -66,7 +67,7 @@ class TodoReaderTest : BehaviorSpec({
     }
 
     Given("친구 할 일 목록 일주일 치 Todo목록을 불러올 때") {
-        val setUpData = SetUpData.listData()
+        val setUpData = SetUpData.listData(today)
         val weeksDay = setUpData.currentDate.minusWeeks(1)
         every {
             todoListRepository.findByMemberAndDeadlineBetween(
@@ -94,6 +95,26 @@ class TodoReaderTest : BehaviorSpec({
             }
         }
     }
+
+    Given("할 일 상태에 따라 할 일 목록을 조회할 때") {
+        TodoStatus.entries.forEach { status ->
+            When("상태가 $status 인 경우") {
+                val setUpData = SetUpData.listData(today, status)
+
+                every {
+                    todoListRepository.findAllByDeadlineAndTodoStatus(today, status)
+                } returns setUpData.todoLists
+
+                val todoLists = todoReader.findTodoListByTodoStatus(today, status)
+
+                Then("해당 상태의 할 일 목록이 반환되어야 한다") {
+                    todoLists.size shouldBe setUpData.todoLists.size
+                    todoLists.all { it.todoStatus == status } shouldBe true
+                }
+            }
+        }
+    }
+
 })
 
 data class SetUpData(
@@ -102,15 +123,14 @@ data class SetUpData(
     val todoLists: List<MemberTodoList>,
 ) {
     companion object {
-        fun listData(): SetUpData {
+        fun listData(date: LocalDate, todoStatus: TodoStatus = TodoStatus.PROCEED): SetUpData {
             val member = createMember(1L, "appleId")
-            val currentDate = LocalDate.now()
             val todoLists = listOf(
-                createMemberTodoList(1L, currentDate.minusWeeks(2), TodoStatus.PROCEED, member),
-                createMemberTodoList(3L, currentDate.minusWeeks(3), TodoStatus.PROCEED, member),
-                createMemberTodoList(3L, currentDate.minusWeeks(4), TodoStatus.PROCEED, member)
+                createMemberTodoList(1L, date.minusWeeks(2), todoStatus, member),
+                createMemberTodoList(3L, date.minusWeeks(3), todoStatus, member),
+                createMemberTodoList(3L, date.minusWeeks(4), todoStatus, member)
             )
-            return SetUpData(member, currentDate, todoLists)
+            return SetUpData(member, date, todoLists)
         }
     }
 }
