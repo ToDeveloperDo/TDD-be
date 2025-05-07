@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.scheduler.fcm
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.SetUpData
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
+import io.junseok.todeveloperdo.scheduler.StubDateProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -11,9 +12,9 @@ import java.time.LocalDate
 
 class ProceedingTodoReminderStrategyTest : FunSpec({
     val todoReader = mockk<TodoReader>()
-    val strategy = ProceedingTodoReminderStrategy(todoReader)
     val today = LocalDate.of(2025, 5, 6)
-
+    val stubDate = StubDateProvider(today)
+    val strategy = ProceedingTodoReminderStrategy(todoReader, stubDate)
     test("FCM 요청 리스트를 필터링하여 반환해야 한다") {
         val setUpData = SetUpData.listData(today)
         every {

@@ -8,12 +8,14 @@ import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import java.time.LocalDate
 
 class DailyLogReminderStrategyTest : FunSpec({
     val memberReader = mockk<MemberReader>()
     val dailyLogReminderStrategy = DailyLogReminderStrategy(memberReader)
 
     test("FCM 요청 리스트를 필터링하여 반환해야 한다") {
+        val today = LocalDate.of(2025,5,6)
         val validMember = createTestMember(1, "validToken")
         val inValidMember = createTestMember(2)
         every { memberReader.getAllMember() } returns listOf(validMember,inValidMember)

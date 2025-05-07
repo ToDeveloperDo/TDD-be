@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.scheduler.fcm
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.SetUpData
+import io.junseok.todeveloperdo.scheduler.StubDateProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
@@ -11,13 +12,17 @@ import java.time.LocalDate
 
 class TodoNotRegisteredStrategyTest : FunSpec({
     val memberRepository = mockk<MemberRepository>()
-    val todoNotRegisteredStrategy = TodoNotRegisteredStrategy(memberRepository)
+    val today = LocalDate.of(2025, 5, 6)
+    val stubDate = StubDateProvider(today)
+    val todoNotRegisteredStrategy = TodoNotRegisteredStrategy(memberRepository,stubDate)
 
     test("FCM 요청 리스트를 필터링하여 반환해야 한다") {
-        val today = LocalDate.of(2025,5,6)
         val validMember = createTestMember(1, "validToken")
         val inValidMember = createTestMember(2)
-        every { memberRepository.findMemberNotWithDeadLine(today) } returns listOf(validMember,inValidMember)
+        every { memberRepository.findMemberNotWithDeadLine(today) } returns listOf(
+            validMember,
+            inValidMember
+        )
 
         val result = todoNotRegisteredStrategy.getFcmRequests()
 
