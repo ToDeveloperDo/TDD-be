@@ -5,11 +5,14 @@ import io.junseok.todeveloperdo.domains.member.persistence.entity.Member
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import org.springframework.data.repository.findByIdOrNull
 
 class MemberReaderTest : BehaviorSpec({
     val memberRepository = mockk<MemberRepository>()
@@ -29,8 +32,16 @@ class MemberReaderTest : BehaviorSpec({
         }
 
         When("존재하지 않는 닉네임인 경우") {
-            every { memberReader.getMember("not") } throws ToDeveloperDoException { ErrorCode.NOT_EXIST_MEMBER }
+            every { memberRepository.findByAppleId("not") } returns null
             Then("존재하지 않는 에러 응답") {
+                throwsWith<ToDeveloperDoException>(
+                    {
+                        memberReader.getMember("not")
+                    },
+                    { ex ->
+                        ex.errorCode shouldBe ErrorCode.NOT_EXIST_MEMBER
+                    }
+                )
                 val exception = shouldThrow<ToDeveloperDoException> {
                     memberReader.getMember("not")
                 }
@@ -46,17 +57,70 @@ class MemberReaderTest : BehaviorSpec({
             createMember(3L, "TestOther2")
         )
 
-        every { memberRepository.findAll() } returns listOf(me)+memberList
-        When("나를 제외한 멤버를 조회화면"){
+        every { memberRepository.findAll() } returns listOf(me) + memberList
+        When("나를 제외한 멤버를 조회화면") {
             val result = memberReader.getMembersExcludeMe(me)
-            Then("나를 제외한 다른 멤버들만 조회되어야 한다"){
+            Then("나를 제외한 다른 멤버들만 조회되어야 한다") {
                 result shouldBe memberList
+                verify(exactly = 1) { memberRepository.findAll() }
+            }
+        }
+    }
+
+    Given("사용자 Id로 조회할 때") {
+        val member = createMember(1L, "test")
+        every { memberRepository.findByIdOrNull(member.memberId) } returns member
+        When("Id가 존재하는경우") {
+            val result = memberReader.getFriendMember(member.memberId!!)
+            Then("정상적으로 사용자가 조회되어야한다.") {
+                result.memberId shouldBe member.memberId
+                result.appleId shouldBe member.appleId
+            }
+        }
+
+        When("Id가 존재하지 않는 경우") {
+            every { memberRepository.findByIdOrNull(member.memberId) } returns null
+            Then("NOT_EXIST_MEMBER 에러가 반환되어야한다.") {
+                throwsWith<ToDeveloperDoException>(
+                    {
+                        memberReader.getFriendMember(member.memberId!!)
+                    },
+                    { ex ->
+                        ex.errorCode shouldBe ErrorCode.NOT_EXIST_MEMBER
+                    }
+                )
+            }
+        }
+    }
+
+    Given("사용자 닉네임으로 조회할 때") {
+        val member = createMember(1L, "test")
+        every { memberRepository.findByGitHubUsername(member.gitHubUsername!!) } returns member
+        When("닉네임이 존재하는경우") {
+            val result = memberReader.findByGitUserName(member.gitHubUsername!!)
+            Then("정상적으로 사용자가 조회되어야한다.") {
+                result.memberId shouldBe member.memberId
+                result.appleId shouldBe member.appleId
+            }
+        }
+
+        When("닉네임이 존재하지 않는 경우") {
+            every { memberRepository.findByGitHubUsername(member.gitHubUsername!!) } returns null
+            Then("NOT_EXIST_MEMBER 에러가 반환되어야한다.") {
+                throwsWith<ToDeveloperDoException>(
+                    {
+                        memberReader.findByGitUserName(member.gitHubUsername!!)
+                    },
+                    { ex ->
+                        ex.errorCode shouldBe ErrorCode.NOT_EXIST_MEMBER
+                    }
+                )
             }
         }
     }
 })
 
-fun createMember(id: Long, appleId: String,repo: String?=null) = Member(
+fun createMember(id: Long, appleId: String, repo: String? = null) = Member(
     memberId = id,
     appleId = appleId,
     appleRefreshToken = "appleRefreshToken",
