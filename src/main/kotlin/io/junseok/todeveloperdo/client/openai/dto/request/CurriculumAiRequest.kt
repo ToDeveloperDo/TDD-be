@@ -7,10 +7,13 @@ data class CurriculumAiRequest(
     val response_format: ResponseFormat
 ){
     companion object {
+        private const val AI_MODEL = "gpt-4o-mini"
+        private val RESPONSE_FORMAT = ResponseFormat("json_object")
+
         fun List<Message>.generateRequest() = CurriculumAiRequest(
-            model = "gpt-4o-mini",
+            model = AI_MODEL,
             messages = this,
-            response_format = ResponseFormat(type = "json_object")
+            response_format = RESPONSE_FORMAT
         )
     }
 }

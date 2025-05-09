@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 @RestControllerAdvice
 class GlobalExceptionHandler {
     @ExceptionHandler(ToDeveloperDoException::class)
-    protected fun errorCodeResponseEntity(ex: ToDeveloperDoException): ResponseEntity<ErrorResponseEntity> =
+    fun errorCodeResponseEntity(ex: ToDeveloperDoException): ResponseEntity<ErrorResponseEntity> =
         ex.errorCode.responseEntity()
 }

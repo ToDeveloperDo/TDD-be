@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.domains.member.service.serviceimpl
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -29,6 +30,44 @@ class MemberValidatorTest : BehaviorSpec({
                 shouldThrow<ToDeveloperDoException> {
                     memberValidator.isExistRepo(appleId)
                 }.errorCode shouldBe ErrorCode.NOT_EXIST_REPO
+            }
+        }
+    }
+
+    Given("사용자 닉네임으로 조회할 때") {
+        val member = createMember(1L, "test")
+        every { memberRepository.existsByGitHubUsername(member.gitHubUsername!!) } returns true
+        When("닉네임이 존재하는경우") {
+            val result = memberValidator.isExistGitMember(member.gitHubUsername!!)
+            Then("정상적으로 사용자가 조회되어야한다.") {
+                result shouldBe true
+            }
+        }
+
+        When("닉네임이 존재하지 않는 경우") {
+            every { memberRepository.existsByGitHubUsername(member.gitHubUsername!!) } returns false
+            val result = memberValidator.isExistGitMember(member.gitHubUsername!!)
+            Then("false가 반환되어야한다.") {
+                result shouldBe false
+            }
+        }
+    }
+
+    Given("사용자 AppleId로 조회할 때") {
+        val member = createMember(1L, "test")
+        every { memberRepository.existsByAppleId(member.appleId!!) } returns true
+        When("AppleId가 존재하는경우") {
+            val result = memberValidator.isExistMember(member.appleId!!)
+            Then("정상적으로 사용자가 조회되어야한다.") {
+                result shouldBe true
+            }
+        }
+
+        When("AppleId가 존재하지 않는 경우") {
+            every { memberRepository.existsByAppleId(member.appleId!!) } returns false
+            val result = memberValidator.isExistMember(member.appleId!!)
+            Then("false가 반환되어야한다.") {
+                result shouldBe false
             }
         }
     }
