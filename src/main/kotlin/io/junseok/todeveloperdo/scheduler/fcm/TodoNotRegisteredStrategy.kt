@@ -3,10 +3,9 @@ package io.junseok.todeveloperdo.scheduler.fcm
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.junseok.todeveloperdo.global.fcm.dto.request.toDailyFcmRequest
-import io.junseok.todeveloperdo.scheduler.TimeProvider
+import io.junseok.todeveloperdo.util.TimeProvider
 import io.junseok.todeveloperdo.scheduler.fcm.NotificationType.NOT_YET_TODO_REGISTERED
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 
 @Component
 class TodoNotRegisteredStrategy(

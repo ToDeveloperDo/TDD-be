@@ -1,9 +1,7 @@
 package io.junseok.todeveloperdo.scheduler.fcm
 
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
-import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
-import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.SetUpData
-import io.junseok.todeveloperdo.scheduler.StubDateProvider
+import io.junseok.todeveloperdo.util.StubDateProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every

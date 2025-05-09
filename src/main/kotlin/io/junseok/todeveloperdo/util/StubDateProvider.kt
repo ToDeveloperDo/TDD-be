@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.scheduler
+package io.junseok.todeveloperdo.util
 
 import java.time.LocalDate
 
