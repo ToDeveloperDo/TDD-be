@@ -72,18 +72,13 @@ class MemberTodoService(
         val todoList = todoReader.findTodoList(todoListId)
         todoValidator.isWriter(todoListId, member)
         todoUpdater.update(todoList, todoRequest)
-        // 오늘이 아닌 경우
-        //if (LocalDate.now() != todoRequest.deadline) {
-            gitIssueUpdater.update(member, todoList, todoRequest)
-       // }
+        gitIssueUpdater.update(member, todoList, todoRequest)
     }
 
     //할 일 삭제 NOTE
     @DeleteEventHandler
     fun removeTodoList(todoListId: Long, username: String, state: String) { }
 
-
-    @Transactional(readOnly = true)
     fun calculateTodoList(
         todoCountRequest: TodoCountRequest,
         username: String,
