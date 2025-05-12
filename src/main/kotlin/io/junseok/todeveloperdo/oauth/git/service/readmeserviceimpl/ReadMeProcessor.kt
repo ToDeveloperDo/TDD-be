@@ -18,10 +18,11 @@ class ReadMeProcessor(
     fun generatorReadMe(
         bearerToken: String,
         member: Member,
-        repo: String
+        repo: String,
+        currentTime : LocalDateTime
     ) {
         val findTodoList =
-            todoReader.bringProceedTodoLists(LocalDateTime.now().toStringDateTime(), member)
+            todoReader.bringProceedTodoLists(currentTime.toStringDateTime(), member)
         val todoListContent = readMeBuilder.buildTodoListString(findTodoList)
         val readmeContent = readMeCreator.readMeContentCreate(todoListContent)
         readMeCreator.createReadMe(bearerToken, member.gitHubUsername!!, repo, readmeContent)

@@ -3,21 +3,20 @@ package io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.git.client.GtiHubReadMeClient
-import io.junseok.todeveloperdo.oauth.git.dto.request.fileCommitRequestInit
+import io.junseok.todeveloperdo.oauth.git.dto.request.FileCommitRequest.Companion.fileCommitRequestInit
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService
 import io.junseok.todeveloperdo.oauth.git.util.toKoreanDayName
 import io.junseok.todeveloperdo.oauth.git.util.toStringDateTime
+import io.junseok.todeveloperdo.util.TimeProvider
 import org.springframework.stereotype.Component
-import java.time.LocalDateTime
-import java.time.format.TextStyle
-import java.util.*
 
 @Component
 class ReadMeCreator(
-    private val gitHubReadMeClient: GtiHubReadMeClient
+    private val gitHubReadMeClient: GtiHubReadMeClient,
+    private val timeProvider: TimeProvider
 ) {
     fun readMeContentCreate(todoListContent: String) = """
-            |# 📝${LocalDateTime.now().toStringDateTime()}(${LocalDateTime.now().toKoreanDayName()}) / TODOLIST📝
+            |# 📝${timeProvider.nowDateTime().toStringDateTime()}(${timeProvider.nowDateTime().toKoreanDayName()}) / TODOLIST📝
             |$todoListContent
         """.trimMargin()
 

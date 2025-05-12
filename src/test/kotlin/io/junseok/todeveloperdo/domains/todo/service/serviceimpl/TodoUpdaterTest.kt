@@ -5,6 +5,9 @@ import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.every
+import io.mockk.just
+import io.mockk.runs
 import io.mockk.verify
 import java.time.LocalDate
 
@@ -31,27 +34,40 @@ class TodoUpdaterTest : BehaviorSpec({
         }
     }
 
-    Given("할 일을 완료했을 때"){
+    Given("할 일을 완료했을 때") {
         val member = createMember(1L, "appleId")
         val todoList =
             createMemberTodoList(1L, LocalDate.now(), TodoStatus.PROCEED, member)
-        When("doneTodoList()이 실행되면"){
+        When("doneTodoList()이 실행되면") {
             todoUpdater.doneTodoList(todoList)
-            Then("TodoStatus가 DONE으로 변경되어야한다."){
+            Then("TodoStatus가 DONE으로 변경되어야한다.") {
                 todoList.todoStatus shouldBe TodoStatus.DONE
             }
         }
     }
 
 
-    Given("완료했던 할 일을 다시 진행 중으로 변경할 때"){
+    Given("완료했던 할 일을 다시 진행 중으로 변경할 때") {
         val member = createMember(1L, "appleId")
         val todoList =
             createMemberTodoList(1L, LocalDate.now(), TodoStatus.DONE, member)
-        When("proceedTodoList()이 실행되면"){
+        When("proceedTodoList()이 실행되면") {
             todoUpdater.proceedTodoList(todoList)
-            Then("TodoStatus가 PROCEED으로 변경되어야한다."){
+            Then("TodoStatus가 PROCEED으로 변경되어야한다.") {
                 todoList.todoStatus shouldBe TodoStatus.PROCEED
+            }
+        }
+    }
+
+    Given("이슈 번호를 수정할 때") {
+        val issueNumber = 123
+        val member = createMember(1L, "appleId")
+        val todoList =
+            createMemberTodoList(1L, LocalDate.now(), TodoStatus.PROCEED, member)
+        When("modifyIssueNumber()를 호출하면") {
+            todoUpdater.modifyIssueNumber(issueNumber, todoList)
+            Then("이슈 번호가 정상적으로 수정되어야한다.") {
+                todoList.issueNumber shouldBe issueNumber
             }
         }
     }

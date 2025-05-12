@@ -28,13 +28,15 @@ class MemberProcessorTest : BehaviorSpec({
         val receive = createMember(4L, "test3")
         val notFriend2 = createMember(5L, "test4")
         val following = createMember(6L, "test5")
+        val following2 = createMember(7L, "test7")
 
         val allMembers = listOf(
             notFriend1,
             request,
             receive,
             notFriend2,
-            following
+            following,
+            following2
         )
         notFriend2.gitHubUsername = null
 
@@ -53,7 +55,10 @@ class MemberProcessorTest : BehaviorSpec({
         // 친구 목록 (FOLLOWING)
         every {
             memberFriendReader.findAllWithFriend(member)
-        } returns listOf(createMemberFriend(following, member, FriendStatus.FOLLOWING))
+        } returns listOf(
+            createMemberFriend(member, following2, FriendStatus.FOLLOWING),
+            createMemberFriend(following, member, FriendStatus.FOLLOWING)
+        )
 
         When("나를 제외한 멤버들을 조회하고 친구 상태를 확인할 때") {
             val result = memberProcessor.findMemberList(appleId)
@@ -63,13 +68,14 @@ class MemberProcessorTest : BehaviorSpec({
                     FriendStatus.NOT_FRIEND,
                     FriendStatus.REQUEST,
                     FriendStatus.RECEIVE,
+                    FriendStatus.FOLLOWING,
                     FriendStatus.FOLLOWING
                 )
             }
 
             Then("멤버 ID가 정확히 반환되어야 한다") {
                 result.map { it.memberId } shouldContainExactly listOf(
-                    2L, 3L, 4L, 6L
+                    2L, 3L, 4L, 6L, 7L
                 )
             }
 

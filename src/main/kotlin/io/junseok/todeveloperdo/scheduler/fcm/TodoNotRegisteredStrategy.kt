@@ -13,7 +13,7 @@ class TodoNotRegisteredStrategy(
     private val timeProvider: TimeProvider
 ) : NotificationStrategy {
     override fun getFcmRequests(): List<FcmRequest> =
-        memberRepository.findMemberNotWithDeadLine(timeProvider.now())
+        memberRepository.findMemberNotWithDeadLine(timeProvider.nowDate())
             .filter { !it.clientToken.isNullOrBlank() }
             .map { it.toDailyFcmRequest() }
 

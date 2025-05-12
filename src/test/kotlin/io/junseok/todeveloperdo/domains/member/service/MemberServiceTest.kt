@@ -1,15 +1,13 @@
 package io.junseok.todeveloperdo.domains.member.service
 
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.*
+import io.junseok.todeveloperdo.domains.memberfriend.service.createMemberResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitUserResponse
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberInfoResponse
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeTypeOf
-import io.mockk.clearMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
+import io.mockk.*
 
 class MemberServiceTest : BehaviorSpec({
     val memberReader = mockk<MemberReader>()
@@ -100,6 +98,42 @@ class MemberServiceTest : BehaviorSpec({
             memberService.reIssued(member.appleId!!, fcmToken)
             Then("FCM토큰이 정상적으로 업데이트되어야한다.") {
                 verify(exactly = 1) { memberUpdater.updateFcmToken(fcmToken, member) }
+            }
+        }
+    }
+
+    Given("회원 삭제 요청이 들어왔을 때") {
+        val username = "appleId"
+
+        every { memberDeleter.removeMember(username) } just runs
+
+        When("deleteMember()를 호출하면") {
+            memberService.deleteMember(username)
+
+            Then("memberDeleter.removeMember가 호출되어야 한다") {
+                verify(exactly = 1) { memberDeleter.removeMember(username) }
+            }
+        }
+    }
+
+    Given("전체 사용자를 조회할 때") {
+        val appleId = "apple123"
+        val expectedMembers = listOf(
+            createMemberResponse(1L, appleId),
+            createMemberResponse(2L, appleId)
+        )
+
+        every { memberProcessor.findMemberList(appleId) } returns expectedMembers
+
+        When("findAllMember()를 호출하면") {
+            val result = memberService.findAllMember(appleId)
+
+            Then("memberProcessor.findMemberList가 호출되어야 한다") {
+                verify(exactly = 1) { memberProcessor.findMemberList(appleId) }
+            }
+
+            Then("반환된 멤버 리스트는 기대한 값과 일치해야 한다") {
+                result shouldBe expectedMembers
             }
         }
     }

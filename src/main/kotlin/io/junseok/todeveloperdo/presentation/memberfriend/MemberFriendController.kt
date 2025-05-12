@@ -39,7 +39,7 @@ class MemberFriendController(
     fun searchMemberFriend(
         @PathVariable memberId: Long, principal: Principal,
     ): ResponseEntity<MemberFriendResponse> =
-        ResponseEntity.ok(memberFriendService.findMemberFriend(principal.name, memberId))
+        ResponseEntity.ok(memberFriendService.findMemberFriend(memberId))
 
     /**
      * NOTE, TODO

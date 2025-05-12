@@ -38,7 +38,7 @@ class MemberFriendService(
             .map { friend -> friend.getFriendOf(member).toMemberFriendResponse() }
     }
 
-    fun findMemberFriend(username: String, memberId: Long): MemberFriendResponse {
+    fun findMemberFriend(memberId: Long): MemberFriendResponse {
         val member = memberReader.getFriendMember(memberId)
         return member.toMemberFriendResponse()
     }

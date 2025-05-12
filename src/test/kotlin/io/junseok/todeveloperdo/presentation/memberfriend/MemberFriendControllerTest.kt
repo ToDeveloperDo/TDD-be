@@ -115,7 +115,6 @@ class MemberFriendControllerTest : FunSpec({
         val friendResponse = createMemberFriendResponse(1)
         every {
             memberFriendService.findMemberFriend(
-                any(),
                 friendResponse.memberId
             )
         } returns friendResponse

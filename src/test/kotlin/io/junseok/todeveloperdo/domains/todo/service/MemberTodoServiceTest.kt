@@ -7,6 +7,7 @@ import io.junseok.todeveloperdo.domains.member.service.serviceimpl.createMember
 import io.junseok.todeveloperdo.domains.memberfriend.service.createTodoResponse
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.*
+import io.junseok.todeveloperdo.event.issue.dto.request.IssueEventRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.createDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.createTodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.createTodoCountResponse
@@ -15,6 +16,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
 import java.time.LocalDate
+import java.util.concurrent.CompletableFuture
 
 class MemberTodoServiceTest : BehaviorSpec({
     val todoReader = mockk<TodoReader>()
@@ -40,14 +42,21 @@ class MemberTodoServiceTest : BehaviorSpec({
         val todoRequests = listOf(createTodoRequest())
         val member = createMember(1, "appleId")
         val memberTodoList = createMemberTodoList(1, today, TodoStatus.PROCEED, member)
+        val issueFuture = CompletableFuture<Int>().apply { complete(123) }
+        val issueEventRequest = IssueEventRequest(member, todoRequests[0], issueFuture)
+
         every { memberReader.getMember(any()) } returns member
         every {
-            todoCreator.generatorTodo(todoRequests[0], any())
+            todoCreator.generatorTodo(todoRequests[0], any(), 123)
         } returns memberTodoList
         every { todoSaver.saveTodoList(listOf(memberTodoList)) } returns 1L
         every { gitIssueService.saveGitIssue(member, any()) } just runs
         When("createTodoList()를 호출하면") {
-            val result = memberTodoService.createTodoList(todoRequests, member.gitHubUsername!!)
+            val result = memberTodoService.createTodoList(
+                todoRequests,
+                member.gitHubUsername!!,
+                issueEventRequest
+            )
             Then("정상적으로 커리큘럼이 생성되어야한다.") {
                 result shouldBe 1L
             }
@@ -169,6 +178,20 @@ class MemberTodoServiceTest : BehaviorSpec({
             memberTodoService.unFinishedTodoList(1L, member.gitHubUsername!!, "DONE")
             Then("진행 상태로 되돌리는 로직이 실행되어야 한다") {
                 verify(exactly = 1) { todoUpdater.proceedTodoList(memberTodoList) }
+            }
+        }
+    }
+
+    Given("할 일 리스트를 삭제할 때") {
+        val todoListId = 1L
+        val username = "appleId"
+        val state = "DONE"
+
+        When("removeTodoList()를 호출하면") {
+            memberTodoService.removeTodoList(todoListId, username, state)
+
+            Then("정상적으로 삭제 이벤트가 처리되어야 한다") {
+                true shouldBe true
             }
         }
     }

@@ -5,21 +5,26 @@ import io.junseok.todeveloperdo.domains.member.service.serviceimpl.createMember
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.MemberTodoList
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoListRepository
-import io.junseok.todeveloperdo.domains.todo.persistence.repository.TodoQueryRepository
+import io.junseok.todeveloperdo.exception.ErrorCode.NOT_EXIST_TODOLIST
+import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.presentation.membertodolist.createTodoCountRequest
+import io.junseok.todeveloperdo.presentation.membertodolist.createTodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
+import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
+import org.springframework.data.repository.findByIdOrNull
 import java.time.LocalDate
 
 class TodoReaderTest : BehaviorSpec({
     val todoListRepository = mockk<TodoListRepository>()
-    val todoQueryRepository = mockk<TodoQueryRepository>()
-    val todoReader = TodoReader(todoListRepository, todoQueryRepository)
+    val todoReader = TodoReader(todoListRepository)
     val today = LocalDate.of(2025, 5, 6)
 
     Given("해당 요일에 해당하는 ToDo목록을 불러올 때") {
@@ -115,6 +120,60 @@ class TodoReaderTest : BehaviorSpec({
         }
     }
 
+    Given("할 일을 조회할 때") {
+        val member = createMember(1, "appleId")
+        val memberTodoList = createMemberTodoList(1L, today, TodoStatus.DONE, member)
+        When("할 일이 존재하는 경우") {
+            every { todoListRepository.findByIdOrNull(1L) } returns memberTodoList
+            val result = todoReader.findTodoList(1L)
+            Then("정상적으로 조회가 된다.") {
+                result shouldBe memberTodoList
+            }
+        }
+
+        When("할 일이 존재하지 않는 경우") {
+            every { todoListRepository.findByIdOrNull(1L) } returns null
+            Then("NOT_EXIST_TODOLIST 에러가 반환된다.") {
+                throwsWith<ToDeveloperDoException>(
+                    {
+                        todoReader.findTodoList(1L)
+                    },
+                    { ex ->
+                        ex.errorCode shouldBe NOT_EXIST_TODOLIST
+                    }
+                )
+            }
+        }
+    }
+
+    Given("등록된 할 일의 갯수를 불러올 때") {
+        val countRequest = createTodoCountRequest()
+        val member = createMember(1, "appleId")
+        val responseList = listOf(createTodoCountResponse())
+        every {
+            todoListRepository.findAllByMonthAndYearAndMember(
+                countRequest.month,
+                countRequest.year,
+                member
+            )
+        } returns responseList
+        When("countByTodoList()를 호출하면") {
+            val result = todoReader.countByTodoList(countRequest, member)
+            Then("정상적으로 갯수가 반환되어야한다.") {
+                result shouldBe responseList
+                result.size shouldBe responseList.size
+            }
+            Then("쿼리 메서드가 정확히 1번 호출되어야 한다.") {
+                verify(exactly = 1) {
+                    todoListRepository.findAllByMonthAndYearAndMember(
+                        countRequest.month,
+                        countRequest.year,
+                        member
+                    )
+                }
+            }
+        }
+    }
 })
 
 data class SetUpData(
