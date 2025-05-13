@@ -1,7 +1,6 @@
 package io.junseok.todeveloperdo.util.dsl
 
-import io.kotest.assertions.print.printWithType
-import org.springframework.restdocs.payload.FieldDescriptor
+import org.springframework.restdocs.headers.HeaderDocumentation
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.payload.PayloadDocumentation
 import org.springframework.restdocs.request.RequestDocumentation
@@ -15,6 +14,9 @@ infix fun String.arrayTypeOf(restDocsField: RestDocsField) =
 
 infix fun String.parameterTypeOf(restDocsField: RestDocsField): Parameter =
     createParameter(this, restDocsField.type)
+
+infix fun String.headerTypeOf(restDocsField: RestDocsField) =
+    createHeader(this, restDocsField.type)
 
 fun createField(
     value: String,
@@ -42,4 +44,19 @@ fun createParameter(
         .description("")
     if (optional) descriptor.optional()
     return Parameter(descriptor)
+}
+
+fun createHeader(
+    value: String,
+    type: JsonFieldType,
+    optional: Boolean = false,
+): Header {
+    val descriptor = HeaderDocumentation
+        .headerWithName(value)
+        .attributes(
+            Attributes.key("type").value(type.toString())
+        )
+        .description("")
+    if (optional) descriptor.optional()
+    return Header(descriptor)
 }

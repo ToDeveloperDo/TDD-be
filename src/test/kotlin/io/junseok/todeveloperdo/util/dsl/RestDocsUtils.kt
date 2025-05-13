@@ -17,6 +17,8 @@ fun pathParameters(vararg fields: Parameter) =
 fun requestParameters(vararg fields: Parameter) =
     RequestDocumentation.requestParameters(fields.map { it.descriptor })
 
+fun requestHeaders(vararg fields: Header) =
+    HeaderDocumentation.requestHeaders(fields.map { it.descriptor })
 fun authorizationHeader(required: Boolean = true): RequestHeadersSnippet {
     val descriptor = HeaderDocumentation.headerWithName("Authorization")
         .description("Bearer Token")
