@@ -4,12 +4,14 @@ import io.junseok.todeveloperdo.client.openai.config.OpenChatAiConfig.Companion.
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
 import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
 import io.junseok.todeveloperdo.oauth.git.dto.request.WebhookRequest
-import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubRepoResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.WebhookResponse
 import org.springframework.cloud.openfeign.FeignClient
 import org.springframework.http.MediaType
-import org.springframework.web.bind.annotation.*
+import org.springframework.web.bind.annotation.PathVariable
+import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestHeader
 
 @FeignClient(
     name = "githubUserClient",
@@ -23,12 +25,12 @@ interface GitHubRepoClient {
         @RequestBody body: GItHubRepo
     ): GitHubResponse
 
-    @GetMapping("/repos/{owner}/{repo}")
+/*    @GetMapping("/repos/{owner}/{repo}")
     fun isExistRepo(
         @PathVariable("owner") owner: String,
         @PathVariable("repo") repo: String,
         @RequestHeader(AUTHORIZATION) token: String
-    ): GitHubRepoResponse
+    ): GitHubRepoResponse*/
 
     @PostMapping("/repos/{owner}/{repo}/hooks")
     fun createWebhook(

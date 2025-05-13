@@ -3,16 +3,12 @@ package io.junseok.todeveloperdo.presentation.member
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.junseok.todeveloperdo.domains.member.service.MemberService
-import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
 import io.junseok.todeveloperdo.domains.memberfriend.service.createMemberResponse
 import io.junseok.todeveloperdo.presentation.member.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberInfoResponse
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
-import io.junseok.todeveloperdo.util.MockkPrincipal
-import io.junseok.todeveloperdo.util.ObjectMappers
+import io.junseok.todeveloperdo.util.*
 import io.junseok.todeveloperdo.util.dsl.*
-import io.junseok.todeveloperdo.util.toRequest
-import io.junseok.todeveloperdo.util.toResponse
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
@@ -55,7 +51,7 @@ class MemberControllerTest : BehaviorSpec({
     }
 
     Given("인증된 사용자가 멤버 정보를 조회할 때") {
-        val userName = "testUser"
+        val userName = "username"
         val expectedResponse = MemberInfoResponse(
             username = "testUser",
             avatarUrl = "test",
@@ -68,10 +64,7 @@ class MemberControllerTest : BehaviorSpec({
             Then("멤버 정보를 정상적으로 반환한다") {
                 val mvcResult = mockMvc.perform(
                     get("/api/member")
-                        .principal(MockkPrincipal(userName))
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .header("Authorization", "Bearer test-token")
-
+                        .setAuthorization()
                 )
                     .andExpect(status().isOk)
                     .andDo(

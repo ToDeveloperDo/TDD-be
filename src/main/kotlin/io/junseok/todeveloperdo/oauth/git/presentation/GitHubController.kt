@@ -21,9 +21,6 @@ class GitHubController(
     @GetMapping("/check")
     fun isGitHubLink(principal: Principal) = gitHubService.checkGitLink(principal.name)
 
-    /*@GetMapping("/check/repo")
-    fun isGitHubRepo(principal: Principal) = gitHubService.checkGitRepo(principal.name)
-*/
     @PostMapping("/webhook")
     fun handleWebhook(
         @RequestBody payload: Map<String, Any>,

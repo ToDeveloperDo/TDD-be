@@ -3,10 +3,8 @@ package io.junseok.todeveloperdo.oauth.apple.service
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.*
 import io.junseok.todeveloperdo.oauth.apple.client.AppleWithdrawClient
 import io.junseok.todeveloperdo.oauth.apple.service.serviceimpl.ClientSecretCreator
-import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
-
 
 @Service
 class AppleMemberService(
@@ -20,7 +18,6 @@ class AppleMemberService(
     private val memberDeleter: MemberDeleter,
     private val appleWithdrawClient: AppleWithdrawClient
 ) {
-    private val logger = LoggerFactory.getLogger(AppleMemberService::class.java)
 
     fun createOrUpdateMember(
         appleId: String,
@@ -52,7 +49,7 @@ class AppleMemberService(
             )
             memberDeleter.removeMember(appleId)
         } catch (e: Exception) {
-            logger.error("failed: ", e)
+            throw e
         }
     }
 }

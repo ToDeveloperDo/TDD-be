@@ -1,5 +1,6 @@
 package io.junseok.todeveloperdo.util.dsl
 
+import org.springframework.restdocs.headers.HeaderDescriptor
 import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.request.ParameterDescriptor
 import org.springframework.restdocs.request.RequestDocumentation.parameterWithName
@@ -17,3 +18,6 @@ open class Parameter(val descriptor: ParameterDescriptor){
     }
 }
 
+open class Header(val descriptor: HeaderDescriptor){
+    open infix fun means(value: String) = apply { descriptor.description(value) }
+}

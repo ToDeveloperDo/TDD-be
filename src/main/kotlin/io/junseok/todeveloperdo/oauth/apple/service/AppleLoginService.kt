@@ -1,8 +1,6 @@
 package io.junseok.todeveloperdo.oauth.apple.service
 
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider
-import io.junseok.todeveloperdo.exception.ErrorCode
-import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.dto.response.AppleTokenResponse
 import io.junseok.todeveloperdo.oauth.apple.dto.response.IdTokenResponse
@@ -41,9 +39,7 @@ class AppleLoginService(
         val idToken = tokenResponse.idToken //access token
 
         val authorities = listOf(SimpleGrantedAuthority("ROLE_USER"))
-        println("clientToken = ${clientToken}")
         val applePublicKeys = appleClient.getApplePublicKeys().keys
-        //val payload = AppleJwtUtil.getPayload(idToken, applePublicKeys)
         val payload = try {
             AppleJwtUtil.getPayload(idToken, applePublicKeys)
         } catch (e: Exception) {
@@ -51,9 +47,7 @@ class AppleLoginService(
             throw e
         }
         val email = payload["email"] as String
-        println("email = ${email}")
         val userIdentifier = payload["sub"] as String
-        println("userIdentifier = ${userIdentifier}")
         val user = User(userIdentifier, "", authorities)
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)
@@ -76,7 +70,6 @@ class AppleLoginService(
     }
 
     fun refreshAppleToken(refreshToken: String): IdTokenResponse {
-        //return try {
         val response = appleClient.refreshToken(
             clientId = clientId,
             grantType = "refresh_token",
@@ -88,9 +81,8 @@ class AppleLoginService(
         val payload = AppleJwtUtil.getPayload(response.idToken, applePublicKeys)
         val userIdentifier = payload["sub"] as String
         val user = User(userIdentifier, "", authorities)
-        val b = payload["email_verified"] as? Boolean ?: false
+        payload["email_verified"] as? Boolean ?: false
 
-        println("email_verified::  ${b}")
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)
 
@@ -98,9 +90,5 @@ class AppleLoginService(
         logger.info(idTokenResponse.idToken)
 
         return idTokenResponse
-    }
-
-    companion object {
-        const val REFRESH_GRANT_TYPE = "refresh_token"
     }
 }
