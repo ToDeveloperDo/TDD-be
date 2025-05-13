@@ -13,13 +13,11 @@ import javax.servlet.http.HttpServletResponse
 @CrossOrigin
 class LoginController(
     private val gitHubOAuthService: GitHubOAuthService,
-) {
     @Value("\${spring.security.oauth2.client.registration.github.client-id}")
-    private lateinit var clientId: String
-
+    private val clientId: String,
     @Value("\${spring.security.oauth2.client.registration.github.redirect-uri}")
-    private lateinit var redirectUri: String
-
+    private val redirectUri: String,
+) {
     @GetMapping("/git/login")
     fun redirectToGithub(
         httpServletResponse: HttpServletResponse,
