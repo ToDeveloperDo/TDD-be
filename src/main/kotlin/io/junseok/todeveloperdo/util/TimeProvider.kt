@@ -1,7 +1,10 @@
 package io.junseok.todeveloperdo.util
 
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 interface TimeProvider {
-    fun now(): LocalDate
+    fun nowDate(): LocalDate
+    fun nowDateTime(): LocalDateTime
+
 }

@@ -16,7 +16,7 @@ class ProceedingTodoReminderStrategy(
 ) : NotificationStrategy {
     override fun getFcmRequests(): List<FcmRequest> =
         todoReader.findTodoListByTodoStatus(
-            timeProvider.now(),
+            timeProvider.nowDate(),
             TodoStatus.PROCEED
         ).map { it.toFcmRequest() }.distinct()
             .filter { it.clientToken.isNotBlank() }

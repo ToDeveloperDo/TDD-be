@@ -41,6 +41,7 @@ class MemberTodoControllerTest : FunSpec({
         fcmScheduler,
         rabbitMQProducer
     )
+
     val restDocumentation = ManualRestDocumentation()
     val mockMvc = MockMvcBuilders
         .standaloneSetup(memberTodoController)
@@ -251,12 +252,15 @@ class MemberTodoControllerTest : FunSpec({
     }
 }
 
-fun createTodoRequest() = TodoRequest(
-    content = "content",
-    memo = "memo",
-    tag = "tag",
-    deadline = LocalDate.now()
-)
+fun createTodoRequest(): TodoRequest {
+    val today = LocalDate.of(2025,5,13)
+    return TodoRequest(
+        content = "content",
+        memo = "memo",
+        tag = "tag",
+        deadline = today
+    )
+}
 
 fun createTodoCountRequest() = TodoCountRequest(
     year = 2025,

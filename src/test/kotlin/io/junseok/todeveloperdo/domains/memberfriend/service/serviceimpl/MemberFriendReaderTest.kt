@@ -8,6 +8,7 @@ import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.MemberFr
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.repository.MemberFriendRepository
 import io.junseok.todeveloperdo.exception.ErrorCode.*
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
+import io.junseok.todeveloperdo.util.throwsWith
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
@@ -109,13 +110,17 @@ class MemberFriendReaderTest : BehaviorSpec({
         And("친구 요청이 존재하지 않는 경우") {
             every {
                 memberFriendRepository.findBySenderMemberAndReceiverMember(sender, receiver)
-            } throws ToDeveloperDoException { NOT_REQUEST_FRIEND }
+            } returns null
             When("내가 친구요청 보낸 친구가 존재하지 않을 때") {
                 Then("요청 보낸 친구가 아닌 경우는 NOT_REQUEST_FRIEND가 발생해야한다.") {
-                    val exception = shouldThrow<ToDeveloperDoException> {
-                        memberFriendReader.findSenderMemberAndReceiverMember(sender, receiver)
-                    }
-                    exception.errorCode shouldBe NOT_REQUEST_FRIEND
+                    throwsWith<ToDeveloperDoException>(
+                        {
+                            memberFriendReader.findSenderMemberAndReceiverMember(sender, receiver)
+                        },
+                        { ex ->
+                            ex.errorCode shouldBe NOT_REQUEST_FRIEND
+                        }
+                    )
                 }
             }
         }
@@ -155,29 +160,58 @@ class MemberFriendReaderTest : BehaviorSpec({
                 }
             }
         }
-        And("친구 관계가 아닌 경우"){
+        And("친구 관계가 아닌 경우") {
             every {
                 memberFriendRepository.findByFriendRelationship(
                     any(),
                     any(),
                     FriendStatus.FOLLOWING
                 )
-            } throws ToDeveloperDoException { NOT_FRIENDSHIP }
-            When("findFriend()를 호출하면"){
-                Then("NOT_FRIENDSHIP 에러가 발생한다."){
-                    val exception = shouldThrow<ToDeveloperDoException> {
-                        memberFriendReader.findFriend(
-                            receiver,
-                            sender1,
-                            FriendStatus.FOLLOWING
-                        )
-                    }
-                    exception.errorCode shouldBe NOT_FRIENDSHIP
+            } returns null
+            When("findFriend()를 호출하면") {
+                Then("NOT_FRIENDSHIP 에러가 발생한다.") {
+                    throwsWith<ToDeveloperDoException>(
+                        {
+                            memberFriendReader.findFriend(
+                                receiver,
+                                sender1,
+                                FriendStatus.FOLLOWING
+                            )
+                        },
+                        { ex ->
+                            ex.errorCode shouldBe NOT_FRIENDSHIP
+                        }
+                    )
                 }
             }
         }
     }
 
+    Given("모든 친구 목록을 조회할 때") {
+        val senderMembers =
+            expectedFollowingSendFriends.filter { it.friendStatus == FriendStatus.FOLLOWING }
+        val receiverMembers =
+            expectedFollowingReceiveFriends.filter { it.friendStatus == FriendStatus.FOLLOWING }
+        val member = createMember(1, "appleId")
+        every {
+            memberFriendRepository.findBySenderMemberAndFriendStatus(
+                member,
+                FriendStatus.FOLLOWING
+            )
+        } returns senderMembers
+        every {
+            memberFriendRepository.findByReceiverMemberAndFriendStatus(
+                member,
+                FriendStatus.FOLLOWING
+            )
+        } returns receiverMembers
+        When("findAllFriends()를 호출하면") {
+            val result = memberFriendReader.findAllFriends(member, FriendStatus.FOLLOWING)
+            Then("사용자와 친구인 사용자가 정상적으로 조회가 되어야한다.") {
+                assertOnlyFollowingFriends(result, 2)
+            }
+        }
+    }
 })
 
 fun createMemberFriend(sender: Member, receiver: Member, friendStatus: FriendStatus): MemberFriend =

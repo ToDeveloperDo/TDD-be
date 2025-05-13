@@ -31,6 +31,8 @@ class ContentReaderTest : BehaviorSpec({
             Then("각 컨텐츠의 ID와 학습 내용이 일치해야 한다") {
                 result.map { it.contentId } shouldBe expectedContents.map { it.contentId }
                 result.map { it.learnContent } shouldBe expectedContents.map { it.learnContent }
+                result.map { it.curriculum.member } shouldBe expectedContents.map { it.curriculum.member }
+                result.map { it.curriculum.curriculumPlan } shouldBe expectedContents.map { it.curriculum.curriculumPlan }
             }
             Then("컨텐츠가 없는 경우 빈 리스트가 반환되어야 한다") {
                 every { contentRepository.findAllByCurriculum(any()) } returns emptyList()
@@ -41,7 +43,7 @@ class ContentReaderTest : BehaviorSpec({
     }
 })
 
-fun createCurriculum(curriculumId: Long, member:Member) = Curriculum(
+fun createCurriculum(curriculumId: Long, member: Member) = Curriculum(
     curriculumId = curriculumId,
     weekTitle = "weekTitle",
     objective = "objective",

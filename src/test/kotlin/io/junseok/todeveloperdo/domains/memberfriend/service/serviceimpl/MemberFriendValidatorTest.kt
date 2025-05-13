@@ -35,6 +35,7 @@ class MemberFriendValidatorTest : BehaviorSpec({
     Given("새로운 친구를 등록할 때") {
         listOf(
             Triple(true, true, true),
+            Triple(false, true, true),
             Triple(false, false, false)
         ).forEach { (send, request, expected) ->
 

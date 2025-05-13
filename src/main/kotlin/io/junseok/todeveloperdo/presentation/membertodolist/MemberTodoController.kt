@@ -86,7 +86,7 @@ class MemberTodoController(
             memberTodoService.unFinishedTodoList(todoListId, principal.name, ISSUE_OPEN)
         )
 
-    @GetMapping("/test")
+    /*@GetMapping("/test")
     fun test() {
         fcmScheduler.sendMorningNotificationScheduler()
     }
@@ -95,5 +95,5 @@ class MemberTodoController(
     fun sendMessage() {
         rabbitMQProducer.sendMessage("todo-queue","trigger")
         println("Message Sent: Success")
-    }
+    }*/
 }

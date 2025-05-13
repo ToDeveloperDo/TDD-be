@@ -15,7 +15,7 @@ class AllTodosCompletedStrategy(
 ) : NotificationStrategy{
     override fun getFcmRequests(): List<FcmRequest> =
         todoReader.findTodoListByTodoStatus(
-            timeProvider.now(),
+            timeProvider.nowDate(),
             TodoStatus.DONE
         ).map { it.toFcmRequest() }.distinct()
             .filter { it.clientToken.isNotBlank() }

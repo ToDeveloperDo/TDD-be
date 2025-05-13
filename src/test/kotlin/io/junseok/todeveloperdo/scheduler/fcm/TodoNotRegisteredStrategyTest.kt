@@ -28,6 +28,20 @@ class TodoNotRegisteredStrategyTest : FunSpec({
         result.first().clientToken shouldBe "validToken"
     }
 
+    test("clientToken이 null이거나 blank인 멤버는 제외되어야 한다") {
+        val validMember = createTestMember(1, "validToken")
+        val blankMember = createTestMember(2, "")
+        val nullTokenMember = createTestMember(3, null)
+
+        every { memberRepository.findMemberNotWithDeadLine(today) } returns listOf(validMember, blankMember, nullTokenMember)
+
+        val result = todoNotRegisteredStrategy.getFcmRequests()
+
+        result.size shouldBe 1
+        result.first().clientToken shouldBe "validToken"
+    }
+
+
     test("알림 타입이 NOT_YET_TODO_REGISTERED여야 한다") {
         todoNotRegisteredStrategy.getNotificationType() shouldBe NotificationType.NOT_YET_TODO_REGISTERED
     }

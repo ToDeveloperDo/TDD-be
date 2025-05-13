@@ -15,10 +15,11 @@ class DailyLogReminderStrategyTest : FunSpec({
     val dailyLogReminderStrategy = DailyLogReminderStrategy(memberReader)
 
     test("FCM 요청 리스트를 필터링하여 반환해야 한다") {
-        val today = LocalDate.of(2025,5,6)
         val validMember = createTestMember(1, "validToken")
-        val inValidMember = createTestMember(2)
-        every { memberReader.getAllMember() } returns listOf(validMember,inValidMember)
+        val blankMember = createTestMember(2, "")
+        val nullTokenMember = createTestMember(3, null)
+
+        every { memberReader.getAllMember() } returns listOf(validMember, blankMember, nullTokenMember)
 
         val result = dailyLogReminderStrategy.getFcmRequests()
 
@@ -26,11 +27,25 @@ class DailyLogReminderStrategyTest : FunSpec({
         result.first().clientToken shouldBe "validToken"
     }
 
+    test("clientToken이 null이거나 blank인 멤버는 제외되어야 한다") {
+        val validMember = createTestMember(1, "validToken")
+        val blankMember = createTestMember(2, "")
+        val nullTokenMember = createTestMember(3, null)
+
+        every { memberReader.getAllMember() } returns listOf(validMember, blankMember, nullTokenMember)
+
+        val result = dailyLogReminderStrategy.getFcmRequests()
+
+        result.size shouldBe 1
+        result.first().clientToken shouldBe "validToken"
+    }
+
+
     test("알림 타입이 DAILY_LOG_REMINDER여야 한다") {
         dailyLogReminderStrategy.getNotificationType() shouldBe NotificationType.DAILY_LOG_REMINDER
     }
 })
-fun createTestMember(id: Long,clientToken: String ="") = Member(
+fun createTestMember(id: Long,clientToken: String ?= null) = Member(
     memberId = id,
     appleId = "appleId",
     appleRefreshToken = "appleRefreshToken",

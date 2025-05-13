@@ -118,6 +118,23 @@ class MemberReaderTest : BehaviorSpec({
             }
         }
     }
+
+    Given("저장된 모든 멤버들을 조회할 때") {
+        val members = listOf(
+            createMember(1L, "apple1"),
+            createMember(2L, "apple2")
+        )
+
+        every { memberRepository.findAll() } returns members
+
+        When("getAllMember()를 호출하면") {
+            val result = memberReader.getAllMember()
+
+            Then("모든 멤버가 반환되어야 한다") {
+                result shouldBe members
+            }
+        }
+    }
 })
 
 fun createMember(id: Long, appleId: String, repo: String? = null) = Member(

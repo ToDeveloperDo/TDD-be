@@ -9,10 +9,10 @@ import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubResponse
 import io.junseok.todeveloperdo.oauth.git.service.loginserviceimpl.GitLinkValidator
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.ReadMeProcessor
 import io.junseok.todeveloperdo.oauth.git.service.readmeserviceimpl.RepoValidator
-import io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl.GitHubRepoValidator
 import io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl.WebHookCreator
 import io.junseok.todeveloperdo.oauth.git.service.reposerviceimpl.WebHookProcessor
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
+import io.junseok.todeveloperdo.util.TimeProvider
 import org.springframework.stereotype.Service
 
 @Service
@@ -23,9 +23,9 @@ class GitHubService(
     private val memberReader: MemberReader,
     private val memberUpdater: MemberUpdater,
     private val gitLinkValidator: GitLinkValidator,
-    private val gitHubRepoValidator: GitHubRepoValidator,
     private val webHookCreator: WebHookCreator,
-    private val webHookProcessor: WebHookProcessor
+    private val webHookProcessor: WebHookProcessor,
+    private val timeProvider: TimeProvider
 ) {
     /**
      * 레포 생성 및 README 생성
@@ -39,14 +39,19 @@ class GitHubService(
         val repository =
             gitHubRepoClient.createRepository(bearerToken, gitHubRequest.toGithubRepo())
         webHookCreator.create(bearerToken, repository)
-        readMeProcessor.generatorReadMe(bearerToken, member, gitHubRequest.repoName)
+        readMeProcessor.generatorReadMe(
+            bearerToken,
+            member,
+            gitHubRequest.repoName,
+            timeProvider.nowDateTime()
+        )
         return repository
     }
 
     fun checkGitLink(appleId: String) = gitLinkValidator.isGitLink(appleId)
     fun webhookProcess(payload: Map<String, Any>, event: String) {
         if (event == PING) return
-        webHookProcessor.process(payload,event)
+        webHookProcessor.process(payload, event)
     }
 
     companion object {

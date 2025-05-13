@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.junseok.todeveloperdo.domains.member.service.MemberService
 import io.junseok.todeveloperdo.domains.memberfriend.persistence.entity.FriendStatus
+import io.junseok.todeveloperdo.domains.memberfriend.service.createMemberResponse
 import io.junseok.todeveloperdo.presentation.member.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberInfoResponse
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
@@ -117,7 +118,10 @@ class MemberControllerTest : BehaviorSpec({
 
     Given("서비스에 등록된 사용자를 조회할 때") {
         val userName = "testUser"
-        val memberResponses = listOf(createMemberResponse(1L), createMemberResponse(2L))
+        val memberResponses = listOf(
+            createMemberResponse(1L, "apple"),
+            createMemberResponse(2L, "apple"),
+        )
         every { memberService.findAllMember(userName) } returns memberResponses
         When("GET /api/member/all를 호출하면") {
             Then("등록된 사용자 리스트가 반환되어야한다.") {
@@ -176,14 +180,3 @@ class MemberControllerTest : BehaviorSpec({
         }
     }
 })
-
-fun createMemberResponse(
-    memberId: Long,
-    friendStatus: FriendStatus = FriendStatus.NOT_FRIEND,
-) = MemberResponse(
-    memberId = memberId,
-    username = "username$memberId",
-    avatarUrl = "test",
-    gitUrl = "gitUrl",
-    friendStatus = friendStatus
-)

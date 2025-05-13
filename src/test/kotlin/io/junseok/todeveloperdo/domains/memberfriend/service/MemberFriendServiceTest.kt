@@ -13,6 +13,7 @@ import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.global.fcm.FcmProcessor
 import io.junseok.todeveloperdo.global.fcm.dto.request.FcmRequest
 import io.junseok.todeveloperdo.presentation.member.dto.response.MemberResponse
+import io.junseok.todeveloperdo.presentation.memberfriend.dto.response.toMemberFriendResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.DeadlineTodoResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
 import io.junseok.todeveloperdo.scheduler.fcm.NotificationType
@@ -287,6 +288,17 @@ class MemberFriendServiceTest : BehaviorSpec({
                     { memberFriendService.getGitFriend("juns", member.appleId!!) },
                     { ex -> ex.errorCode shouldBe ErrorCode.NOT_EXIST_MEMBER }
                 )
+            }
+        }
+    }
+
+    Given("사용자와 친구인 유저를 조회할 때") {
+        every { memberReader.getFriendMember(1L) } returns member
+        val friendResponse = member.toMemberFriendResponse()
+        When("findMemberFriend()를 호출하면") {
+            val result = memberFriendService.findMemberFriend(1L)
+            Then("정상적으로 친구가 반환되어야 한다.") {
+                result shouldBe friendResponse
             }
         }
     }
