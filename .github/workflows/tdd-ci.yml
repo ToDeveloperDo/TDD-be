@@ -9,8 +9,9 @@ permissions: write-all
 
 jobs:
   build:
-    #needs: style
     runs-on: ubuntu-latest
+    env:
+      APPLE_PRIVATE_KEY: ${{ secrets.APPLE_PRIVATE_KEY }}
     steps:
     - uses: actions/checkout@v3
     - name: Set up JDK 17
