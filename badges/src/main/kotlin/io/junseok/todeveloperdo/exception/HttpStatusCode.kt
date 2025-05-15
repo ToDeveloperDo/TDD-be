@@ -1,10 +1,5 @@
 package io.junseok.todeveloperdo.exception
 
-import lombok.AllArgsConstructor
-import lombok.Getter
-
-@AllArgsConstructor
-@Getter
 enum class HttpStatusCode(val status:Int) {
     CREATED(201),
     OK(200),
