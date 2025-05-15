@@ -1,4 +1,5 @@
-# ![TestCoverage](https://img.shields.io/endpoint?url=https://todeveloperdo.github.io/TDD-be/badges/coverage-badge.json)
+# ![TestCoverage](https://img.shields.io/endpoint?url=https://todeveloperdo.github.io/TDD-be/badges/coverage-badge.json&cacheSeconds=30)
+
 # 취준생 개발자를 위한 TodoList
 
 ## 팀원 구성
