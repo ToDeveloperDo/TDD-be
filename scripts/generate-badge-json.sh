@@ -1,7 +1,8 @@
 #!/bin/bash
 
+mkdir -p badges
 REPORT="build/reports/jacoco/test/jacocoTestReport.xml"
-BADGE_JSON="coverage-badge.json"
+OUTPUT="badges/coverage-badge.json"
 
 LINE_COVERED=$(grep -o 'covered="[0-9]*"' "$REPORT" | cut -d'"' -f2 | paste -sd+ - | bc)
 LINE_MISSED=$(grep -o 'missed="[0-9]*"' "$REPORT" | cut -d'"' -f2 | paste -sd+ - | bc)
@@ -20,7 +21,7 @@ elif (( $(echo "$PERCENT > 75" | bc -l) )); then
   COLOR=yellow
 fi
 
-cat <<EOF > $BADGE_JSON
+cat <<EOF > "$OUTPUT"
 {
   "schemaVersion": 1,
   "label": "coverage",

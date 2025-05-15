@@ -27,9 +27,8 @@ jobs:
 
       - name: Generate coverage badge JSON
         run: |
-          mkdir -p badges
           chmod +x ./scripts/generate-badge-json.sh
-          ./scripts/generate-badge-json.sh > badges/coverage-badge.json
+          ./scripts/generate-badge-json.sh
 
       - name: Upload badge to GitHub Pages root
         uses: peaceiris/actions-gh-pages@v3
