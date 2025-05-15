@@ -1,3 +1,4 @@
+/*
 package io.junseok.todeveloperdo.global.rabbitmq
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate
@@ -13,3 +14,4 @@ class RabbitMQProducer(
         rabbitTemplate.convertAndSend(queueName,message)
     }
 }
+*/

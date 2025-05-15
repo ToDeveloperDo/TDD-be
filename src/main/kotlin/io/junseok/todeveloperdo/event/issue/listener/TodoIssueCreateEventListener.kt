@@ -7,7 +7,6 @@ import io.junseok.todeveloperdo.event.issue.dto.request.IssueUpdateEventRequest
 import io.junseok.todeveloperdo.oauth.git.service.issueserviceimpl.GitHubIssueProcessor
 import io.junseok.todeveloperdo.oauth.git.util.toGeneratorBearerToken
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.toTodoCreate
-import org.slf4j.LoggerFactory
 import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 
@@ -15,12 +14,9 @@ import org.springframework.stereotype.Component
 class TodoIssueCreateEventListener(
     private val gitHubIssueProcessor: GitHubIssueProcessor,
 ) {
-    private val logger = LoggerFactory.getLogger(TodoIssueCreateEventListener::class.java)
 
     @EventListener
     fun create(issueEventRequest: IssueEventRequest) {
-        logger.info("Handling IssueEventRequest for todoRequest: ${issueEventRequest.todoRequest}")
-
         val gitHubIssuesRequest =
             issueEventRequest.todoRequest.toTodoCreate(issueEventRequest.member)
                 .toCreateIssueTemplate()
@@ -33,8 +29,6 @@ class TodoIssueCreateEventListener(
             gitHubIssuesRequest
         )
         issueEventRequest.issueNumber.complete(createIssue.number)
-        logger.info("Issue created with number: ${createIssue.number}")
-
     }
 
     @EventListener

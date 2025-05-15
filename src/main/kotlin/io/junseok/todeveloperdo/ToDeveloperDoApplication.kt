@@ -16,5 +16,7 @@ import org.springframework.scheduling.annotation.EnableScheduling
 @EnableAsync
 class ToDeveloperDoApplication
 fun main(args: Array<String>) {
-    runApplication<ToDeveloperDoApplication>(*args)
-}
+    val profile = System.getProperty("spring.profiles.active") ?: ""
+    if (!profile.contains("test")) {
+        runApplication<ToDeveloperDoApplication>(*args)
+    }}

@@ -16,7 +16,6 @@ class JwtSecurityConfig(
 ) : SecurityConfigurerAdapter<DefaultSecurityFilterChain?, HttpSecurity>() {
 
     override fun configure(http: HttpSecurity) {
-        // security 로직에 JwtFilter 등록
         http
             .addFilterBefore(
                 JwtFilter(tokenProvider),

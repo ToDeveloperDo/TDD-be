@@ -13,11 +13,11 @@ import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_OPEN
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.toTodoCreate
+import io.junseok.todeveloperdo.util.TimeProvider
 import org.aspectj.lang.JoinPoint
 import org.aspectj.lang.annotation.After
 import org.aspectj.lang.annotation.Aspect
 import org.springframework.stereotype.Component
-import java.time.LocalDate
 
 @Aspect
 @Component
@@ -29,7 +29,8 @@ class UpdateAspect(
     private val todoUpdater: TodoUpdater,
     private val issueEventProcessor: IssueEventProcessor,
     private val readMeEventProcessor: ReadMeEventProcessor,
-    ) {
+    private val timeProvider: TimeProvider
+) {
     @After("@annotation(UpdateEvent)")
     fun update(joinPoint: JoinPoint) {
         val args = joinPoint.args
@@ -42,13 +43,13 @@ class UpdateAspect(
         val gitIssue = gitIssueReader.findGitIssueByTodoList(findTodoList)
 
         // 수정했는데 다른 날에서 오늘인 경우 -> create, issueNumber가 null아 아닌 경우 open
-        if (LocalDate.now() == gitIssue.deadline && findTodoList.issueNumber == null){
+        if (timeProvider.nowDate() == gitIssue.deadline && findTodoList.issueNumber == null) {
             val issueNumber = (
                     eventProcessor.createIssue(member, todoRequest).issueNumber.get()
                         ?: throw ToDeveloperDoException { ErrorCode.FAILED_TO_GENERATE_ISSUE }
                     )
             todoUpdater.modifyIssueNumber(issueNumber, findTodoList)
-        }else if(LocalDate.now() == gitIssue.deadline && findTodoList.issueNumber != null){
+        } else if (timeProvider.nowDate() == gitIssue.deadline && findTodoList.issueNumber != null) {
             issueEventProcessor.close(member, findTodoList.issueNumber!!, ISSUE_OPEN)
         }
 
@@ -62,7 +63,7 @@ class UpdateAspect(
         }
 
         // 오늘에서 다른 날로 수정한 경우 -> closed
-        if(LocalDate.now()!=gitIssue.deadline && findTodoList.issueNumber != null){
+        if (timeProvider.nowDate() != gitIssue.deadline && findTodoList.issueNumber != null) {
             issueEventProcessor.close(member, findTodoList.issueNumber!!, ISSUE_CLOSED)
         }
 

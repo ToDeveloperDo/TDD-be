@@ -19,7 +19,7 @@ class SwaggerConfig {
             .type(SecurityScheme.Type.APIKEY)
             .`in`(SecurityScheme.In.HEADER)
             .name("Authorization")
-        
+
         val securityRequirement: SecurityRequirement = SecurityRequirement()
             .addList("Bearer Token")
 

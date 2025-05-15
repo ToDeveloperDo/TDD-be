@@ -6,7 +6,6 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.junseok.todeveloperdo.domains.memberfriend.service.createTodoResponse
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
-import io.junseok.todeveloperdo.global.rabbitmq.RabbitMQProducer
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
@@ -35,11 +34,11 @@ import java.time.LocalDate
 class MemberTodoControllerTest : FunSpec({
     val memberTodoService = mockk<MemberTodoService>()
     val fcmScheduler = mockk<FcmScheduler>()
-    val rabbitMQProducer = mockk<RabbitMQProducer>()
+    //val rabbitMQProducer = mockk<RabbitMQProducer>()
     val memberTodoController = MemberTodoController(
         memberTodoService,
         fcmScheduler,
-        rabbitMQProducer
+        //rabbitMQProducer
     )
 
     val restDocumentation = ManualRestDocumentation()

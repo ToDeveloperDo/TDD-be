@@ -9,18 +9,20 @@ import org.springframework.stereotype.Component
 import java.util.*
 
 @Component
-class FcmProcessor {
+class FcmProcessor(
+    private val firebaseMessaging: FirebaseMessaging
+) {
     fun pushNotification(
         fcmRequest: FcmRequest,
         type: NotificationType
     ) = run {
-        if (Objects.nonNull(fcmRequest.clientToken)) {
+        if (fcmRequest.clientToken.isNotBlank()) {
             val message = Message.builder()
                 .setToken(fcmRequest.clientToken)
                 .setNotification(fcmRequest.setNotification(type))
                 .build()
 
-            FirebaseMessaging.getInstance().send(message)
+            firebaseMessaging.send(message)
         }
     }
 }

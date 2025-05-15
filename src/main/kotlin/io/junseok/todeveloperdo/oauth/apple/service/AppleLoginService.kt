@@ -81,7 +81,6 @@ class AppleLoginService(
         val payload = AppleJwtUtil.getPayload(response.idToken, applePublicKeys)
         val userIdentifier = payload["sub"] as String
         val user = User(userIdentifier, "", authorities)
-        payload["email_verified"] as? Boolean ?: false
 
         val authentication = UsernamePasswordAuthenticationToken(user, null, authorities)
         val jwtToken = tokenProvider.createToken(authentication)

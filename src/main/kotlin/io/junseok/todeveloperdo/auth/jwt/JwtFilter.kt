@@ -1,6 +1,7 @@
 package io.junseok.todeveloperdo.auth.jwt
 
-import mu.KotlinLogging
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.util.StringUtils
 import org.springframework.web.filter.GenericFilterBean
@@ -12,16 +13,15 @@ import javax.servlet.http.HttpServletRequest
 class JwtFilter(
     private val tokenProvider: TokenProvider
 ) : GenericFilterBean() {
-    private val log = KotlinLogging.logger {}
+    private val log: Logger = LoggerFactory.getLogger(JwtFilter::class.java)
 
     override fun doFilter(request: ServletRequest, response: ServletResponse, chain: FilterChain) {
         val httpServletRequest = request as HttpServletRequest
         val jwt = resolveToken(httpServletRequest)
-        if (StringUtils.hasText(jwt) && tokenProvider.validateAppleToken(jwt!!,"ACCESS")) {
+        if (StringUtils.hasText(jwt) && tokenProvider.validateAppleToken(jwt!!, "ACCESS")) {
             val authentication = tokenProvider.getAuthentication(jwt)
             SecurityContextHolder.getContext().authentication = authentication
-            log.info { "JWT : $jwt" }
-            println("JWT :$jwt")
+            log.info("JWT : $jwt")
             log.info(SUCCESS_AUTHENTICATION)
         }
         chain.doFilter(request, response)

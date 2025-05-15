@@ -3,6 +3,7 @@ plugins {
     val kotlinVersion = "1.9.24"
     val dependencyVersion = "1.1.4"
     val lombokVersion = "8.1.0"
+    id("com.epages.restdocs-api-spec") version "0.17.1"
 
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version dependencyVersion
@@ -32,9 +33,9 @@ dependencies {
     val mockkVersion = "1.13.8"
     val kotestVersion = "5.8.0"
     //query dsl
-    val querydslVersion = "5.0.0"
+    /*val querydslVersion = "5.0.0"
     implementation("com.querydsl:querydsl-jpa:$querydslVersion")
-    kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")
+    kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")*/
 
     //db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -59,6 +60,8 @@ dependencies {
     testImplementation("io.kotest:kotest-runner-junit5:5.7.2")
     testImplementation("io.kotest:kotest-assertions-core:5.7.2")
     testImplementation("io.kotest:kotest-framework-datatest-jvm:5.7.2")
+    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
+    testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
 
     //etc
     implementation("org.springframework.boot:spring-boot-starter-web")
@@ -89,12 +92,7 @@ dependencies {
     implementation ("com.google.firebase:firebase-admin:9.1.1")
 
     //h2
-    testImplementation("com.h2database:h2:2.1.214") // 최신 버전 사용 가능
-
-    //rest-docs
-    testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
-    testImplementation("org.springframework.restdocs:spring-restdocs-asciidoctor")
-
+    testImplementation("com.h2database:h2:2.1.214")
 }
 allOpen {
     annotation("javax.persistence.Entity")
@@ -123,3 +121,17 @@ tasks {
     }
 }
 
+openapi3 {
+    this.setServer("https://localhost:8080")
+    title = "My API"
+    description = "My API description"
+    version = "0.1.0"
+    format = "yaml" // or json
+}
+
+tasks.register<Copy>("copyOasToSwagger") {
+    delete("src/main/resources/static/swagger-ui/openapi3.yaml") // 기존 OAS 파일 삭제
+    from("$buildDir/api-spec/openapi3.yaml") // 복제할 OAS 파일 지정
+    into("src/main/resources/static/swagger-ui/.") // 타겟 디렉터리로 파일 복제
+    dependsOn("openapi3") // openapi3 Task가 먼저 실행되도록 설정
+}

@@ -10,7 +10,10 @@ import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
 import io.junseok.todeveloperdo.oauth.apple.util.AppleJwtUtil
+import lombok.extern.slf4j.Slf4j
 import mu.KotlinLogging
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.InitializingBean
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
@@ -27,12 +30,13 @@ import java.util.stream.Collectors
 class TokenProvider(
     private val memberRepository: MemberRepository,
     @Value("\${jwt.secret}") private val secret: String,
-    @Value("\${jwt.token-validity-in-seconds}")private val tokenValidityInSeconds: Long,
+    @Value("\${jwt.token-validity-in-seconds}") private val tokenValidityInSeconds: Long,
     private val appleClient: AppleClient
 ) : InitializingBean {
     private val tokenValidityInMilliseconds = tokenValidityInSeconds * 1000
     private var key: Key? = null
-    val log = KotlinLogging.logger {}
+    private val log: Logger = LoggerFactory.getLogger(TokenProvider::class.java)
+
     @Throws(Exception::class)
     override fun afterPropertiesSet() {
         val keyBytes = Decoders.BASE64.decode(secret)
@@ -44,16 +48,15 @@ class TokenProvider(
             .map { obj: GrantedAuthority -> obj.authority }
             .collect(Collectors.joining(","))
 
-        // 토큰의 expire 시간을 설정
         val now = Date().time
         val validity = Date(now + tokenValidityInMilliseconds)
 
         return Jwts.builder()
-            .setSubject(authentication.name) //Payload에 유저 네임 저장
-            .setIssuer("TDD") //토큰 발급자 iss 지정
-            .claim(AUTHORITIES_KEY, authorities) // 정보 저장
-            .signWith(key, SignatureAlgorithm.HS512) // 사용할 암호화 알고리즘과 , signature 에 들어갈 secret값 세팅
-            .setExpiration(validity) // set Expire Time 해당 옵션 안넣으면 expire안함
+            .setSubject(authentication.name)
+            .setIssuer("TDD")
+            .claim(AUTHORITIES_KEY, authorities)
+            .signWith(key, SignatureAlgorithm.HS512)
+            .setExpiration(validity)
             .compact()
     }
 
@@ -82,34 +85,40 @@ class TokenProvider(
         return UsernamePasswordAuthenticationToken(principal, token, authorities)
     }
 
-    // 애플 JWT 토큰의 유효성 검증을 수행
     fun validateAppleToken(token: String, type: String): Boolean {
         return try {
-            if (type == "REFRESH") {
-                val applePublicKeys = appleClient.getApplePublicKeys().keys
-                val decodedJWT = AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
-                true
-            } else {
-                // 자체 생성한 토큰 검증
-                Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
-                true
+            when (type) {
+                "REFRESH" -> {
+                    val applePublicKeys = appleClient.getApplePublicKeys().keys
+                    AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
+                    true
+                }
+
+                else -> {
+                    Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token)
+                    true
+                }
             }
         } catch (e: ExpiredJwtException) {
-            if (type == "REFRESH") {
-                if (memberRepository.existsByAppleRefreshToken(token)) {
-                    memberRepository.deleteByAppleRefreshToken(token)
-                } else {
-                    log.info("No refresh token found to delete.")
+            when (type) {
+                "REFRESH" -> {
+                    if (memberRepository.existsByAppleRefreshToken(token)) {
+                        memberRepository.deleteByAppleRefreshToken(token)
+                    } else {
+                        log.info("No refresh token found to delete.")
+                    }
                 }
             }
             throw ToDeveloperDoException { ErrorCode.EXPIRED_JWT }
+
         } catch (e: Exception) {
-            log.error { e.message }
+            log.error(e.message)
             false
         }
+
     }
 
     companion object {
-        private const val AUTHORITIES_KEY = "auth"
+        const val AUTHORITIES_KEY = "auth"
     }
 }

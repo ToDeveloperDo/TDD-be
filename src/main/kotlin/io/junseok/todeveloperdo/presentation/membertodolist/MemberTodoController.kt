@@ -1,7 +1,6 @@
 package io.junseok.todeveloperdo.presentation.membertodolist
 
 import io.junseok.todeveloperdo.domains.todo.service.MemberTodoService
-import io.junseok.todeveloperdo.global.rabbitmq.RabbitMQProducer
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_CLOSED
 import io.junseok.todeveloperdo.oauth.git.service.GitHubService.Companion.ISSUE_OPEN
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoCountRequest
@@ -21,7 +20,6 @@ import java.security.Principal
 class MemberTodoController(
     private val memberTodoService: MemberTodoService,
     private val fcmScheduler: FcmScheduler,
-    private val rabbitMQProducer: RabbitMQProducer
 ) {
 
     /**

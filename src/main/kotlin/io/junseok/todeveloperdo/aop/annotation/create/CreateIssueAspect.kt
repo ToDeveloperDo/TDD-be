@@ -3,6 +3,7 @@ package io.junseok.todeveloperdo.aop.annotation.create
 import io.junseok.todeveloperdo.domains.member.service.serviceimpl.MemberReader
 import io.junseok.todeveloperdo.event.EventProcessor
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
+import io.junseok.todeveloperdo.util.TimeProvider
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -14,6 +15,7 @@ import java.time.LocalDate
 class CreateIssueAspect(
     private val eventProcessor: EventProcessor,
     private val memberReader: MemberReader,
+    private val timeProvider: TimeProvider
 ) {
     @Around("@annotation(CreateEvent)")
     fun aroundCreateIssue(joinPoint: ProceedingJoinPoint): Any? {
@@ -24,14 +26,14 @@ class CreateIssueAspect(
 
         val issueEventRequests =
             todoRequest
-                .filter { LocalDate.now() == it.deadline }
+                .filter { timeProvider.nowDate() == it.deadline }
                 .map { eventProcessor.createIssue(member, it) }
 
         val newArgs = args.copyOf()
         newArgs[2] =
-            if (issueEventRequests.isNotEmpty())
+            if (issueEventRequests.isNotEmpty()) {
                 issueEventRequests.first()
-            else null
+            } else null
 
         return joinPoint.proceed(newArgs)
     }
