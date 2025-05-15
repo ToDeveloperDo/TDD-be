@@ -24,7 +24,7 @@ fi
 cat <<EOF > "$OUTPUT"
 {
   "schemaVersion": 1,
-  "label": "coverage",
+  "label": "Test Coverage",
   "message": "$PERCENT%",
   "color": "$COLOR"
 }
