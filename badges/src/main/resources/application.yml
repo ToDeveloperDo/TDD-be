@@ -1,0 +1,119 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_ID}
+            client-secret: ${GITHUB_SECRET_KEY}
+            scope: repo, user
+            redirect-uri: ${GITHUB_REDIRECT_URL}
+            client-name: ${GITHUB_CLIENT_NAME}
+          apple:
+            client-id: ${APPLE_CLIENT_ID}
+            redirect-uri: ${APPLE_REDIRECT_URL}
+            client-name: ${APPLE_CLIENT_NAME}
+            scope: openid, email, name
+            authorization-grant-type: ${APPLE_GRANT_TYPE}
+        provider:
+          github:
+            authorization-uri: ${GITHUB_AUTHORIZATION_URL}
+            token-uri: ${GITHUB_TOKEN_URL}
+            user-info-uri: ${GITHUB_INFO_URL}
+            user-name-attribute: ${GITHUB_USER_NAME_ATTRIBUTE}
+          apple:
+            authorization-uri: ${APPLE_AUTHORIZATION_URL}
+            token-uri: ${APPLE_TOKEN_URL}
+            user-info-uri: ${APPLE_USER_INFO_URL}
+            user-name-attribute: ${APPLE_USER_NAME_ATTRIBUTE}
+  datasource:
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER}
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQL8Dialect
+  aop:
+    proxy-target-class: true
+jwt:
+  header: ${JWT_HEADER}
+  secret: ${JWT_SECRET_KEY}
+  token-validity-in-seconds: ${JWT_EXPIRATION}
+
+feign:
+  client:
+    access-token:
+      url: ${FEIGN_ACCESS_TOKEN_URL}
+    user-profile:
+      url: ${FEIGN_USER_PROFILE_URL}
+    config:
+      default:
+        logger-level: full
+  okhttp:
+    enabled: false
+
+apple:
+  team-id: ${APPLE_TEAM_ID}
+  key-id: ${APPLE_KEY_ID}
+  private-key: ${APPLE_PRIVATE_KEY}
+logging.level:
+  org.hibernate.SQL: debug
+  org.hibernate.type: info
+  org.springframework.security: DEBUG
+  org.springframework.cache: DEBUG
+  #org.springframework.web: DEBUG
+  ##org.springframework.data.redis.cache: DEBUG
+
+fcm:
+  project-id: ${PROJECT_ID}
+  private-key: ${PRIVATE_KEY}
+  private-key-id: ${PRIVATE_KEY_ID}
+  client-email: ${CLIENT_EMAIL}
+  client-id: ${CLIENT_ID}
+  type: ${TYPE}
+  auth-url: ${AUTH_URL}
+  token-url: ${TOKEN_URL}
+  auth-provider-x509-cert-url: ${AUTH_PROVIDER_X509_CERT_URL}
+  client-x509-cert-url: ${CLIENT_X509_CERT_URL}
+  universe-domain: ${UNIVERSE_DOMAIN}
+
+springfox:
+  documentation:
+    swagger:
+      v2:
+        host: ${SPRING_SWAGGER_HOST}
+
+management:
+  endpoints:
+    web:
+      base-path: /api/actuator
+      exposure:
+        include: "prometheus,health"
+
+openai:
+  api-key: ${OPEN_AI_KEY}
+  model: ${OPEN_AI_MODEL}
+
+rabbitmq:
+  queue:
+    name: todo-queue
+  exchange:
+    name: todo-exchange
+  routing:
+    key : key
