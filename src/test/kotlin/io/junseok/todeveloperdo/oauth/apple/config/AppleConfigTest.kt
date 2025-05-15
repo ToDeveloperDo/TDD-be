@@ -1,0 +1,18 @@
+package io.junseok.todeveloperdo.oauth.apple.config
+
+import feign.form.FormEncoder
+import feign.jackson.JacksonDecoder
+import io.kotest.core.spec.style.FunSpec
+import io.kotest.matchers.types.shouldBeInstanceOf
+
+class AppleConfigTest : FunSpec({
+    val config = AppleConfig()
+
+    test("feignFormEncoder는 FormEncoder를 반환해야 한다") {
+        config.feignFormEncoder().shouldBeInstanceOf<FormEncoder>()
+    }
+
+    test("feignDecoder는 JacksonDecoder를 반환해야 한다") {
+        config.feignDecoder().shouldBeInstanceOf<JacksonDecoder>()
+    }
+})
