@@ -1,3 +1,4 @@
+/*
 package io.junseok.todeveloperdo.global.rabbitmq
 
 import io.junseok.todeveloperdo.scheduler.fcm.FcmScheduler
@@ -23,3 +24,4 @@ class RabbitMQConsumer(
         }
     }
 }
+*/

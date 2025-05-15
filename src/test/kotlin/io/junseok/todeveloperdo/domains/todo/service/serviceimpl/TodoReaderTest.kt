@@ -199,6 +199,7 @@ fun createMemberTodoList(
     deadline: LocalDate,
     todoStatus: TodoStatus,
     member: Member,
+    issueNumber: Int ?= null
 ) = MemberTodoList(
     todoListId = todoListId,
     content = "content",
@@ -206,5 +207,6 @@ fun createMemberTodoList(
     tag = "tag",
     deadline = deadline,
     todoStatus = todoStatus,
-    member = member
+    member = member,
+    issueNumber = issueNumber
 )

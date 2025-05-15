@@ -37,7 +37,8 @@ class MemberTodoServiceTest : BehaviorSpec({
         todoValidator,
         gitIssueUpdater
     )
-    val today = LocalDate.of(2025, 5, 9)
+    val today = LocalDate.of(2025, 5, 13)
+
     Given("TodoList를 생성할 때") {
         val todoRequests = listOf(createTodoRequest())
         val member = createMember(1, "appleId")
@@ -47,7 +48,7 @@ class MemberTodoServiceTest : BehaviorSpec({
 
         every { memberReader.getMember(any()) } returns member
         every {
-            todoCreator.generatorTodo(todoRequests[0], any(), 123)
+            todoCreator.generatorTodo(todoRequests[0], any(), isNull())
         } returns memberTodoList
         every { todoSaver.saveTodoList(listOf(memberTodoList)) } returns 1L
         every { gitIssueService.saveGitIssue(member, any()) } just runs

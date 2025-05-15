@@ -32,7 +32,7 @@ class GitHubOAuthServiceTest : FunSpec({
         val accessToken = "abc123"
         val bearerToken = "Bearer abc123"
         val userInfoJson = """{"id": 1, "login": "tester", "email": "test@example.com"}"""
-        val tokenResponse = createTokenResponse()
+        val tokenResponse = createGitTokenResponse()
         val expectedParsedMap = mapOf(
             "id" to 1,
             "login" to "tester",
@@ -104,4 +104,4 @@ class GitHubOAuthServiceTest : FunSpec({
     }
 })
 
-fun createTokenResponse() = TokenResponse(token = "Bearer abc123")
+fun createGitTokenResponse() = TokenResponse(token = "Bearer abc123")

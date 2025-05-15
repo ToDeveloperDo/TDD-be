@@ -1,3 +1,4 @@
+/*
 package io.junseok.todeveloperdo.global.rabbitmq
 
 import org.springframework.amqp.core.Binding
@@ -41,3 +42,4 @@ class RabbitMQConfig {
             .with("retry-queue")
     }
 }
+*/

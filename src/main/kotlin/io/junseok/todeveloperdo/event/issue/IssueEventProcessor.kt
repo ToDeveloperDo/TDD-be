@@ -20,7 +20,6 @@ class IssueEventProcessor(
         eventPublisher.publishEvent(issueEventRequest)
         return issueEventRequest
     }
-
     fun close(member: Member, issueNumber: Int, state: String) {
         val issueCloseEventRequest = IssueCloseEventRequest(
             member,
@@ -29,9 +28,6 @@ class IssueEventProcessor(
         )
         eventPublisher.publishEvent(issueCloseEventRequest)
     }
-
-
-
     fun update(
         member: Member,
         issueNumber: Int,

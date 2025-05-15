@@ -29,7 +29,6 @@ class GitHubRepoVerificationFilter(
                     !request.requestURI.equals("/api/github/check") &&
                     !request.requestURI.equals("/api/github/create/repo")
                 ) {
-                    // 레포 검증을 수행
                     memberValidator.isExistRepo(username)
                 }
             }

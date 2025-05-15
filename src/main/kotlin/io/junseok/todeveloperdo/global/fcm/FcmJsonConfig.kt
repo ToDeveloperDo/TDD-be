@@ -1,6 +1,5 @@
 package io.junseok.todeveloperdo.global.fcm
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.core.JsonProcessingException
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.junseok.todeveloperdo.exception.ErrorCode
@@ -10,6 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class FcmJsonConfig(
+    private val objectMapper: ObjectMapper,
     @Value("\${fcm.project-id}") projectId: String,
     @Value("\${fcm.private-key-id}") privateKeyId: String,
     @Value("\${fcm.private-key}") privateKey: String,
@@ -38,9 +38,9 @@ class FcmJsonConfig(
 
     fun toJson(): String{
         return try {
-            ObjectMapper().writeValueAsString(fcmCredentials)
+            objectMapper.writeValueAsString(fcmCredentials)
         }catch (e: JsonProcessingException){
-            throw ToDeveloperDoException{ErrorCode.NOT_EXIST_BRANCH}
+            throw ToDeveloperDoException{ErrorCode.FAILED_JSON_PROCESSING}
         }
     }
 }

@@ -24,7 +24,7 @@ class ClientSecretCreator(
 ) {
     fun createClientSecret(): String {
         val now = System.currentTimeMillis()
-        val expiration = Date(now + 3600000) // 1시간 동안 유효
+        val expiration = Date(now + 3600000)
         val sanitizedPrivateKey = privateKey
             .replace("-----BEGIN PRIVATE KEY-----", "")
             .replace("-----END PRIVATE KEY-----", "")
@@ -34,11 +34,9 @@ class ClientSecretCreator(
 
         val keyFactory = KeyFactory.getInstance("EC")
 
-        // Base64 디코딩
         val keyBytes = Base64.getDecoder().decode(sanitizedPrivateKey)
         val pkcs8EncodedKeySpec = PKCS8EncodedKeySpec(keyBytes)
         val privateKeyObject = keyFactory.generatePrivate(pkcs8EncodedKeySpec)
-        println("decoder Error!!aaaaaaaaaaaa")
 
         return Jwts.builder()
             .setHeaderParam("kid", keyId)

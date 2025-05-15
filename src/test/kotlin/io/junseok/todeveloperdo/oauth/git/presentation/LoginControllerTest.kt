@@ -3,7 +3,7 @@ package io.junseok.todeveloperdo.oauth.git.presentation
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.junseok.todeveloperdo.oauth.git.service.GitHubOAuthService
-import io.junseok.todeveloperdo.oauth.git.service.createTokenResponse
+import io.junseok.todeveloperdo.oauth.git.service.createGitTokenResponse
 import io.junseok.todeveloperdo.util.ObjectMappers
 import io.junseok.todeveloperdo.util.dsl.STRING
 import io.junseok.todeveloperdo.util.dsl.parameterTypeOf
@@ -19,7 +19,6 @@ import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
-import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -84,7 +83,7 @@ class LoginControllerTest : BehaviorSpec({
     }
 
     Given("GitHub에서 로그인 콜백을 수신하면") {
-        val tokenResponse = createTokenResponse()
+        val tokenResponse = createGitTokenResponse()
         val code = "code"
         val appleId = "appleId"
         every { gitHubOAuthService.processGitHubOAuth(code,appleId) } returns tokenResponse
