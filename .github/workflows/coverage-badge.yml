@@ -27,10 +27,11 @@ jobs:
 
       - name: Generate coverage badge JSON
         run: |
+          mkdir -p badges
           chmod +x ./scripts/generate-badge-json.sh
-          ./scripts/generate-badge-json.sh
+          ./scripts/generate-badge-json.sh > badges/coverage-badge.json
 
-      - name: Upload badge to coverage-pages
+      - name: Upload badge to GitHub Pages root
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
