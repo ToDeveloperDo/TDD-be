@@ -2,21 +2,22 @@ plugins {
     val springBootVersion = "2.7.13"
     val kotlinVersion = "1.9.24"
     val dependencyVersion = "1.1.4"
-    val lombokVersion = "8.1.0"
     id("com.epages.restdocs-api-spec") version "0.17.1"
-
+    id("jacoco")
     id("org.springframework.boot") version springBootVersion
     id("io.spring.dependency-management") version dependencyVersion
 
-    kotlin("jvm") version kotlinVersion // Kotlin을 JVM 바이트코드로 컴파일하는데 필요
+    kotlin("jvm") version kotlinVersion
     kotlin("plugin.spring") version kotlinVersion
     kotlin("plugin.jpa") version kotlinVersion
     kotlin("kapt") version kotlinVersion
-    kotlin("plugin.lombok") version kotlinVersion // Lombok을 Kotlin에서 사용가능하도록 도와줌
-    id("io.freefair.lombok") version lombokVersion // Lombok을 프로젝트에 쉽게 통합할 수 있도록 도와줌
     id("org.asciidoctor.jvm.convert") version "3.3.2"
-
 }
+
+jacoco {
+    toolVersion = "0.8.10"
+}
+
 
 group = "io.junseok"
 version = "0.0.1-SNAPSHOT"
@@ -32,10 +33,6 @@ repositories {
 dependencies {
     val mockkVersion = "1.13.8"
     val kotestVersion = "5.8.0"
-    //query dsl
-    /*val querydslVersion = "5.0.0"
-    implementation("com.querydsl:querydsl-jpa:$querydslVersion")
-    kapt("com.querydsl:querydsl-apt:$querydslVersion:jpa")*/
 
     //db
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -78,7 +75,6 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-ui:1.5.12")
     implementation("org.springdoc:springdoc-openapi-kotlin:1.5.12")
 
-
     //feign
     implementation("org.springframework.cloud:spring-cloud-starter-openfeign:3.1.8")
     implementation("io.github.openfeign:feign-jackson:12.1")
@@ -86,6 +82,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.9.1")
     implementation("io.github.openfeign:feign-okhttp:11.8")
 
+    //cache
     implementation ("org.springframework.boot:spring-boot-starter-cache")
 
     //fcm
@@ -107,6 +104,7 @@ kapt {
 tasks {
     test {
         useJUnitPlatform()
+        finalizedBy("jacocoTestReport")
     }
     compileKotlin {
         kotlinOptions {
@@ -120,18 +118,26 @@ tasks {
         }
     }
 }
+tasks.named<JacocoReport>("jacocoTestReport") {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(false)
+    }
+}
 
 openapi3 {
     this.setServer("https://localhost:8080")
     title = "My API"
     description = "My API description"
     version = "0.1.0"
-    format = "yaml" // or json
+    format = "yaml"
 }
 
 tasks.register<Copy>("copyOasToSwagger") {
-    delete("src/main/resources/static/swagger-ui/openapi3.yaml") // 기존 OAS 파일 삭제
-    from("$buildDir/api-spec/openapi3.yaml") // 복제할 OAS 파일 지정
-    into("src/main/resources/static/swagger-ui/.") // 타겟 디렉터리로 파일 복제
-    dependsOn("openapi3") // openapi3 Task가 먼저 실행되도록 설정
+    delete("src/main/resources/static/swagger-ui/openapi3.yaml")
+    from("$buildDir/api-spec/openapi3.yaml")
+    into("src/main/resources/static/swagger-ui/.")
+    dependsOn("openapi3")
 }
