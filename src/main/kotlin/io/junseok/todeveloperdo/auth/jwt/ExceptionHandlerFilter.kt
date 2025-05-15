@@ -3,7 +3,6 @@ package io.junseok.todeveloperdo.auth.jwt
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
-import lombok.Data
 import org.springframework.http.MediaType
 import org.springframework.web.filter.OncePerRequestFilter
 import java.io.IOException
@@ -22,7 +21,7 @@ class ExceptionHandlerFilter : OncePerRequestFilter() {
         try {
             filterChain.doFilter(request, response)
         } catch (e: ToDeveloperDoException) {
-            setErrorResponse(response,e.errorCode)
+            setErrorResponse(response, e.errorCode)
         }
     }
 
@@ -45,8 +44,7 @@ class ExceptionHandlerFilter : OncePerRequestFilter() {
         }
     }
 
-    @Data
-    class ErrorResponse(val status: Int, val message: String)
+    data class ErrorResponse(val status: Int, val message: String)
 
     companion object {
         private const val IN_CODING_TYPE = "UTF-8"
