@@ -21,7 +21,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -65,13 +64,11 @@ class AppleLoginControllerTest : BehaviorSpec({
                         .param("code", code)
                         .param("clientToken", clientToken)
                 ).andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "apple-login",
-                            requestParameters(
-                                "code" parameterTypeOf STRING parameterMeans "애플에서 제공해주는 인증 코드",
-                                "clientToken" parameterTypeOf STRING parameterMeans "FCM Token"
-                            )
+                    .andDocument(
+                        "apple-login",
+                        requestParameters(
+                            "code" parameterTypeOf STRING parameterMeans "애플에서 제공해주는 인증 코드",
+                            "clientToken" parameterTypeOf STRING parameterMeans "FCM Token"
                         )
                     ).andReturn()
 
@@ -91,15 +88,13 @@ class AppleLoginControllerTest : BehaviorSpec({
                         .content(refreshTokenRequest.toRequest())
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "apple-relogin",
-                            requestFields(
-                                "refreshToken" typeOf STRING means "Apple의 RefreshToken"
-                            ),
-                            responseFields(
-                                "idToken" typeOf STRING means "Apple의 JWT Token"
-                            )
+                    .andDocument(
+                        "apple-relogin",
+                        requestFields(
+                            "refreshToken" typeOf STRING means "Apple의 RefreshToken"
+                        ),
+                        responseFields(
+                            "idToken" typeOf STRING means "Apple의 JWT Token"
                         )
                     ).andReturn()
 

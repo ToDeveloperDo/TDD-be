@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -61,18 +60,16 @@ class PlanControllerTest : FunSpec({
             get("/api/plan")
                 .setAuthorization()
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "show-all-plan",
-                    authorizationHeader(),
-                    responseFields(
-                        "planId" arrayTypeOf NUMBER means "생성된 플랜 ID",
-                        "position" arrayTypeOf STRING means "개발 포지션",
-                        "stack" arrayTypeOf STRING means "기술 스택",
-                        "experienceLevel" arrayTypeOf STRING means "경험 수준",
-                        "targetPeriod" arrayTypeOf NUMBER means "희망 학습 기간",
-                        "createDt" arrayTypeOf ARRAY means "생성된 일자"
-                    )
+            .andDocument(
+                "show-all-plan",
+                authorizationHeader(),
+                responseFields(
+                    "planId" arrayTypeOf NUMBER means "생성된 플랜 ID",
+                    "position" arrayTypeOf STRING means "개발 포지션",
+                    "stack" arrayTypeOf STRING means "기술 스택",
+                    "experienceLevel" arrayTypeOf STRING means "경험 수준",
+                    "targetPeriod" arrayTypeOf NUMBER means "희망 학습 기간",
+                    "createDt" arrayTypeOf ARRAY means "생성된 일자"
                 )
             ).andReturn()
 

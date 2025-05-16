@@ -17,7 +17,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -31,18 +30,14 @@ class MemberControllerTest : BehaviorSpec({
 
     val memberController = MemberController(memberService)
     val restDocumentation = ManualRestDocumentation()
-    val mockMvc = MockMvcBuilders
-        .standaloneSetup(memberController)
-        .apply<StandaloneMockMvcBuilder>(
-            MockMvcRestDocumentation.documentationConfiguration(
-                restDocumentation
-            )
+    val mockMvc = MockMvcBuilders.standaloneSetup(memberController).apply<StandaloneMockMvcBuilder>(
+        MockMvcRestDocumentation.documentationConfiguration(
+            restDocumentation
         )
-        .build()
+    ).build()
 
     beforeSpec {
-        ObjectMappers.objectMapper = ObjectMapper()
-            .registerModules(KotlinModule.Builder().build())
+        ObjectMappers.objectMapper = ObjectMapper().registerModules(KotlinModule.Builder().build())
         restDocumentation.beforeTest(javaClass, "MemberController")
 
     }
@@ -53,9 +48,7 @@ class MemberControllerTest : BehaviorSpec({
     Given("인증된 사용자가 멤버 정보를 조회할 때") {
         val userName = "username"
         val expectedResponse = MemberInfoResponse(
-            username = "testUser",
-            avatarUrl = "test",
-            gitUrl = "gitUrl"
+            username = "testUser", avatarUrl = "test", gitUrl = "gitUrl"
         )
 
         every { memberService.findMember(userName) } returns expectedResponse
@@ -63,22 +56,17 @@ class MemberControllerTest : BehaviorSpec({
         When("GET /api/member 요청을 보내면") {
             Then("멤버 정보를 정상적으로 반환한다") {
                 val mvcResult = mockMvc.perform(
-                    get("/api/member")
-                        .setAuthorization()
-                )
-                    .andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "member-info",
-                            authorizationHeader(),
-                            responseFields(
-                                "username" typeOf  STRING means "회원 이름",
-                                "avatarUrl" typeOf STRING means "GitHub 프로필 URL",
-                                "gitUrl" typeOf STRING means "GitHub URL",
-                            )
-                        )
-                    )
-                    .andReturn()
+                    get("/api/member").setAuthorization()
+                ).andExpect(status().isOk)
+                    .andDocument(
+                        "member-info",
+                        authorizationHeader(),
+                        responseFields(
+                            "username" typeOf STRING means "회원 이름",
+                            "avatarUrl" typeOf STRING means "GitHub 프로필 URL",
+                            "gitUrl" typeOf STRING means "GitHub URL",
+                        ),
+                    ).andReturn()
                 mvcResult.toResponse<MemberInfoResponse>() shouldBe expectedResponse
                 verify(exactly = 1) { memberService.findMember(userName) }
             }
@@ -91,19 +79,15 @@ class MemberControllerTest : BehaviorSpec({
         When("DELETE /api/member 요청을 보내면") {
             Then("정상적으로 탈퇴가 되어야한다.") {
                 mockMvc.perform(
-                    delete("/api/member")
-                        .principal(MockkPrincipal(userName))
+                    delete("/api/member").principal(MockkPrincipal(userName))
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("Authorization", "Bearer test-token")
 
-                )
-                    .andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "delete-member",
-                            authorizationHeader()
-                        )
+                ).andExpect(status().isOk)
+                    .andDocument(
+                        "delete-member", authorizationHeader()
                     )
+
                 verify(exactly = 1) { memberService.deleteMember(userName) }
             }
         }
@@ -119,25 +103,17 @@ class MemberControllerTest : BehaviorSpec({
         When("GET /api/member/all를 호출하면") {
             Then("등록된 사용자 리스트가 반환되어야한다.") {
                 val mvcResult = mockMvc.perform(
-                    get("/api/member/all")
-                        .header("Authorization", "Bearer test-token")
+                    get("/api/member/all").header("Authorization", "Bearer test-token")
                         .principal(MockkPrincipal(userName))
-                )
-                    .andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "find-all-user",
-                            authorizationHeader(),
-                            responseFields(
-                                "memberId" arrayTypeOf NUMBER means "회원 ID",
-                                "username" arrayTypeOf STRING means "회원 이름",
-                                "avatarUrl" arrayTypeOf STRING means "GitHub 프로필 URL",
-                                "gitUrl" arrayTypeOf STRING means "GitHub URL",
-                                "friendStatus" arrayTypeOf STRING means "친구 상태"
-                            )
-                        )
+                ).andExpect(status().isOk).andDocument(
+                    "find-all-user", authorizationHeader(), responseFields(
+                        "memberId" arrayTypeOf NUMBER means "회원 ID",
+                        "username" arrayTypeOf STRING means "회원 이름",
+                        "avatarUrl" arrayTypeOf STRING means "GitHub 프로필 URL",
+                        "gitUrl" arrayTypeOf STRING means "GitHub URL",
+                        "friendStatus" arrayTypeOf STRING means "친구 상태"
                     )
-                    .andReturn()
+                ).andReturn()
 
                 mvcResult.toResponse<List<MemberResponse>>() shouldBe memberResponses
                 verify(exactly = 1) { memberService.findAllMember(userName) }
@@ -153,20 +129,16 @@ class MemberControllerTest : BehaviorSpec({
         When("POST /api/member/fcm 을 호출하면") {
             Then("FCM 토큰이 정상적으로 재발급되어야한다.") {
                 mockMvc.perform(
-                    post("/api/member/fcm")
-                        .principal(MockkPrincipal(userName))
-                        .content(fcmRequest.toRequest())
-                        .contentType(MediaType.APPLICATION_JSON)
-                )
-                    .andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "reissue-fcm-token",
-                            requestFields(
-                                "fcmToken" typeOf STRING means "FCM토큰"
-                            ),
-                        )
+                    post("/api/member/fcm").principal(MockkPrincipal(userName))
+                        .content(fcmRequest.toRequest()).contentType(MediaType.APPLICATION_JSON)
+                ).andExpect(status().isOk)
+                    .andDocument(
+                        "reissue-fcm-token",
+                        requestFields(
+                            "fcmToken" typeOf STRING means "FCM토큰"
+                        ),
                     )
+
 
                 verify(exactly = 1) { memberService.reIssued(userName, fcmRequest.fcmToken) }
             }

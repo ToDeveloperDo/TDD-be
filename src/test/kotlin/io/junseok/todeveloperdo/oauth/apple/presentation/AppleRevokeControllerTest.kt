@@ -5,6 +5,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.junseok.todeveloperdo.oauth.apple.service.AppleMemberService
 import io.junseok.todeveloperdo.util.ObjectMappers
+import io.junseok.todeveloperdo.util.dsl.andDocument
 import io.junseok.todeveloperdo.util.dsl.authorizationHeader
 import io.junseok.todeveloperdo.util.setAuthorization
 import io.kotest.core.spec.style.BehaviorSpec
@@ -13,7 +14,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -53,11 +53,9 @@ class AppleRevokeControllerTest : BehaviorSpec({
                     post(APPLE_REVOKE)
                         .setAuthorization()
                 ).andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "revoke-apple",
-                            authorizationHeader()
-                        )
+                    .andDocument(
+                        "revoke-apple",
+                        authorizationHeader()
                     )
 
                 verify(exactly = 1) { appleMemberService.revoke("username") }
