@@ -24,7 +24,6 @@ import io.mockk.*
 import org.springframework.http.MediaType
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -34,11 +33,9 @@ import java.time.LocalDate
 class MemberTodoControllerTest : FunSpec({
     val memberTodoService = mockk<MemberTodoService>()
     val fcmScheduler = mockk<FcmScheduler>()
-    //val rabbitMQProducer = mockk<RabbitMQProducer>()
     val memberTodoController = MemberTodoController(
         memberTodoService,
         fcmScheduler,
-        //rabbitMQProducer
     )
 
     val restDocumentation = ManualRestDocumentation()
@@ -72,24 +69,23 @@ class MemberTodoControllerTest : FunSpec({
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(todoRequests.toRequest())
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "create-todo",
-                    authorizationHeader(),
-                    requestFields(
-                        "todos" typeOf ARRAY means "할 일 리스트",
-                        "todos[].content" typeOf STRING means "할 일 내용",
-                        "todos[].memo" typeOf STRING means "메모",
-                        "todos[].tag" typeOf STRING means "태그",
-                        "todos[].deadline" typeOf STRING means "마감일 (yyyy-MM-dd)"
-                    ),
-                )
-            ).andReturn()
+            .andDocument(
+                "create-todo",
+                authorizationHeader(),
+                requestFields(
+                    "todos" typeOf ARRAY means "할 일 리스트",
+                    "todos[].content" typeOf STRING means "할 일 내용",
+                    "todos[].memo" typeOf STRING means "메모",
+                    "todos[].tag" typeOf STRING means "태그",
+                    "todos[].deadline" typeOf STRING means "마감일 (yyyy-MM-dd)"
+                ),
+
+                ).andReturn()
         mvcResult.toResponse<Long>() shouldBe 1L
     }
 
     test("해당 요일에 있는 할 일 목록 조회 API") {
-        val today = LocalDate.now()
+        val today = LocalDate.of(2025, 5, 13)
         val createDateRequest = createDateRequest()
         val todoResponses = listOf(
             createTodoResponse(1L, "", today),
@@ -102,21 +98,19 @@ class MemberTodoControllerTest : FunSpec({
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(createDateRequest.toRequest())
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "find-todoList",
-                    authorizationHeader(),
-                    requestFields(
-                        "deadline" typeOf STRING means "마감일 (yyyy-MM-dd)"
-                    ),
-                    responseFields(
-                        "todoListId" arrayTypeOf NUMBER means "할 일 Id",
-                        "content" arrayTypeOf STRING means "할 일 내용",
-                        "memo" arrayTypeOf STRING means "메모",
-                        "tag" arrayTypeOf STRING means "태크",
-                        "deadline" arrayTypeOf ARRAY means "마감일 (yyyy-MM-dd)",
-                        "todoStatus" arrayTypeOf STRING means "할 일 상태"
-                    )
+            .andDocument(
+                "find-todoList",
+                authorizationHeader(),
+                requestFields(
+                    "deadline" typeOf STRING means "마감일 (yyyy-MM-dd)"
+                ),
+                responseFields(
+                    "todoListId" arrayTypeOf NUMBER means "할 일 Id",
+                    "content" arrayTypeOf STRING means "할 일 내용",
+                    "memo" arrayTypeOf STRING means "메모",
+                    "tag" arrayTypeOf STRING means "태크",
+                    "deadline" arrayTypeOf ARRAY means "마감일 (yyyy-MM-dd)",
+                    "todoStatus" arrayTypeOf STRING means "할 일 상태"
                 )
             ).andReturn()
 
@@ -129,13 +123,11 @@ class MemberTodoControllerTest : FunSpec({
             patch(TODO_PATH + "done/{todoListId}", 1L)
                 .setAuthorization()
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "done-todoList",
-                    authorizationHeader(),
-                    pathParameters(
-                        "todoListId" parameterTypeOf NUMBER parameterMeans "완료한 TodoListId"
-                    )
+            .andDocument(
+                "done-todoList",
+                authorizationHeader(),
+                pathParameters(
+                    "todoListId" parameterTypeOf NUMBER parameterMeans "완료한 TodoListId"
                 )
             )
         verify(exactly = 1) { memberTodoService.finishTodoList(any(), any(), any()) }
@@ -152,21 +144,20 @@ class MemberTodoControllerTest : FunSpec({
                 .contentType(MediaType.APPLICATION_JSON)
         )
             .andExpect(status().isOk)
-            .andDo(
-                document(
-                    "modify-todoList",
-                    authorizationHeader(),
-                    requestFields(
-                        "content" typeOf STRING means "할 일 내용",
-                        "memo" typeOf STRING means "메모",
-                        "tag" typeOf STRING means "태그",
-                        "deadline" typeOf STRING means "마감일 (yyyy-MM-dd)"
-                    ),
-                    pathParameters(
-                        "todoListId" parameterTypeOf NUMBER parameterMeans "수정할 TodoListId"
-                    )
+            .andDocument(
+                "modify-todoList",
+                authorizationHeader(),
+                requestFields(
+                    "content" typeOf STRING means "할 일 내용",
+                    "memo" typeOf STRING means "메모",
+                    "tag" typeOf STRING means "태그",
+                    "deadline" typeOf STRING means "마감일 (yyyy-MM-dd)"
+                ),
+                pathParameters(
+                    "todoListId" parameterTypeOf NUMBER parameterMeans "수정할 TodoListId"
                 )
             )
+
         verify(exactly = 1) { memberTodoService.modifyTodoList(any(), any(), any()) }
     }
 
@@ -177,13 +168,11 @@ class MemberTodoControllerTest : FunSpec({
                 .setAuthorization()
         )
             .andExpect(status().isOk)
-            .andDo(
-                document(
-                    "remove-todoList",
-                    authorizationHeader(),
-                    pathParameters(
-                        "todoListId" parameterTypeOf NUMBER parameterMeans "삭제할 TodoListId"
-                    )
+            .andDocument(
+                "remove-todoList",
+                authorizationHeader(),
+                pathParameters(
+                    "todoListId" parameterTypeOf NUMBER parameterMeans "삭제할 TodoListId"
                 )
             )
 
@@ -209,18 +198,16 @@ class MemberTodoControllerTest : FunSpec({
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(todoCountRequest.toRequest())
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "calculate-todoList",
-                    authorizationHeader(),
-                    requestFields(
-                        "year" typeOf NUMBER means "조회하는 연(년)도",
-                        "month" typeOf NUMBER means "조회하는 달"
-                    ),
-                    responseFields(
-                        "deadline" arrayTypeOf ARRAY means "마감기한 일",
-                        "count" arrayTypeOf NUMBER means "할 일 갯수"
-                    )
+            .andDocument(
+                "calculate-todoList",
+                authorizationHeader(),
+                requestFields(
+                    "year" typeOf NUMBER means "조회하는 연(년)도",
+                    "month" typeOf NUMBER means "조회하는 달"
+                ),
+                responseFields(
+                    "deadline" arrayTypeOf ARRAY means "마감기한 일",
+                    "count" arrayTypeOf NUMBER means "할 일 갯수"
                 )
             ).andReturn()
 
@@ -230,20 +217,18 @@ class MemberTodoControllerTest : FunSpec({
     test("할 일을 미진행 -> 진행으로 변경하는 API") {
         every { memberTodoService.unFinishedTodoList(any(), any(), any()) } just runs
         mockMvc.perform(
-            patch(TODO_PATH+"proceed/{todoListId}",1L)
+            patch(TODO_PATH + "proceed/{todoListId}", 1L)
                 .setAuthorization()
         )
             .andExpect(status().isOk)
-            .andDo(
-                document(
-                    "change-todoList-status",
-                    authorizationHeader(),
-                    pathParameters(
-                        "todoListId" parameterTypeOf NUMBER parameterMeans "진행할 TodoListId"
-                    )
+            .andDocument(
+                "change-todoList-status",
+                authorizationHeader(),
+                pathParameters(
+                    "todoListId" parameterTypeOf NUMBER parameterMeans "진행할 TodoListId"
                 )
             )
-        verify(exactly = 1) { memberTodoService.unFinishedTodoList(any(),any(),any()) }
+        verify(exactly = 1) { memberTodoService.unFinishedTodoList(any(), any(), any()) }
     }
 }) {
     companion object {
@@ -252,7 +237,7 @@ class MemberTodoControllerTest : FunSpec({
 }
 
 fun createTodoRequest(): TodoRequest {
-    val today = LocalDate.of(2025,5,13)
+    val today = LocalDate.of(2025, 5, 13)
     return TodoRequest(
         content = "content",
         memo = "memo",

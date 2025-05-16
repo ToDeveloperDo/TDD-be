@@ -19,7 +19,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -65,22 +64,20 @@ class GitHubControllerTest : BehaviorSpec({
                         .content(gitHubRequest.toRequest())
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "github-repo-create",
-                            authorizationHeader(),
-                            requestFields(
-                                "repoName" typeOf STRING means "레포 이름",
-                                "description" typeOf STRING means "레포 설명 글",
-                                "isPrivate" typeOf BOOLEAN means "레포 공개 유무(true면 비공개)"
-                            ),
-                            responseFields(
-                                "id" typeOf NUMBER means "레포 고유 ID",
-                                "name" typeOf STRING means "레포 이름",
-                                "full_name" typeOf STRING means "owner/repo-name 형식의 전체 이름",
-                                "owner" typeOf OBJECT means "Owner객체",
-                                "owner.login" typeOf STRING means "깃허브 사용자"
-                            )
+                    .andDocument(
+                        "github-repo-create",
+                        authorizationHeader(),
+                        requestFields(
+                            "repoName" typeOf STRING means "레포 이름",
+                            "description" typeOf STRING means "레포 설명 글",
+                            "isPrivate" typeOf BOOLEAN means "레포 공개 유무(true면 비공개)"
+                        ),
+                        responseFields(
+                            "id" typeOf NUMBER means "레포 고유 ID",
+                            "name" typeOf STRING means "레포 이름",
+                            "full_name" typeOf STRING means "owner/repo-name 형식의 전체 이름",
+                            "owner" typeOf OBJECT means "Owner객체",
+                            "owner.login" typeOf STRING means "깃허브 사용자"
                         )
                     ).andReturn()
 
@@ -97,12 +94,11 @@ class GitHubControllerTest : BehaviorSpec({
                     get(GITHUB_PATH + "check")
                         .setAuthorization()
                 ).andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "check-git-link",
-                            authorizationHeader()
-                        )
+                    .andDocument(
+                        "check-git-link",
+                        authorizationHeader()
                     )
+
                 verify(exactly = 1) { gitHubService.checkGitLink("username") }
             }
         }
@@ -120,17 +116,16 @@ class GitHubControllerTest : BehaviorSpec({
                         .content(payload.toRequest())
                         .contentType(MediaType.APPLICATION_JSON)
                 ).andExpect(status().isOk)
-                    .andDo(
-                        document(
-                            "setting-git-webhook",
-                            requestFields(
-                                "key" typeOf STRING means "페이로드 내 key 값"
-                            ),
-                            requestHeaders(
-                                "X-GitHub-Event" headerTypeOf STRING means "Github 이벤트 종류"
-                            )
+                    .andDocument(
+                        "setting-git-webhook",
+                        requestFields(
+                            "key" typeOf STRING means "페이로드 내 key 값"
+                        ),
+                        requestHeaders(
+                            "X-GitHub-Event" headerTypeOf STRING means "Github 이벤트 종류"
                         )
                     )
+
                 verify(exactly = 1) { gitHubService.webhookProcess(payload, event) }
             }
         }

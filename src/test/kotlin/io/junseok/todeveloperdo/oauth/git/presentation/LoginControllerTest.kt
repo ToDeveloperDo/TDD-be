@@ -6,6 +6,7 @@ import io.junseok.todeveloperdo.oauth.git.service.GitHubOAuthService
 import io.junseok.todeveloperdo.oauth.git.service.createGitTokenResponse
 import io.junseok.todeveloperdo.util.ObjectMappers
 import io.junseok.todeveloperdo.util.dsl.STRING
+import io.junseok.todeveloperdo.util.dsl.andDocument
 import io.junseok.todeveloperdo.util.dsl.parameterTypeOf
 import io.junseok.todeveloperdo.util.dsl.requestParameters
 import io.kotest.core.spec.style.BehaviorSpec
@@ -17,7 +18,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.header
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
@@ -69,13 +69,10 @@ class LoginControllerTest : BehaviorSpec({
                             startsWith("https://github.com/login/oauth/authorize")
                         )
                     )
-
-                    .andDo(
-                        document(
-                            "redirect-to-github",
-                            requestParameters(
-                                "appleId" parameterTypeOf STRING parameterMeans "애플 ID"
-                            )
+                    .andDocument(
+                        "redirect-to-github",
+                        requestParameters(
+                            "appleId" parameterTypeOf STRING parameterMeans "애플 ID"
                         )
                     )
             }
@@ -86,26 +83,30 @@ class LoginControllerTest : BehaviorSpec({
         val tokenResponse = createGitTokenResponse()
         val code = "code"
         val appleId = "appleId"
-        every { gitHubOAuthService.processGitHubOAuth(code,appleId) } returns tokenResponse
+        every { gitHubOAuthService.processGitHubOAuth(code, appleId) } returns tokenResponse
 
         When("GET /login/oauth2/code/github 요청") {
             Then("딥링크로 리디렉션되고 토큰이 포함된다") {
                 mockMvc.perform(
                     get("/login/oauth2/code/github")
-                        .param("code",code)
-                        .param("state",appleId)
-                )   .andExpect(status().is3xxRedirection)
-                    .andExpect(header().string("Location", "myapp://callback?token=${tokenResponse.token}"))
-                    .andDo(
-                        document(
-                            "callback-from-github",
-                            requestParameters(
-                                "code" parameterTypeOf STRING parameterMeans "GitHub에서 전달된 인증 코드",
-                                "state" parameterTypeOf STRING parameterMeans "초기 로그인 시 전달한 Apple ID"
-                            )
+                        .param("code", code)
+                        .param("state", appleId)
+                ).andExpect(status().is3xxRedirection)
+                    .andExpect(
+                        header().string(
+                            "Location",
+                            "myapp://callback?token=${tokenResponse.token}"
                         )
                     )
-                verify(exactly = 1) { gitHubOAuthService.processGitHubOAuth(code,appleId) }
+                    .andDocument(
+                        "callback-from-github",
+                        requestParameters(
+                            "code" parameterTypeOf STRING parameterMeans "GitHub에서 전달된 인증 코드",
+                            "state" parameterTypeOf STRING parameterMeans "초기 로그인 시 전달한 Apple ID"
+                        )
+                    )
+
+                verify(exactly = 1) { gitHubOAuthService.processGitHubOAuth(code, appleId) }
             }
         }
     }

@@ -24,7 +24,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType
 import org.springframework.restdocs.ManualRestDocumentation
 import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation
-import org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -66,16 +65,14 @@ class MemberFriendControllerTest : FunSpec({
             get(PATH)
                 .setAuthorization("username")
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "Follow member-Friend",
-                    authorizationHeader(),
-                    responseFields(
-                        "memberId" arrayTypeOf NUMBER means "사용자 ID",
-                        "friendUsername" arrayTypeOf STRING means "사용자 깃허브 닉네임",
-                        "friendGitUrl" arrayTypeOf STRING means "사용자 깃허브 URL",
-                        "avatarUrl" arrayTypeOf STRING means "사용자 깃허브 프로필URL"
-                    )
+            .andDocument(
+                "Follow member-Friend",
+                authorizationHeader(),
+                responseFields(
+                    "memberId" arrayTypeOf NUMBER means "사용자 ID",
+                    "friendUsername" arrayTypeOf STRING means "사용자 깃허브 닉네임",
+                    "friendGitUrl" arrayTypeOf STRING means "사용자 깃허브 URL",
+                    "avatarUrl" arrayTypeOf STRING means "사용자 깃허브 프로필URL"
                 )
             ).andReturn()
 
@@ -94,16 +91,14 @@ class MemberFriendControllerTest : FunSpec({
             get(PATH + "request-list")
                 .setAuthorization()
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "request-Friend-list",
-                    authorizationHeader(),
-                    responseFields(
-                        "memberId" arrayTypeOf NUMBER means "사용자 ID",
-                        "friendUsername" arrayTypeOf STRING means "사용자 깃허브 닉네임",
-                        "friendGitUrl" arrayTypeOf STRING means "사용자 깃허브 URL",
-                        "avatarUrl" arrayTypeOf STRING means "사용자 깃허브 프로필URL"
-                    )
+            .andDocument(
+                "request-Friend-list",
+                authorizationHeader(),
+                responseFields(
+                    "memberId" arrayTypeOf NUMBER means "사용자 ID",
+                    "friendUsername" arrayTypeOf STRING means "사용자 깃허브 닉네임",
+                    "friendGitUrl" arrayTypeOf STRING means "사용자 깃허브 URL",
+                    "avatarUrl" arrayTypeOf STRING means "사용자 깃허브 프로필URL"
                 )
             )
             .andReturn()
@@ -124,19 +119,17 @@ class MemberFriendControllerTest : FunSpec({
                 .setAuthorization()
         )
             .andExpect(status().isOk)
-            .andDo(
-                document(
-                    "single-friend",
-                    pathParameters(
-                        "memberId" parameterTypeOf NUMBER parameterMeans "조회할 사용자 ID"
-                    ),
-                    authorizationHeader(),
-                    responseFields(
-                        "memberId" typeOf NUMBER means "사용자 ID",
-                        "friendUsername" typeOf STRING means "사용자 깃허브 닉네임",
-                        "friendGitUrl" typeOf STRING means "사용자 깃허브 URL",
-                        "avatarUrl" typeOf STRING means "사용자 깃허브 프로필URL"
-                    )
+            .andDocument(
+                "single-friend",
+                pathParameters(
+                    "memberId" parameterTypeOf NUMBER parameterMeans "조회할 사용자 ID"
+                ),
+                authorizationHeader(),
+                responseFields(
+                    "memberId" typeOf NUMBER means "사용자 ID",
+                    "friendUsername" typeOf STRING means "사용자 깃허브 닉네임",
+                    "friendGitUrl" typeOf STRING means "사용자 깃허브 URL",
+                    "avatarUrl" typeOf STRING means "사용자 깃허브 프로필URL"
                 )
             ).andReturn()
         mvcResult.toResponse<MemberFriendResponse>() shouldBe friendResponse
@@ -149,15 +142,14 @@ class MemberFriendControllerTest : FunSpec({
                 .setAuthorization()
         )
             .andExpect(status().isOk)
-            .andDo(
-                document(
-                    "request-friend",
-                    pathParameters(
-                        "friendId" parameterTypeOf NUMBER parameterMeans "요청할 사용자 ID"
-                    ),
-                    authorizationHeader()
-                )
+            .andDocument(
+                "request-friend",
+                pathParameters(
+                    "friendId" parameterTypeOf NUMBER parameterMeans "요청할 사용자 ID"
+                ),
+                authorizationHeader()
             )
+
         verify(exactly = 1) { memberFriendService.registerFriend(1L, any()) }
     }
 
@@ -168,18 +160,17 @@ class MemberFriendControllerTest : FunSpec({
                 .setAuthorization()
                 .queryParam("type", "FOLLOW")
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "unfollow-friend",
-                    authorizationHeader(),
-                    pathParameters(
-                        "friendId" parameterTypeOf NUMBER parameterMeans "언팔할 사용자 ID"
-                    ),
-                    requestParameters(
-                        "type" parameterTypeOf NUMBER requestParamMeans "FriendStatus 상태값"
-                    )
+            .andDocument(
+                "unfollow-friend",
+                authorizationHeader(),
+                pathParameters(
+                    "friendId" parameterTypeOf NUMBER parameterMeans "언팔할 사용자 ID"
+                ),
+                requestParameters(
+                    "type" parameterTypeOf NUMBER requestParamMeans "FriendStatus 상태값"
                 )
             )
+
         verify(exactly = 1) { memberFriendService.deleteFriend(1L, any(), any()) }
     }
 
@@ -190,14 +181,12 @@ class MemberFriendControllerTest : FunSpec({
             get(PATH + "accept/{friendId}", 1L)
                 .setAuthorization()
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "accept-friend",
-                    pathParameters(
-                        "friendId" parameterTypeOf NUMBER parameterMeans "친구요청을 수락할 사용자 ID"
-                    ),
-                    authorizationHeader()
-                )
+            .andDocument(
+                "accept-friend",
+                pathParameters(
+                    "friendId" parameterTypeOf NUMBER parameterMeans "친구요청을 수락할 사용자 ID"
+                ),
+                authorizationHeader()
             )
 
         verify(exactly = 1) { memberFriendService.approveRequest(1L, any()) }
@@ -214,16 +203,14 @@ class MemberFriendControllerTest : FunSpec({
             get(PATH + "send-list")
                 .setAuthorization()
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "find-send-list",
-                    authorizationHeader(),
-                    responseFields(
-                        "memberId" arrayTypeOf NUMBER means "사용자 ID",
-                        "friendUsername" arrayTypeOf STRING means "사용자 깃허브 닉네임",
-                        "friendGitUrl" arrayTypeOf STRING means "사용자 깃허브 URL",
-                        "avatarUrl" arrayTypeOf STRING means "사용자 깃허브 프로필URL"
-                    )
+            .andDocument(
+                "find-send-list",
+                authorizationHeader(),
+                responseFields(
+                    "memberId" arrayTypeOf NUMBER means "사용자 ID",
+                    "friendUsername" arrayTypeOf STRING means "사용자 깃허브 닉네임",
+                    "friendGitUrl" arrayTypeOf STRING means "사용자 깃허브 URL",
+                    "avatarUrl" arrayTypeOf STRING means "사용자 깃허브 프로필URL"
                 )
             ).andReturn()
 
@@ -240,21 +227,19 @@ class MemberFriendControllerTest : FunSpec({
                 .characterEncoding("UTF-8")
         )
             .andExpect(status().isOk)
-            .andDo(
-                document(
-                    "search-friend-todolist",
-                    pathParameters(
-                        "friendId" parameterTypeOf NUMBER parameterMeans "조회할 사용자 Id"
-                    ),
-                    authorizationHeader()
-                )
+            .andDocument(
+                "search-friend-todolist",
+                pathParameters(
+                    "friendId" parameterTypeOf NUMBER parameterMeans "조회할 사용자 Id"
+                ),
+                authorizationHeader()
             ).andReturn()
         mvcResult.toResponse<List<DeadlineTodoResponse>>() shouldBe todoResponses
     }
 
     test("친구 깃허브 이름으로 친구 검색 API") {
         val memberResponse = createMemberResponse(1L, "apple")
-        every { memberFriendService.getGitFriend(any(),any()) } returns memberResponse
+        every { memberFriendService.getGitFriend(any(), any()) } returns memberResponse
 
         val mvcResult = mockMvc.perform(
             post(PATH + "search")
@@ -264,21 +249,19 @@ class MemberFriendControllerTest : FunSpec({
                     FriendNameRequest("friendName").toRequest()
                 )
         ).andExpect(status().isOk)
-            .andDo(
-                document(
-                    "find-by-gitName",
-                    requestFields(
-                        "gitUserName" typeOf STRING means "검색하려는 사용자 Git 닉네임"
-                    ),
-                    responseFields(
-                        "memberId" typeOf NUMBER means "사용자 ID",
-                        "username" typeOf STRING means "사용자 Git 닉네임",
-                        "avatarUrl" typeOf STRING means "Git 프로필 URL",
-                        "gitUrl" typeOf STRING means "사용자 gitUrl",
-                        "friendStatus" typeOf STRING means "친구상태"
-                    ),
-                    authorizationHeader()
-                )
+            .andDocument(
+                "find-by-gitName",
+                requestFields(
+                    "gitUserName" typeOf STRING means "검색하려는 사용자 Git 닉네임"
+                ),
+                responseFields(
+                    "memberId" typeOf NUMBER means "사용자 ID",
+                    "username" typeOf STRING means "사용자 Git 닉네임",
+                    "avatarUrl" typeOf STRING means "Git 프로필 URL",
+                    "gitUrl" typeOf STRING means "사용자 gitUrl",
+                    "friendStatus" typeOf STRING means "친구상태"
+                ),
+                authorizationHeader()
             ).andReturn()
 
         mvcResult.toResponse<MemberResponse>() shouldBe memberResponse
