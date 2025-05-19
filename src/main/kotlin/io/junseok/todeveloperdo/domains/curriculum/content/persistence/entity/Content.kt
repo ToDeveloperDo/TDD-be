@@ -20,5 +20,4 @@ class Content(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "curriculum_id")
     val curriculum: Curriculum
-) {
-}
+)

@@ -63,4 +63,57 @@ class GitHubRepoVerificationFilterTest : FunSpec({
 
         verify(exactly = 0) { memberValidator.isExistRepo(any()) }
     }
+
+    test("principal이 UserDetails 타입이 아니면 memberValidator는 호출되지 않는다") {
+        val nonUserDetailsPrincipal = mockk<Any>()
+
+        every { authentication.isAuthenticated } returns true
+        every { authentication.principal } returns nonUserDetailsPrincipal
+
+        SecurityContextHolder.getContext().authentication = authentication
+
+        val request = MockHttpServletRequest("GET", "/api/github/commit")
+        val response = MockHttpServletResponse()
+        val filterChain = mockk<FilterChain>(relaxed = true)
+
+        gitHubRepoVerificationFilter.doFilter(request, response, filterChain)
+
+        verify(exactly = 0) { memberValidator.isExistRepo(any()) }
+    }
+
+    test("요청 URI가 /api/github/create/repo 인 경우, memberValidator는 호출되지 않는다") {
+        val request = MockHttpServletRequest("GET", "/api/github/create/repo")
+        val response = MockHttpServletResponse()
+        val filterChain = mockk<FilterChain>(relaxed = true)
+
+        gitHubRepoVerificationFilter.doFilter(request, response, filterChain)
+
+        verify(exactly = 0) { memberValidator.isExistRepo(any()) }
+    }
+
+    test("authentication이 null이면 memberValidator는 호출되지 않는다") {
+        SecurityContextHolder.getContext().authentication = null
+
+        val request = MockHttpServletRequest("GET", "/api/github/commit")
+        val response = MockHttpServletResponse()
+        val filterChain = mockk<FilterChain>(relaxed = true)
+
+        gitHubRepoVerificationFilter.doFilter(request, response, filterChain)
+
+        verify(exactly = 0) { memberValidator.isExistRepo(any()) }
+    }
+
+    test("authentication이 존재하지만 인증되지 않았으면 memberValidator는 호출되지 않는다") {
+        every { authentication.isAuthenticated } returns false
+        SecurityContextHolder.getContext().authentication = authentication
+
+        val request = MockHttpServletRequest("GET", "/api/github/commit")
+        val response = MockHttpServletResponse()
+        val filterChain = mockk<FilterChain>(relaxed = true)
+
+        gitHubRepoVerificationFilter.doFilter(request, response, filterChain)
+
+        verify(exactly = 0) { memberValidator.isExistRepo(any()) }
+    }
+
 })
