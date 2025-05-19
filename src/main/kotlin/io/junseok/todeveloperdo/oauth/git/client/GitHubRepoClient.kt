@@ -2,7 +2,7 @@ package io.junseok.todeveloperdo.oauth.git.client
 
 import io.junseok.todeveloperdo.client.openai.config.OpenChatAiConfig.Companion.AUTHORIZATION
 import io.junseok.todeveloperdo.oauth.git.config.GitHubRepoConfig
-import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
+import io.junseok.todeveloperdo.oauth.git.dto.request.GItHubRepo
 import io.junseok.todeveloperdo.oauth.git.dto.request.WebhookRequest
 import io.junseok.todeveloperdo.oauth.git.dto.response.GitHubResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.WebhookResponse

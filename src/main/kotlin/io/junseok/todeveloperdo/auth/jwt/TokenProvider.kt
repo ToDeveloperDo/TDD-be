@@ -113,7 +113,6 @@ class TokenProvider(
             log.error(e.message)
             false
         }
-
     }
 
     companion object {

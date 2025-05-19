@@ -171,4 +171,55 @@ class UpdateAspectTest : FunSpec({
             readMeEventProcessor.create(member)
         }
     }
+
+    test("마감일이 오늘이고 issueNumber가 존재할 경우 ISSUE_OPEN으로 이슈를 종료한다") {
+        val todoListId = 1L
+        val username = "testUser"
+        val issueNumber = 1
+        val member = createMember(1, "token", "repo")
+        val todoRequest = createTodoRequest()
+        val todoList = createMemberTodoList(1, today, TodoStatus.PROCEED, member, issueNumber)
+        val gitIssue = createGitIssue(1, today, todoList) // == today
+
+        every { memberReader.getMember(username) } returns member
+        every { todoReader.findTodoList(todoListId) } returns todoList
+        every { gitIssueReader.findGitIssueByTodoList(todoList) } returns gitIssue
+        every { issueEventProcessor.close(member, issueNumber, ISSUE_OPEN) } just runs
+
+        val joinPoint = mockk<JoinPoint> {
+            every { args } returns arrayOf(todoListId, todoRequest, username)
+        }
+
+        updateAspect.update(joinPoint)
+
+        verify {
+            issueEventProcessor.close(member, issueNumber, ISSUE_OPEN)
+        }
+    }
+
+    test("마감일이 오늘이 아니고 issueNumber가 존재할 경우 ISSUE_CLOSED로 이슈를 종료한다") {
+        val todoListId = 1L
+        val username = "testUser"
+        val issueNumber = 1
+        val member = createMember(1, "token", "repo")
+        val todoRequest = createTodoRequest()
+        val todoList = createMemberTodoList(1, today, TodoStatus.PROCEED, member, issueNumber)
+        val gitIssue = createGitIssue(1, today.plusDays(1), todoList) // != today
+
+        every { memberReader.getMember(username) } returns member
+        every { todoReader.findTodoList(todoListId) } returns todoList
+        every { gitIssueReader.findGitIssueByTodoList(todoList) } returns gitIssue
+        every { issueEventProcessor.close(member, issueNumber, ISSUE_CLOSED) } just runs
+
+        val joinPoint = mockk<JoinPoint> {
+            every { args } returns arrayOf(todoListId, todoRequest, username)
+        }
+
+        updateAspect.update(joinPoint)
+
+        verify {
+            issueEventProcessor.close(member, issueNumber, ISSUE_CLOSED)
+        }
+    }
+
 })

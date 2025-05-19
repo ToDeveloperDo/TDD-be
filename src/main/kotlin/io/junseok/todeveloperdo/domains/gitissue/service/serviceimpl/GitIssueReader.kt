@@ -9,7 +9,9 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Component
-class GitIssueReader(private val gitIssueRepository: GitIssueRepository) {
+class GitIssueReader(
+    private val gitIssueRepository: GitIssueRepository,
+) {
     @Transactional
     fun findGitIssueList(today: LocalDate = LocalDate.now()): List<TodoCreate> =
         gitIssueRepository.findByDeadlineList(today)

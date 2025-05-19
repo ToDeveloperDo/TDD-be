@@ -7,6 +7,7 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider.Companion.AUTHORITIES_KEY
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
+import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ErrorCode.EXPIRED_JWT
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
@@ -22,6 +23,7 @@ import io.mockk.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.User
+import java.security.Key
 import java.util.*
 
 class TokenProviderTest : FunSpec({
@@ -86,22 +88,28 @@ class TokenProviderTest : FunSpec({
         result.credentials shouldBe token
     }
 
-    test("type이 REFRESH이고, 토큰이 만료되지 않았다면 유효성 검사를 진행한다.") {
+    test("type이 REFRESH이고, 토큰이 정상적이면 AppleJwtUtil.decodeAndVerify가 실행된다") {
         val authentication = UsernamePasswordAuthenticationToken(
-            "testuser", "password",
+            "testuser",
+            "password",
             listOf(SimpleGrantedAuthority("ROLE_USER"))
         )
         val token = tokenProvider.createToken(authentication)
+
         val applePublicKeys = listOf(createApplePublicKey())
         val jwt = mockk<DecodedJWT>()
-        mockkObject(AppleJwtUtil)
 
+        mockkObject(AppleJwtUtil)
         every { appleClient.getApplePublicKeys().keys } returns applePublicKeys
-        every { AppleJwtUtil.decodeAndVerify(any(), any()) } returns jwt
+        every { AppleJwtUtil.decodeAndVerify(token, applePublicKeys) } returns jwt
 
         val result = tokenProvider.validateAppleToken(token, "REFRESH")
 
         result shouldBe true
+
+        verify(exactly = 1) {
+            AppleJwtUtil.decodeAndVerify(token, applePublicKeys)
+        }
     }
 
     test("type이 ACCESS이고, 토큰이 유효하면 true를 반환한다") {
@@ -127,7 +135,7 @@ class TokenProviderTest : FunSpec({
         val invalidToken = "this.is.invalid"
         val result = tokenProvider.validateAppleToken(invalidToken, "REFRESH")
 
-        result shouldBe true
+        result shouldBe false
     }
 
     test("type이 UNKNOWN이면 ACCESS와 동일하게 else 분기를 탄다") {
@@ -173,6 +181,47 @@ class TokenProviderTest : FunSpec({
         val applePublicKeys = listOf(createApplePublicKey())
 
         every { appleClient.getApplePublicKeys().keys } returns applePublicKeys
+        every { AppleJwtUtil.decodeAndVerify(any(), any()) } throws ExpiredJwtException(
+            null,
+            null,
+            "expired"
+        )
+
+        every { memberRepository.existsByAppleRefreshToken(expiredToken) } returns false
+
+        throwsWith<ToDeveloperDoException>({
+            tokenProvider.validateAppleToken(expiredToken, "REFRESH")
+        }) { ex ->
+            ex.errorCode shouldBe EXPIRED_JWT
+        }
+    }
+
+    test("getAuthentication()에서 권한 문자열에 빈 값이 포함되면 dropLastWhile이 실행된다") {
+        val authStringWithEmpty = "ROLE_USER," // 마지막이 빈 문자열이 되도록
+        val token = Jwts.builder()
+            .setSubject("testuser")
+            .setIssuer("TDD")
+            .claim(AUTHORITIES_KEY, authStringWithEmpty)
+            .signWith(tokenProvider.javaClass.getDeclaredField("key").apply {
+                isAccessible = true
+            }.get(tokenProvider) as Key, SignatureAlgorithm.HS512)
+            .setExpiration(Date(System.currentTimeMillis() + 10000))
+            .compact()
+
+        val result = tokenProvider.getAuthentication(token)
+
+        result shouldBe instanceOf<UsernamePasswordAuthenticationToken>()
+        result.authorities.map { it.authority } shouldContainExactly listOf("ROLE_USER")
+    }
+
+    test("REFRESH 타입이고 만료된 토큰이 DB에 존재하지 않으면 로그만 남기고 예외를 던진다") {
+        val expiredToken = "expired.invalid.token"
+
+        mockkObject(AppleJwtUtil)
+        val applePublicKeys = listOf(createApplePublicKey())
+
+        every { appleClient.getApplePublicKeys().keys } returns applePublicKeys
+
         every { AppleJwtUtil.decodeAndVerify(any(), any()) } throws ExpiredJwtException(
             null,
             null,
