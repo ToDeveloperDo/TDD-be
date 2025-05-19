@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component
 class AllTodosCompletedStrategy(
     private val todoReader: TodoReader,
     private val timeProvider: TimeProvider
-) : NotificationStrategy{
+) : NotificationStrategy {
     override fun getFcmRequests(): List<FcmRequest> =
         todoReader.findTodoListByTodoStatus(
             timeProvider.nowDate(),

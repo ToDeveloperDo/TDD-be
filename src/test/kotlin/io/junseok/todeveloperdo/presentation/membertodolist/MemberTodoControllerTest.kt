@@ -235,14 +235,13 @@ class MemberTodoControllerTest : FunSpec({
         const val TODO_PATH = "/api/todo/"
     }
 }
-
-fun createTodoRequest(): TodoRequest {
-    val today = LocalDate.of(2025, 5, 13)
+val today = LocalDate.of(2025,5,13)
+fun createTodoRequest(deadline: LocalDate = today): TodoRequest {
     return TodoRequest(
         content = "content",
         memo = "memo",
         tag = "tag",
-        deadline = today
+        deadline = deadline
     )
 }
 

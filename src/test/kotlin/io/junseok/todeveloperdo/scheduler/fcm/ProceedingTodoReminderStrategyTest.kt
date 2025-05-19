@@ -1,8 +1,10 @@
 package io.junseok.todeveloperdo.scheduler.fcm
 
+import io.junseok.todeveloperdo.domains.member.service.serviceimpl.createMember
 import io.junseok.todeveloperdo.domains.todo.persistence.entity.TodoStatus
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.SetUpData
 import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.TodoReader
+import io.junseok.todeveloperdo.domains.todo.service.serviceimpl.createMemberTodoList
 import io.junseok.todeveloperdo.util.StubDateProvider
 import io.kotest.core.spec.style.FunSpec
 import io.kotest.matchers.shouldBe
@@ -32,4 +34,26 @@ class ProceedingTodoReminderStrategyTest : FunSpec({
         strategy.getNotificationType() shouldBe NotificationType.DAILY_TODO_REMINDER
     }
 
+    test("clientToken이 빈 값일 경우 필터링 되어야 한다") {
+        val member1 = createMember(1L, "appleId", "repo", "FcmToken")
+        val member2 = createMember(2L, "appleId", "repo", "")
+        val member3 = createMember(3L, "appleId", "repo", "  ")
+        val todoLists = listOf(
+            createMemberTodoList(1L, today.minusWeeks(1), TodoStatus.PROCEED, member1),
+            createMemberTodoList(2L, today.minusWeeks(2), TodoStatus.PROCEED, member2),
+            createMemberTodoList(3L, today.minusWeeks(3), TodoStatus.PROCEED, member3)
+        )
+
+        every {
+            todoReader.findTodoListByTodoStatus(
+                today,
+                TodoStatus.PROCEED
+            )
+        } returns todoLists
+
+        val result = strategy.getFcmRequests()
+
+        result.size shouldBe 1
+        result.first().clientToken shouldBe "FcmToken"
+    }
 })

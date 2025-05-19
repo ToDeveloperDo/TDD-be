@@ -106,6 +106,9 @@ class TokenProvider(
                         log.info("No refresh token found to delete.")
                     }
                 }
+                else -> {
+                    log.info("ExpiredJwtException occurred, but not a REFRESH token: type=$type")
+                }
             }
             throw ToDeveloperDoException { ErrorCode.EXPIRED_JWT }
 

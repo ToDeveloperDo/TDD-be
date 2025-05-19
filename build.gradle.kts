@@ -132,14 +132,19 @@ tasks.named<JacocoReport>("jacocoTestReport") {
                 exclude(
                     "**/persistence/entity/**",
                     "**/presentation/**/dto/**",
-                    "**/oauth/apple/dto/**",
                     "**/oauth/git/dto/**",
+                    "**/dto/request/**",
+                    "**/dto/response/**",
                     "**/io/junseok/todeveloperdo/oauth/apple/service/serviceimpl/ClientSecretCreator.class",
                     "**/io/junseok/todeveloperdo/oauth/apple/service/serviceimpl/ClientSecretCreatorTest.class",
                     "**/io/junseok/todeveloperdo/auth/config/SecurityConfig.class",
                     "**/io/junseok/todeveloperdo/ToDeveloperDoApplicationKt.class",
                     "**/io/junseok/todeveloperdo/oauth/git/service/CustomOAuth2UserService.class",
-                    "**/io/junseok/todeveloperdo/global/fcm/FcmCredentials.class"
+                    "**/io/junseok/todeveloperdo/global/fcm/FcmCredentials.class",
+                    "**/io/junseok/todeveloperdo/util/ElvisKt.class",
+                    "**/io/junseok/todeveloperdo/domains/gitissue/TodoCreate*",
+                    "**/io/junseok/todeveloperdo/oauth/git/config/WebhookConfig*",
+                    "**/io/junseok/todeveloperdo/util/StubDateProvider*"
                 )
             }
         })

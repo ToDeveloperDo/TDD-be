@@ -53,5 +53,14 @@ class ExceptionHandlerFilterTest : FunSpec({
         }
     }
 
+    test("예외가 발생하지 않으면 필터 체인이 정상적으로 실행된다") {
+        val request = MockHttpServletRequest()
+        val response = MockHttpServletResponse()
+        val chain = mockk<FilterChain>()
+
+        every { chain.doFilter(any(), any()) } just runs
+
+        filter.doFilter(request, response, chain)
+    }
 
 })

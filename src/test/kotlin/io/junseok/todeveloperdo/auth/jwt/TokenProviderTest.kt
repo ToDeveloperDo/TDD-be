@@ -7,7 +7,6 @@ import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import io.junseok.todeveloperdo.auth.jwt.TokenProvider.Companion.AUTHORITIES_KEY
 import io.junseok.todeveloperdo.domains.member.persistence.repository.MemberRepository
-import io.junseok.todeveloperdo.exception.ErrorCode
 import io.junseok.todeveloperdo.exception.ErrorCode.EXPIRED_JWT
 import io.junseok.todeveloperdo.exception.ToDeveloperDoException
 import io.junseok.todeveloperdo.oauth.apple.client.AppleClient
@@ -197,7 +196,7 @@ class TokenProviderTest : FunSpec({
     }
 
     test("getAuthentication()에서 권한 문자열에 빈 값이 포함되면 dropLastWhile이 실행된다") {
-        val authStringWithEmpty = "ROLE_USER," // 마지막이 빈 문자열이 되도록
+        val authStringWithEmpty = "ROLE_USER,"
         val token = Jwts.builder()
             .setSubject("testuser")
             .setIssuer("TDD")
@@ -221,7 +220,6 @@ class TokenProviderTest : FunSpec({
         val applePublicKeys = listOf(createApplePublicKey())
 
         every { appleClient.getApplePublicKeys().keys } returns applePublicKeys
-
         every { AppleJwtUtil.decodeAndVerify(any(), any()) } throws ExpiredJwtException(
             null,
             null,
@@ -234,6 +232,24 @@ class TokenProviderTest : FunSpec({
             tokenProvider.validateAppleToken(expiredToken, "REFRESH")
         }) { ex ->
             ex.errorCode shouldBe EXPIRED_JWT
+        }
+    }
+
+    test("ACCESS 타입에서 ExpiredJwtException이 발생하면 else 분기가 실행된다") {
+        val expiredToken = Jwts.builder()
+            .setSubject("testuser")
+            .setIssuer("TDD")
+            .claim(AUTHORITIES_KEY, "ROLE_USER")
+            .setExpiration(Date(System.currentTimeMillis() - 10000))
+            .signWith(tokenProvider.javaClass.getDeclaredField("key").apply {
+                isAccessible = true
+            }.get(tokenProvider) as Key, SignatureAlgorithm.HS512)
+            .compact()
+
+        throwsWith<ToDeveloperDoException>({
+            tokenProvider.validateAppleToken(expiredToken, "ACCESS")
+        }) {
+            it.errorCode shouldBe EXPIRED_JWT
         }
     }
 
