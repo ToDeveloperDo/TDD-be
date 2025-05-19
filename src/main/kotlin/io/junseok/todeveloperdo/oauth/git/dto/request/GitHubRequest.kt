@@ -1,7 +1,5 @@
 package io.junseok.todeveloperdo.oauth.git.dto.request
 
-import io.junseok.todeveloperdo.oauth.git.domain.GItHubRepo
-
 fun GitHubRequest.toGithubRepo() =
     GItHubRepo(
         name = this.repoName,

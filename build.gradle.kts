@@ -123,8 +123,26 @@ tasks.named<JacocoReport>("jacocoTestReport") {
 
     reports {
         xml.required.set(true)
-        html.required.set(false)
+        html.required.set(true)
     }
+
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(
+                    "**/persistence/entity/**",
+                    "**/presentation/**/dto/**",
+                    "**/oauth/apple/dto/**",
+                    "**/oauth/git/dto/**",
+                    "**/io/junseok/todeveloperdo/oauth/apple/service/serviceimpl/ClientSecretCreator.class",
+                    "**/io/junseok/todeveloperdo/oauth/apple/service/serviceimpl/ClientSecretCreatorTest.class",
+                    "**/io/junseok/todeveloperdo/auth/config/SecurityConfig.class",
+                    "**/io/junseok/todeveloperdo/ToDeveloperDoApplicationKt.class",
+                    "**/io/junseok/todeveloperdo/oauth/git/service/CustomOAuth2UserService.class"
+                )
+            }
+        })
+    )
 }
 
 openapi3 {

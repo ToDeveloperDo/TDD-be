@@ -1,4 +1,4 @@
-package io.junseok.todeveloperdo.oauth.git.domain
+package io.junseok.todeveloperdo.oauth.git.dto.request
 
 import com.fasterxml.jackson.annotation.JsonProperty
 
