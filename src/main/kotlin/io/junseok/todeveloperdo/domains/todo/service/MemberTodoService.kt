@@ -15,9 +15,9 @@ import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoDate
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.request.TodoRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.dto.response.TodoResponse
+import io.junseok.todeveloperdo.util.TimeProvider
+import io.junseok.todeveloperdo.util.runIfNotNull
 import org.springframework.stereotype.Service
-import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @Service
 class MemberTodoService(
@@ -29,6 +29,7 @@ class MemberTodoService(
     private val gitIssueService: GitIssueService,
     private val todoValidator: TodoValidator,
     private val gitIssueUpdater: GitIssueUpdater,
+    private val timeProvider: TimeProvider
 ) {
     @CreateEvent
     @ReadMeCreate
@@ -40,17 +41,21 @@ class MemberTodoService(
         val member = memberReader.getMember(username)
 
         val memberTodoLists = todoRequest.map { todo ->
-            todoCreator.generatorTodo(
-                todo,
-                member,
-                issueEventRequest?.issueNumber?.get()
-                    ?.takeIf { LocalDate.now() == todo.deadline }
-            )
+            val issueNumber = issueEventRequest
+                .runIfNotNull { it.issueNumber }
+                .runIfNotNull { it.get() }
+                .runIfNotNull { number ->
+                    if (timeProvider.nowDate() == todo.deadline) number else null
+                }
+
+            todoCreator.generatorTodo(todo, member, issueNumber)
         }
+
         val saveTodoList = todoSaver.saveTodoList(memberTodoLists)
         gitIssueService.saveGitIssue(member, memberTodoLists)
         return saveTodoList
     }
+
 
     // 할 일 찾기
     fun findTodoLists(todoDateRequest: TodoDateRequest, username: String): List<TodoResponse> {
@@ -77,7 +82,8 @@ class MemberTodoService(
 
     //할 일 삭제 NOTE
     @DeleteEventHandler
-    fun removeTodoList(todoListId: Long, username: String, state: String) { }
+    fun removeTodoList(todoListId: Long, username: String, state: String) {
+    }
 
     fun calculateTodoList(
         todoCountRequest: TodoCountRequest,

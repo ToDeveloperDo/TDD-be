@@ -137,7 +137,11 @@ class MemberReaderTest : BehaviorSpec({
     }
 })
 
-fun createMember(id: Long, appleId: String, repo: String? = null) = Member(
+fun createMember(
+    id: Long,
+    appleId: String,
+    repo: String? = null,
+    clientToken: String ?="Fcm") = Member(
     memberId = id,
     appleId = appleId,
     appleRefreshToken = "appleRefreshToken",
@@ -147,7 +151,7 @@ fun createMember(id: Long, appleId: String, repo: String? = null) = Member(
     gitHubRepo = repo,
     avatarUrl = "avatar",
     gitHubUrl = "gitUrl",
-    clientToken = "Fcm",
+    clientToken = clientToken,
     authority = Authority.ROLE_USER
 )
 

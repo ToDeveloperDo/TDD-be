@@ -98,10 +98,32 @@ class GitHubOAuthServiceTest : FunSpec({
             gitHubOAuthService.extractAccessToken(response)
             },
             {
-                ex -> ex.message shouldBe "Access token not found in response: $response"
+                it.message shouldBe "Access token not found or malformed: $response"
             }
         )
     }
+
+    test("access_token 응답이 key=value 형식이 아니면 예외가 발생해야 한다") {
+        val malformed = "access_token"
+
+        throwsWith<IllegalArgumentException>({
+            gitHubOAuthService.extractAccessToken(malformed)
+        }, {
+            it.message shouldBe "Access token not found or malformed: $malformed"
+        })
+    }
+
+    test("access_token= 형식이나 값이 없으면 takeIf에서 null이 되어 예외 발생") {
+        val response = "access_token=&scope=repo"
+
+        throwsWith<IllegalArgumentException>({
+            gitHubOAuthService.extractAccessToken(response)
+        }) {
+            it.message shouldBe "Access token not found or malformed: $response"
+        }
+    }
+
+
 })
 
 fun createGitTokenResponse() = TokenResponse(token = "Bearer abc123")

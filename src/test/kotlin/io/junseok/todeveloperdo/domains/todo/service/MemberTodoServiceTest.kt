@@ -12,9 +12,11 @@ import io.junseok.todeveloperdo.presentation.membertodolist.createDateRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.createTodoCountRequest
 import io.junseok.todeveloperdo.presentation.membertodolist.createTodoCountResponse
 import io.junseok.todeveloperdo.presentation.membertodolist.createTodoRequest
+import io.junseok.todeveloperdo.util.StubDateProvider
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.*
+import io.mockk.impl.stub.Stub
 import java.time.LocalDate
 import java.util.concurrent.CompletableFuture
 
@@ -27,6 +29,8 @@ class MemberTodoServiceTest : BehaviorSpec({
     val gitIssueService = mockk<GitIssueService>()
     val todoValidator = mockk<TodoValidator>()
     val gitIssueUpdater = mockk<GitIssueUpdater>()
+    val today = LocalDate.of(2025, 5, 13)
+    val timeProvider = StubDateProvider(today)
     val memberTodoService = MemberTodoService(
         todoReader,
         memberReader,
@@ -35,9 +39,9 @@ class MemberTodoServiceTest : BehaviorSpec({
         todoUpdater,
         gitIssueService,
         todoValidator,
-        gitIssueUpdater
+        gitIssueUpdater,
+        timeProvider
     )
-    val today = LocalDate.of(2025, 5, 13)
 
     Given("TodoList를 생성할 때") {
         val todoRequests = listOf(createTodoRequest())
@@ -48,7 +52,7 @@ class MemberTodoServiceTest : BehaviorSpec({
 
         every { memberReader.getMember(any()) } returns member
         every {
-            todoCreator.generatorTodo(todoRequests[0], any(), isNull())
+            todoCreator.generatorTodo(todoRequests[0], member, eq(123))
         } returns memberTodoList
         every { todoSaver.saveTodoList(listOf(memberTodoList)) } returns 1L
         every { gitIssueService.saveGitIssue(member, any()) } just runs
@@ -63,6 +67,84 @@ class MemberTodoServiceTest : BehaviorSpec({
             }
         }
     }
+
+    Given("issueEventRequest가 null일 때") {
+        val todoRequests = listOf(createTodoRequest())
+        val member = createMember(1, "appleId")
+        val memberTodoList = createMemberTodoList(1, today, TodoStatus.PROCEED, member)
+
+        every { memberReader.getMember(any()) } returns member
+        every {
+            todoCreator.generatorTodo(todoRequests[0], any(), isNull())
+        } returns memberTodoList
+        every { todoSaver.saveTodoList(listOf(memberTodoList)) } returns 1L
+        every { gitIssueService.saveGitIssue(member, any()) } just runs
+
+        When("createTodoList()를 호출하면") {
+            val result = memberTodoService.createTodoList(
+                todoRequests,
+                member.gitHubUsername!!,
+                null
+            )
+            Then("정상적으로 커리큘럼이 생성되어야 한다.") {
+                result shouldBe 1L
+            }
+        }
+    }
+
+    Given("issueNumber가 null일 때") {
+        val todoRequests = listOf(createTodoRequest())
+        val member = createMember(1, "appleId")
+        val memberTodoList = createMemberTodoList(1, today, TodoStatus.PROCEED, member)
+        val issueFuture = CompletableFuture<Int>().apply { complete(null) }
+        val issueEventRequest = IssueEventRequest(member, todoRequests[0], issueFuture)
+
+        every { memberReader.getMember(any()) } returns member
+        every {
+            todoCreator.generatorTodo(todoRequests[0], any(), isNull())
+        } returns memberTodoList
+        every { todoSaver.saveTodoList(listOf(memberTodoList)) } returns 1L
+        every { gitIssueService.saveGitIssue(member, any()) } just runs
+
+        When("createTodoList()를 호출하면") {
+            val result = memberTodoService.createTodoList(
+                todoRequests,
+                member.gitHubUsername!!,
+                issueEventRequest
+            )
+            Then("정상적으로 커리큘럼이 생성되어야 한다.") {
+                result shouldBe 1L
+            }
+        }
+    }
+
+    Given("issueNumber가 있지만 deadline이 오늘이 아닐 때") {
+        val wrongDate = timeProvider.nowDate().plusDays(1)
+        val todoRequests = listOf(createTodoRequest(wrongDate))
+        val member = createMember(1, "appleId")
+        val memberTodoList = createMemberTodoList(1, wrongDate, TodoStatus.PROCEED, member)
+        val issueFuture = CompletableFuture<Int>().apply { complete(123) }
+        val issueEventRequest = IssueEventRequest(member, todoRequests[0], issueFuture)
+
+        every { memberReader.getMember(any()) } returns member
+        every {
+            todoCreator.generatorTodo(todoRequests[0], any(), isNull())
+        } returns memberTodoList
+        every { todoSaver.saveTodoList(listOf(memberTodoList)) } returns 1L
+        every { gitIssueService.saveGitIssue(member, any()) } just runs
+
+        When("createTodoList()를 호출하면") {
+            val result = memberTodoService.createTodoList(
+                todoRequests,
+                member.gitHubUsername!!,
+                issueEventRequest
+            )
+            Then("정상적으로 커리큘럼이 생성되어야 한다.") {
+                result shouldBe 1L
+            }
+        }
+    }
+
 
     Given("할 일을 조회할 때") {
         val todoDateRequest = createDateRequest()

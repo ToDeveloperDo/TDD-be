@@ -23,7 +23,6 @@ class WebHookProcessorTest : FunSpec({
         clearMocks(payloadCreator, memberReader, memberUpdater)
     }
 
-
     test("repository renamed 이벤트를 처리해야 한다") {
         val member = createMember(1, "appleId", "repo")
         val payload = mapOf(
@@ -81,7 +80,8 @@ class WebHookProcessorTest : FunSpec({
         verify(exactly = 0) { memberReader.findByGitUserName(member.gitHubUsername!!) }
         verify(exactly = 0) { memberUpdater.updateMemberRepo(payloadResponse.newRepoName, member) }
     }
-    test("repositoryㅇ 외의 이벤트는 DELETE_REPO_ACTION 작업을 하지 않는다") {
+
+    test("repository 외의 이벤트는 DELETE_REPO_ACTION 작업을 하지 않는다") {
         val member = createMember(1, "appleId", "repo")
         val payload = mapOf(
             "action" to DELETE_REPO_ACTION,
@@ -97,6 +97,7 @@ class WebHookProcessorTest : FunSpec({
         verify(exactly = 0) { memberReader.findByGitUserName(member.gitHubUsername!!) }
         verify(exactly = 0) { memberUpdater.removeMemberRepo(member) }
     }
+    
 })
 
 fun createPayloadResponse() = PayloadResponse(

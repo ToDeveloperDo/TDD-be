@@ -8,6 +8,7 @@ import io.junseok.todeveloperdo.oauth.git.client.GitHubAccessTokenClient
 import io.junseok.todeveloperdo.oauth.git.client.GitHubApiClient
 import io.junseok.todeveloperdo.oauth.git.dto.response.TokenResponse
 import io.junseok.todeveloperdo.oauth.git.dto.response.toGitUserResponse
+import io.junseok.todeveloperdo.util.runIfNotNull
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 
@@ -22,7 +23,7 @@ class GitHubOAuthService(
     private val clientSecret: String
 ) {
 
-    fun processGitHubOAuth(code: String,userName: String): TokenResponse {
+    fun processGitHubOAuth(code: String, userName: String): TokenResponse {
         val accessTokenResponse = accessTokenClient.getAccessToken(clientId, clientSecret, code)
 
         if (accessTokenResponse.contains("error")) {
@@ -35,16 +36,24 @@ class GitHubOAuthService(
         val userInfoResponse = gitHubApiClient.getUserInfo(bearerToken)
 
         val userInfo = parseUserInfo(userInfoResponse)
-        memberService.createGitMember(userInfo.toGitUserResponse(),accessToken,userName)
+        memberService.createGitMember(userInfo.toGitUserResponse(), accessToken, userName)
         return TokenResponse(bearerToken)
     }
 
     fun extractAccessToken(response: String): String {
-        val firstOrNull = response.split("&")
+        return response.split("&")
             .firstOrNull { it.startsWith("access_token") }
-        return (firstOrNull?.split("="))?.get(1)
-            ?: throw IllegalArgumentException("Access token not found in response: $response")
+            .runIfNotNull { it ->
+                it.split("=")
+                    .runIfNotNull { it ->
+                        it.getOrNull(1)
+                            .runIfNotNull { token ->
+                                token.takeIf { it.isNotBlank() }
+                            }
+                    }
+            } ?: throw IllegalArgumentException("Access token not found or malformed: $response")
     }
+
 
     fun parseUserInfo(response: String): Map<String, Any> {
         val mapper = jacksonObjectMapper()
