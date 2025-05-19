@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
 
       - name: Run tests & generate Jacoco report
-        run: ./gradlew test jacocoTestReport
+        run: ./gradlew clean test jacocoTestReport
 
       - name: Generate coverage badge JSON
         run: |
