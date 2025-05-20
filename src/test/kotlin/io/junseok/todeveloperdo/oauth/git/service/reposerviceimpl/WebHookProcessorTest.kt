@@ -97,7 +97,23 @@ class WebHookProcessorTest : FunSpec({
         verify(exactly = 0) { memberReader.findByGitUserName(member.gitHubUsername!!) }
         verify(exactly = 0) { memberUpdater.removeMemberRepo(member) }
     }
-    
+    test("repository 이벤트인데 action이 RENAMED, DELETE가 아니면 아무 처리도 하지 않는다") {
+        val payload = mapOf(
+            "action" to "other-action",
+            "repository" to mapOf(
+                "name" to "some-repo",
+                "owner" to mapOf("login" to "username")
+            )
+        )
+
+        webHookProcessor.process(payload, REPOSITORY)
+
+        verify(exactly = 0) { payloadCreator.create(any()) }
+        verify(exactly = 0) { memberReader.findByGitUserName(any()) }
+        verify(exactly = 0) { memberUpdater.updateMemberRepo(any(), any()) }
+        verify(exactly = 0) { memberUpdater.removeMemberRepo(any()) }
+    }
+
 })
 
 fun createPayloadResponse() = PayloadResponse(
