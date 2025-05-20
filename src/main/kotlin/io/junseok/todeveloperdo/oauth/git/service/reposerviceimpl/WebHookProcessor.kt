@@ -17,15 +17,18 @@ class WebHookProcessor(
         if (event == GitHubService.REPOSITORY) {
             val action = payload["action"] as String
 
-            if (action == RENAMED_REPO_ACTION) {
-                val payloadResponse = payloadCreator.create(payload)
-                val member = memberReader.findByGitUserName(payloadResponse.username)
-                memberUpdater.updateMemberRepo(payloadResponse.newRepoName, member)
-            }
-            if (action == DELETE_REPO_ACTION) {
-                val payloadResponse = payloadCreator.create(payload)
-                val member = memberReader.findByGitUserName(payloadResponse.username)
-                memberUpdater.removeMemberRepo(member)
+            when (action) {
+                RENAMED_REPO_ACTION -> {
+                    val payloadResponse = payloadCreator.create(payload)
+                    val member = memberReader.findByGitUserName(payloadResponse.username)
+                    memberUpdater.updateMemberRepo(payloadResponse.newRepoName, member)
+                }
+
+                DELETE_REPO_ACTION -> {
+                    val payloadResponse = payloadCreator.create(payload)
+                    val member = memberReader.findByGitUserName(payloadResponse.username)
+                    memberUpdater.removeMemberRepo(member)
+                }
             }
         }
     }
